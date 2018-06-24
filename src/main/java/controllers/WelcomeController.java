@@ -2,6 +2,7 @@ package controllers;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 
 import javax.servlet.http.HttpServletRequest;
@@ -15,9 +16,12 @@ public class WelcomeController {
         return "index";
     }
 
-    @RequestMapping("/api/v1/user/create")
+    @RequestMapping(value = "/api/v1/user/create", method = RequestMethod.POST)
     public String reg(HttpServletRequest request) {
         System.out.println(request);
-        return "index";
+        return "{\n" +
+                "\"userId\": \"01-000000000000001\",\n" +
+                "\"token\": \"toaWaep4chou7ahkoogiu9Iusaht9ima\"\n" +
+                "}";
     }
 }
