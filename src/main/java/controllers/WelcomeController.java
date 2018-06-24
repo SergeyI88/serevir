@@ -32,9 +32,9 @@ public class WelcomeController {
     @RequestMapping(value = "/", method = RequestMethod.POST)
     public String token(HttpServletRequest request) {
         System.out.println(request);
-        return "{" +
-                "userId: 01-000000000000001," +
-                "token: 99888854-ca0a-4944-89ee-7b7e2cba4132" +
+        return "{\n" +
+                "userId\": \"01-000000000000001\",\n" +
+                "\"token\": \"toaWaep4chou7ahkoogiu9Iusaht9ima\"\n" +
                 "}";
     }
 
