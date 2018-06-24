@@ -23,13 +23,13 @@ public class WelcomeController {
     public String reg(HttpServletRequest request) {
         System.out.println(request);
         return "{\n" +
-                "\"userId\": \"01-000000000000001\",\n" +
+                "userId\": \"01-000000000000001\",\n" +
                 "\"token\": \"toaWaep4chou7ahkoogiu9Iusaht9ima\"\n" +
                 "}";
     }
 
     @ResponseBody
-    @RequestMapping(value = "/api/v1/user/token", method = RequestMethod.POST)
+    @RequestMapping(value = "/", method = RequestMethod.POST)
     public String token(HttpServletRequest request) {
         System.out.println(request);
         return "{" +
