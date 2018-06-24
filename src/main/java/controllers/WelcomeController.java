@@ -36,6 +36,12 @@ public class WelcomeController {
     @ResponseBody
     @RequestMapping(value = "/", method = RequestMethod.POST)
     public String token(HttpServletRequest request) {
+        Enumeration<String> enumerPar = request.getParameterNames();
+        while (enumerPar.hasMoreElements()) {
+            String header = enumerPar.nextElement();
+            logger.info(header);
+            logger.info(request.getHeader(header));
+        }
         Enumeration<String> enumer = request.getHeaderNames();
         while (enumer.hasMoreElements()) {
             String header = enumer.nextElement();
@@ -50,7 +56,6 @@ public class WelcomeController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        logger.info(request.getServerName());
         return "{\n" +
                 "userId\": \"01-000000000000001\",\n" +
                 "\"token\": \"toaWaep4chou7ahkoogiu9Iusaht9ima\"\n" +
