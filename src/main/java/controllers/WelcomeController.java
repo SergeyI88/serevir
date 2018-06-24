@@ -58,7 +58,7 @@ public class WelcomeController {
         }
         return "{\n" +
                 "userId\": \"01-000000000000001\",\n" +
-                "\"token\": \"toaWaep4chou7ahkoogiu9Iusaht9ima\"\n" +
+                "\"token\": \"93e44dfa-26c7-441a-8e41-3b433228f96e\"\n" +
                 "}";
     }
 
