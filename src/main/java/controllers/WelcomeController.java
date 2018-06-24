@@ -1,6 +1,7 @@
 package controllers;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -35,5 +36,11 @@ public class WelcomeController {
                 "userId: 01-000000000000001," +
                 "token: 99888854-ca0a-4944-89ee-7b7e2cba4132" +
                 "}";
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/api/v2/installation/event", method = RequestMethod.POST)
+    public String instal(HttpServletRequest request) {
+        return "{succes: true}";
     }
 }
