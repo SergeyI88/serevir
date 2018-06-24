@@ -1,5 +1,6 @@
 package controllers;
 
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,6 +12,8 @@ import javax.servlet.http.HttpServletRequest;
 
 @Controller
 public class WelcomeController {
+
+    private static Logger logger = Logger.getLogger(WelcomeController.class);
 
 
 //    @RequestMapping("/")
@@ -31,7 +34,7 @@ public class WelcomeController {
     @ResponseBody
     @RequestMapping(value = "/", method = RequestMethod.POST)
     public String token(HttpServletRequest request) {
-        System.out.println(request);
+        logger.info(request);
         return "{\n" +
                 "userId\": \"01-000000000000001\",\n" +
                 "\"token\": \"toaWaep4chou7ahkoogiu9Iusaht9ima\"\n" +
