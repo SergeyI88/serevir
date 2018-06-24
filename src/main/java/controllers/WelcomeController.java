@@ -8,6 +8,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Enumeration;
 
 @Controller
 public class WelcomeController {
@@ -32,7 +36,19 @@ public class WelcomeController {
     @ResponseBody
     @RequestMapping(value = "/", method = RequestMethod.POST)
     public String token(HttpServletRequest request) {
-        logger.info(request);
+        Enumeration<String> enumer = request.getHeaderNames();
+        while (enumer.hasMoreElements()) {
+            logger.info(request.getHeaderNames().nextElement());
+        }
+
+        try(BufferedReader reader = new BufferedReader(new InputStreamReader(request.getInputStream()))) {
+            while (reader.readLine() != null) {
+                logger.info(reader.readLine());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        logger.info(request.getServerName());
         return "{\n" +
                 "userId\": \"01-000000000000001\",\n" +
                 "\"token\": \"toaWaep4chou7ahkoogiu9Iusaht9ima\"\n" +
