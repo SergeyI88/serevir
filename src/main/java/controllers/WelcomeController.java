@@ -13,10 +13,10 @@ import javax.servlet.http.HttpServletRequest;
 public class WelcomeController {
 
 
-    @RequestMapping("/")
-    public String send() {
-        return "index";
-    }
+//    @RequestMapping("/")
+//    public String send() {
+//        return "index";
+//    }
 
     @ResponseBody
     @RequestMapping(value = "/api/v1/user/create", method = RequestMethod.POST)
