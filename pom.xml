@@ -6,10 +6,7 @@
     <artifactId>Test</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>war</packaging>
-    <!--<modules>-->
-        <!--<module>requests</module>-->
-        <!--<module>responses</module>-->
-    <!--</modules>-->
+
     <dependencies>
         <dependency>
             <groupId>com.squareup.retrofit2</groupId>
@@ -22,12 +19,7 @@
             <artifactId>converter-gson</artifactId>
             <version>2.0.0-beta3</version>
         </dependency>
-        <!--<dependency>-->
-        <!--<groupId>com.squareup.retrofit2</groupId>-->
-        <!--<artifactId>converter-scalars</artifactId>-->
-        <!--<version>2.3.0</version>-->
-    <!--</dependency>-->
-        <!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
+
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
@@ -64,11 +56,14 @@
             <artifactId>jstl</artifactId>
             <version>1.2</version>
         </dependency>
-        <!--<dependency>-->
-            <!--<groupId>com.indyukov</groupId>-->
-            <!--<artifactId>responses</artifactId>-->
-            <!--<version>1.0-SNAPSHOT</version>-->
-        <!--</dependency>-->
+        <!-- https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api -->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>3.1.0</version>
+            <scope>provided</scope>
+        </dependency>
+
 
     </dependencies>
     <build>
