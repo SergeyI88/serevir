@@ -38,7 +38,8 @@ public class WelcomeController {
     public String token(HttpServletRequest request) {
         Enumeration<String> enumer = request.getHeaderNames();
         while (enumer.hasMoreElements()) {
-            logger.info(request.getHeaderNames().nextElement());
+            logger.info(enumer.nextElement());
+
         }
 
         try(BufferedReader reader = new BufferedReader(new InputStreamReader(request.getInputStream()))) {
