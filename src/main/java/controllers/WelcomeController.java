@@ -56,9 +56,9 @@ public class WelcomeController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return "{\n" +
-                "userId\": \"01-000000000000001\",\n" +
-                "\"token\": \"93e44dfa-26c7-441a-8e41-3b433228f96e\"\n" +
+        return "{" +
+                "userId: 01-000000000000001" +
+                "token: 93e44dfa-26c7-441a-8e41-3b433228f96e" +
                 "}";
     }
 
