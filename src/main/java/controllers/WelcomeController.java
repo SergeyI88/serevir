@@ -26,10 +26,10 @@ public class WelcomeController {
 //    }
 
     @ResponseBody
-    @RequestMapping(value = "/api/v1/user/create", method = RequestMethod.POST)
+    @RequestMapping(value = "/")
     public String reg(HttpServletRequest request) {
         return "{\n" +
-                "userId\": \"01-000000000000001\",\n" +
+                "userId\": \"01-000000000973924\",\n" +
                 "\"token\": \"toaWaep4chou7ahkoogiu9Iusaht9ima\"\n" +
                 "}";
     }
