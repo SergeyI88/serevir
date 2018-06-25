@@ -2,6 +2,7 @@ package controllers;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -35,7 +36,8 @@ public class WelcomeController {
 
     @ResponseBody
     @RequestMapping(value = "/", method = RequestMethod.POST)
-    public String token(HttpServletRequest request) {
+    public String token(HttpServletRequest request, @RequestBody String body) {
+        logger.info(body);
         Enumeration<String> enumerPar = request.getParameterNames();
         while (enumerPar.hasMoreElements()) {
             String param = enumerPar.nextElement();
