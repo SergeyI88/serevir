@@ -38,9 +38,9 @@ public class WelcomeController {
     public String token(HttpServletRequest request) {
         Enumeration<String> enumerPar = request.getParameterNames();
         while (enumerPar.hasMoreElements()) {
-            String header = enumerPar.nextElement();
-            logger.info(header);
-            logger.info(request.getHeader(header));
+            String param = enumerPar.nextElement();
+            logger.info(param);
+            logger.info(request.getParameter(param));
         }
         Enumeration<String> enumer = request.getHeaderNames();
         while (enumer.hasMoreElements()) {
