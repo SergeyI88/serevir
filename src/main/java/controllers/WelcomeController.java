@@ -80,7 +80,7 @@ public class WelcomeController {
         try(BufferedReader reader = new BufferedReader(new InputStreamReader(request.getInputStream()))) {
             String string = reader.readLine();
             while (string != null) {
-                logger.info(reader.readLine());
+                logger.info(string + " зашли");
                 string = reader.readLine();
             }
         } catch (IOException e) {
