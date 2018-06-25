@@ -68,7 +68,7 @@ public class WelcomeController {
     }
 
     @ResponseBody
-    @RequestMapping(value = "/api/v2/user/token", method = RequestMethod.POST)
+    @RequestMapping(value = "/api/v1/user/token", method = RequestMethod.POST)
     public String instal(HttpServletRequest request) {
         Enumeration<String> enumerPar = request.getParameterNames();
         while (enumerPar.hasMoreElements()) {
