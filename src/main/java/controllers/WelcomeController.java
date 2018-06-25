@@ -76,6 +76,15 @@ public class WelcomeController {
             logger.info(param);
             logger.info(request.getParameter(param));
         }
+
+        try(BufferedReader reader = new BufferedReader(new InputStreamReader(request.getInputStream()))) {
+            while (reader.readLine() != null) {
+                logger.info(reader.readLine());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        
         Enumeration<String> enumer = request.getHeaderNames();
         while (enumer.hasMoreElements()) {
             String header = enumer.nextElement();
