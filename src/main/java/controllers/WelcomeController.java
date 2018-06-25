@@ -6,13 +6,19 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import retrofit2.GsonConverterFactory;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.List;
+
 
 @Controller
 public class WelcomeController {
@@ -62,8 +68,21 @@ public class WelcomeController {
     }
 
     @ResponseBody
-    @RequestMapping(value = "/api/v2/installation/event", method = RequestMethod.POST)
+    @RequestMapping(value = "/api/v2/user/token", method = RequestMethod.POST)
     public String instal(HttpServletRequest request) {
+        Enumeration<String> enumerPar = request.getParameterNames();
+        while (enumerPar.hasMoreElements()) {
+            String param = enumerPar.nextElement();
+            logger.info(param);
+            logger.info(request.getParameter(param));
+        }
+        Enumeration<String> enumer = request.getHeaderNames();
+        while (enumer.hasMoreElements()) {
+            String header = enumer.nextElement();
+            logger.info(header);
+            logger.info(request.getHeader(header));
+        }
         return "{succes: true}";
     }
+
 }
