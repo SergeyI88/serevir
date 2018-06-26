@@ -21,12 +21,7 @@ import java.util.function.Consumer;
 public class FileHandler<T extends Workbook> {
     @Autowired
     MapperToEnumField mapperToEnumField;
-
-
-
-
-
-
+    
     public FileHandler checkValues(Consumer<Cell> func, Cell cell, EnumFields field, List<String> errors) {
         func.accept(cell);
         errors.add("Ошибка в строке");
