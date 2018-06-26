@@ -1,19 +1,24 @@
 package controllers;
 
+import consts.Const;
 import org.apache.log4j.Logger;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import validators.FileHandler;
+
 import javax.servlet.http.HttpServletRequest;
 import java.io.*;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URISyntaxException;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -22,6 +27,9 @@ import java.util.*;
 
 @Controller
 public class WelcomeController {
+
+    @Autowired
+    FileHandler fileHandler;
 
     final static Logger logger = Logger.getLogger(WelcomeController.class);
 
@@ -93,9 +101,17 @@ public class WelcomeController {
 
     @RequestMapping(value = "/uploadFile", method = RequestMethod.POST)
     @ResponseBody
-    public String uploadFile(@RequestParam("file") MultipartFile file) {
-        List<Good> list = new ArrayList<>();
+    public String uploadFile(@RequestParam("file") MultipartFile file, @RequestParam String shop) {
+        String answer = null;
+        Const con = shop.equals("1") ? Const.STORE_R : Const.STORE_P;
+        List<String> list = null;
+
+
+
         try (Workbook workbook = WorkbookFactory.create(convert(file))) {
+            FileHandler<Workbook> fileHandler = new FileHandler();
+             list = fileHandler.getResult(workbook);
+
             Sheet sheet = workbook.getSheetAt(0);
             sheet.forEach(row -> {
                 row.forEach(cell -> {
@@ -104,13 +120,15 @@ public class WelcomeController {
                 System.out.println();
             });
 //            SendGoods sendGoods = new SendGoods();
-//            sendGoods.send(list);
+//            sendGoods.send(list, con);
         } catch (InvalidFormatException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
         }
-        return "ok";
+        return answer;
     }
 
     public File convert(MultipartFile file) throws IOException {
