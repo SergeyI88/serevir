@@ -1,4 +1,4 @@
-<%--
+<%@ page import="java.util.List" %><%--
   Created by IntelliJ IDEA.
   User: admin
   Date: 23.06.2018
@@ -7,8 +7,8 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
-  <head>
-    <title>$Title$</title>
+<head>
+    <title>Обмен</title>
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/css/login.css"/>
     <script type="text/javascript">
         var check = function () {
@@ -27,13 +27,21 @@
             }
         };
     </script>
-  </head>
-  <body class="container">
-  <form name="f" method="post" class="form-container" action="uploadFile" enctype="multipart/form-data">
+</head>
+<body class="container">
+<% if (request.getAttribute("list") != null) {
+    List<String> list = (List<String>) request.getAttribute("list");
+for (String s: list) { %>
+<%=s%><br>
+<%
+    }
+    }
+%>
+<form name="f" method="post" class="form-container" action="uploadFile" enctype="multipart/form-data">
     Рынок:<input type="radio" value="1" id="1" name="a">
     Петр:<input type="radio" value="2" id="2" name="a">
 
-    <input class="form-field" type="file" name="file" onclick="check()" id="excel"><br />
+    <input class="form-field" type="file" name="file" onclick="check()" id="excel"><br/>
 
     <input hidden class="form-field" type="submit" value="Загрузить файл" id="send" >
     <%--<form action="/download">--%>
@@ -44,4 +52,7 @@
     <button type="submit">Загрузить шаблон</button>
   </form>
   </body>
+    <input hidden class="form-field" type="submit" value="Загрузить файл" id="send">
+</form>
+</body>
 </html>

@@ -4,6 +4,8 @@ import java.util.List;
 
 public class Good {
 
+    private transient int id;
+
     private String uuid;
 
     private String code;
@@ -14,12 +16,24 @@ public class Good {
 
     private String name;
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
     private Double price;
 
     public Good() {
     }
 
-    private Integer quantity;
+    public Good(int id) {
+        this.id = id;
+    }
+
+    private Double quantity;
 
     private Double costPrice;
 
@@ -93,11 +107,11 @@ public class Good {
         this.price = price;
     }
 
-    public Integer getQuantity() {
+    public Double getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(Integer quantity) {
+    public void setQuantity(Double quantity) {
         this.quantity = quantity;
     }
 
@@ -185,8 +199,8 @@ public class Good {
         return alcoholProductKindCode;
     }
 
-    public void setAlcoholProductKindCode(Integer alcoholProductKindCode) {
-        this.alcoholProductKindCode = alcoholProductKindCode;
+    public void setAlcoholProductKindCode(Double alcoholProductKindCode) {
+        this.alcoholProductKindCode = alcoholProductKindCode != null ? alcoholProductKindCode.intValue() : null;
     }
 
     public Double getTareVolume() {
