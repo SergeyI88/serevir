@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
 import validators.FileHandler;
 
 import javax.servlet.http.HttpServletRequest;
@@ -100,25 +101,19 @@ public class WelcomeController {
     }
 
     @RequestMapping(value = "/uploadFile", method = RequestMethod.POST)
-    @ResponseBody
-    public String uploadFile(@RequestParam("file") MultipartFile file, @RequestParam String shop) {
-        String answer = null;
+
+    public ModelAndView uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("a") String shop) {
+        ModelAndView modelAndView = new ModelAndView("/index");
         Const con = shop.equals("1") ? Const.STORE_R : Const.STORE_P;
         List<String> list = null;
 
 
 
         try (Workbook workbook = WorkbookFactory.create(convert(file))) {
-            FileHandler<Workbook> fileHandler = new FileHandler();
              list = fileHandler.getResult(workbook);
+             modelAndView.addObject("list", list);
 
             Sheet sheet = workbook.getSheetAt(0);
-            sheet.forEach(row -> {
-                row.forEach(cell -> {
-                    System.out.print(cell.toString() +"\t");
-                });
-                System.out.println();
-            });
 //            SendGoods sendGoods = new SendGoods();
 //            sendGoods.send(list, con);
         } catch (InvalidFormatException e) {
@@ -128,7 +123,7 @@ public class WelcomeController {
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
-        return answer;
+        return modelAndView;
     }
 
     public File convert(MultipartFile file) throws IOException {

@@ -1,24 +1,32 @@
 package validators;
 
+import config.Config;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
-import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
 import java.util.*;
 
 import java.io.File;
-
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = {Config.class})
 public class FileHandlerTest {
+    @Autowired
+    FileHandler<Workbook> handler;
     @Test
     public void checkValues() throws Exception {
     }
 
     @Test
     public void getResult() throws Exception {
-        FileHandler<Workbook> handler = new FileHandler<>();
+
         List<String> list = handler.getResult(WorkbookFactory.create(new File("C:\\projects\\Test\\src\\test\\resources\\products.xlsx")));
-        System.out.println(list);
-        Assert.assertEquals(0, list.size());
+       list.forEach(System.out::println);
+//        Assert.assertEquals(0, list.size());
     }
 
 }

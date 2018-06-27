@@ -3,8 +3,9 @@ package consts;
 public enum EnumFields {
     NAME("name", null, true, null) //[ 1 .. 100 ] characters
     , GROUP("group", null, true, null)
-    , TYPE("type", new String[]{"ALCOHOL_NOT_MARKED", "normal", "alcohol_marked", "service"}, true, null)
-    , QUANTITY("quantity", null, true, true), MEASURE_NAME("measureName"
+    , TYPE("type", new String[]{"alcohol_not_marked", "normal", "alcohol_marked", "service"}, true, null)
+    , QUANTITY("quantity", null, true, true)
+    , MEASURE_NAME("measureName"
             , new String[]{"", "шт", "кг", "л", "м", "км", "м2", "м3", "компл", "упак", "ед", "дроб"}
             , true, true)
     , CODE("code", null, true, null) //[ 0 .. 10 ] characters
@@ -18,7 +19,9 @@ public enum EnumFields {
     , PARENT_UUID("parentCode", null, false, false)
     , ALCOHOL_BY_VOLUME("alcoholByVolume", null, false, true) //[ 0 .. 99.999 ] double
     , ALCOHOL_PRODUCT_KIND_CODE("alcoholProductKindCode", null, false, true) //от 1 до 999. int
-    , TARE_VOLUME("tareVolume", null, false, true); //[ 0 .. 999.999 ] double
+    , TARE_VOLUME("tareVolume", null, false, true)//[ 0 .. 999.999 ] double
+    , UUID("uuid", null, true, false)
+    , ALCO_CODES("alcoCodes", null, false, true);
 
     public String name;
     public String[] value;
