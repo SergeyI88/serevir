@@ -24,7 +24,7 @@ public class FileHandlerTest {
     @Test
     public void getResult() throws Exception {
 
-        List<String> list = handler.getResult(WorkbookFactory.create(new File("C:\\projects\\Test\\src\\test\\resources\\1.xlsx")));
+        List<String> list = handler.getResult(WorkbookFactory.create(new File("src/test/resources/products.xlsx")));
        list.forEach(System.out::println);
 //        Assert.assertEquals(0, list.size());
     }

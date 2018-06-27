@@ -22,9 +22,6 @@ public class workWithFiles {
     @GetMapping("/download")
     public void downloadFile3(HttpServletResponse resonse,
                               @RequestParam(defaultValue = DEFAULT_FILE_NAME) String fileName) throws IOException {
-
-
-        // Content-Disposition
         resonse.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + "products.xlsx");
 
         BufferedInputStream inStream = new BufferedInputStream(new URL(urlString).openStream());
