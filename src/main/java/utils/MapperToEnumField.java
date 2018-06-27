@@ -1,5 +1,6 @@
 package utils;
 
+import com.fasterxml.uuid.Generators;
 import consts.EnumFields;
 import controllers.Good;
 import org.apache.poi.ss.usermodel.Cell;
@@ -34,25 +35,6 @@ public class MapperToEnumField {
         mapNames.put("allowToSell", EnumFields.ALLOW_TO_SELL);
         mapNames.put("uuid", EnumFields.UUID);
         mapNames.put("alcoCodes", EnumFields.ALCO_CODES);
-
-//        NAME("name", null, true, null) //[ 1 .. 100 ] characters
-//                , GROUP("group", null, true, null)
-//                , TYPE("type", new String[]{"ALCOHOL_NOT_MARKED", "normal", "alcohol_marked", "service"}, true, null)
-//                , QUANTITY("quantity", null, true, true), MEASURE_NAME("measureName"
-//                , new String[]{"", "шт", "кг", "л", "м", "км", "м2", "м3", "компл", "упак", "ед", "дроб"}
-//                , true, true)
-//                , CODE("code", null, true, null) //[ 0 .. 10 ] characters
-//                , BAR_CODES("barCodes", null, true, true)
-//                , PRICE("price", null, true, true) //[ 0 .. 9999999.99 ] double
-//                , COST_PRICE("costPrice", null, false, true) //[ 0 .. 9999999.99 ] double
-//                , TAX("tax", new String[]{"NO_VAT", "VAT_10", "VAT_18", "VAT_0", "VAT_18_118", "VAT_10_110"}, true, true)
-//                , ALLOW_TO_SELL("allowToSell", null, true, true)
-//                , DESCRIPTION("description", null, true, true) N
-//                , ARTICLE_NUMBER("articleNumber", null, false, true) //[ 0 .. 20 ] characters N
-//                , PARENT_UUID("parentCode", null, false, false) N
-//                , ALCOHOL_BY_VOLUME("alcoholByVolume", null, false, true) //[ 0 .. 99.999 ] double
-//                , ALCOHOL_PRODUCT_KIND_CODE("alcoholProductKindCode", null, false, true) //от 1 до 999. int
-//                , TARE_VOLUME("tareVolume", null, false, true); //[ 0 .. 999.999 ] double
 
         mapFunc.put("alcoholByVolume", (cell, field, list, good) -> {
             if (!cell.toString().trim().isEmpty()) {
@@ -102,7 +84,7 @@ public class MapperToEnumField {
                 if (!cell.toString().trim().isEmpty()) {
                     good.setCode(cell.toString());
                 } else {
-                    list.add(cell.toString() + " [0 .. 10] " + field.name);
+                    list.add("Строка " + good.getId() + " " + cell.toString() + " обязателен к заполнению [0 ... 10] " + field.name);
                 }
             }
             return good;
@@ -285,14 +267,14 @@ public class MapperToEnumField {
         mapFunc.put("uuid", (cell, field, list, good) -> {
             if (!cell.toString().trim().isEmpty()) {
                 if (field.isRequired) {
-                    if (cell.toString().trim().matches("[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}")) {
+                    if (cell.toString().trim().matches("[0-9A-f]{8}-[0-9A-f]{4}-[0-9A-f]{4}-[0-9A-f]{4}-[0-9A-f]{12}")) {
                         good.setUuid(cell.toString().trim());
                     } else {
                         list.add(cell.toString() + " неверный формат uuid4, можете оставить пустым программа сама его заполнит" + field.name);
                     }
                 }
             } else {
-                good.setUuid(UUID.randomUUID().toString());
+                good.setUuid(Generators.timeBasedGenerator().generate().toString());
             }
             return good;
         });

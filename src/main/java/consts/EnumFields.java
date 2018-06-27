@@ -6,7 +6,7 @@ public enum EnumFields {
     , TYPE("type", new String[]{"alcohol_not_marked", "normal", "alcohol_marked", "service"}, true, null)
     , QUANTITY("quantity", null, true, true)
     , MEASURE_NAME("measureName"
-            , new String[]{"", "шт", "кг", "л", "м", "км", "м2", "м3", "компл", "упак", "ед", "дроб"}
+            , new String[]{"", "шт", "кг", "л", "м", "км", "м2", "м3", "компл", "упак", "ед", "дроб", "штука"}
             , true, true)
     , CODE("code", null, true, null) //[ 0 .. 10 ] characters
     , BAR_CODES("barCodes", null, true, true)

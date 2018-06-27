@@ -2,6 +2,7 @@ package validators;
 
 import consts.EnumFields;
 import controllers.Good;
+import controllers.Group;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -9,62 +10,91 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import utils.ThirdFunction;
 import utils.MapperToEnumField;
 
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
-import java.util.function.Consumer;
 
 @Component
 @Scope("prototype")
 public class FileHandler<T extends Workbook> {
     @Autowired
     MapperToEnumField mapperToEnumField;
-    
-    public FileHandler checkValues(Consumer<Cell> func, Cell cell, EnumFields field, List<String> errors) {
-        func.accept(cell);
-        errors.add("Ошибка в строке");
+
+    public FileHandler checkValues(ThirdFunction<Cell, EnumFields, List<String>, Good, Good> func
+            , Cell cell
+            , EnumFields field
+            , List<String> errors
+            , Queue<String> queue
+            , List<Good> goods
+            , Good good) {
+        queue.offer(queue.poll());
+        func.apply(cell, field, errors, good);
         return this;
+    }
+
+    private <T> T groupOrNo(Good apply, List<String> listErrors) {
+        if (apply.getGroup() != null) {
+            if (apply.getGroup()) {
+                for (int i = 0; i < listErrors.size();) {
+                    if(listErrors.get(i++).startsWith(apply.getId() + "")) {
+                        listErrors.remove(--i);
+                    }
+                }
+                Group good = new Group();
+                good.setCode(apply.getCode());
+                good.setGroup(apply.getGroup());
+                good.setParentUuid(apply.getParentUuid());
+                good.setUuid(apply.getUuid());
+                return (T) good;
+            }
+        }
+        return (T) apply;
     }
 
     public List<String> getResult(Workbook workbook) throws UnsupportedEncodingException, NoSuchAlgorithmException {
         boolean match = false;
         List<String> listErrors = new ArrayList<>();
         Sheet sheet = workbook.getSheetAt(0);
-        HashMap<String, ArrayList<String>> map = new HashMap<>();
         Queue<String> sequence = new ArrayDeque<>();
-
 
         Row row = sheet.getRow(0);
         for (EnumFields e : EnumFields.values()) {
             for (Iterator<Cell> it = row.cellIterator(); it.hasNext(); ) {
                 Cell c = it.next();
                 if (e.name.toLowerCase().equals(c.toString().toLowerCase())) {
-                    map.put(c.toString(), new ArrayList<>());
-                    sequence.offer(c.toString());
                     match = true;
                     break;
                 }
             }
-            sheet.removeRow(row);
             if (!match) {
                 listErrors.add("Колонка: " + e.name + " отсутсвует");
             }
             match = false;
         }
-        Integer index = 0;
+        int[] numberColumns = {0};
+        for (Iterator<Cell> it = row.cellIterator(); it.hasNext(); ) {
+            sequence.offer(it.next().toString());
+            numberColumns[0]++;
+        }
+        Integer[] integers = {1};
+        sheet.removeRow(row);
+        System.out.println(sheet.getRow(2).getCell(4, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK ).getAddress());
+        sequence.forEach(System.out::println);
+
+        List<Good> goodList = new ArrayList<>();
         sheet.forEach(r -> {
-            r.forEach(c -> {
-//                checkValues(, c, mapperToEnumField.map.get(sequence.peek()), listErrors);
-            });
+            Good good = new Good(++integers[0]);
+            int i = 0;
+            Cell c = r.getCell (i, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK);
+            for (; i < numberColumns[0];) {
+                checkValues(mapperToEnumField.mapFunc.get(sequence.peek()), c, mapperToEnumField.mapNames.get(sequence.peek()), listErrors, sequence, goodList, good);
+                c = r.getCell(++i, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK);
+            };
+            goodList.add(groupOrNo(good, listErrors));
         });
-        sequence.offer(sequence.poll());
-
-
-        UUID uuid = UUID.randomUUID();
-        Good good = new Good();
-
         return listErrors;
     }
 
