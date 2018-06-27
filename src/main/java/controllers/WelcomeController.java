@@ -103,7 +103,7 @@ public class WelcomeController {
     @RequestMapping(value = "/uploadFile", method = RequestMethod.POST)
 
     public ModelAndView uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("a") String shop) {
-        ModelAndView modelAndView = new ModelAndView("/index");
+        ModelAndView modelAndView = new ModelAndView("index");
         Const con = shop.equals("1") ? Const.STORE_R : Const.STORE_P;
         List<String> list = null;
 
