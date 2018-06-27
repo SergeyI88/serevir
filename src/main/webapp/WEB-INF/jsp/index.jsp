@@ -36,6 +36,12 @@
     <input class="form-field" type="file" name="file" onclick="check()" id="excel"><br />
 
     <input hidden class="form-field" type="submit" value="Загрузить файл" id="send" >
+    <%--<form action="/download">--%>
+      <%--<button type="submit">Загрузить шаблон</button>--%>
+    <%--</form>--%>
+  </form>
+  <form action="/download" class="submit-container" enctype="multipart/form-data">
+    <button type="submit">Загрузить шаблон</button>
   </form>
   </body>
 </html>
