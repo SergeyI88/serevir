@@ -1,6 +1,7 @@
 package controllers;
 
 import consts.Const;
+import db.entity.Shop;
 import org.apache.log4j.Logger;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import service.ClientService;
+import service.ShopService;
 import validators.FileHandler;
 import javax.servlet.http.HttpServletRequest;
 import java.io.*;
@@ -28,12 +30,15 @@ public class MainController {
 
     @Autowired
     private ClientService clientService;
+    @Autowired
+    private ShopService shopService;
 
     @RequestMapping(value = "/")
-    public String open(@RequestParam String uid, @RequestParam String token) {
-        logger.info(uid);
-        logger.info(token);
-        return "index";
+    public ModelAndView open(@RequestParam String uid, @RequestParam String token) {
+        List<Shop> list = shopService.getShops(uid, token);
+        ModelAndView modelAndView = new ModelAndView("index");
+        modelAndView.addObject("shops", list);
+        return modelAndView;
     }
 
     @ResponseBody

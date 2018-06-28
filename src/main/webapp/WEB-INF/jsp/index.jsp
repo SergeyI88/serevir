@@ -1,4 +1,5 @@
-<%@ page import="java.util.List" %><%--
+<%@ page import="java.util.List" %>
+<%@ page import="db.entity.Shop" %><%--
   Created by IntelliJ IDEA.
   User: admin
   Date: 23.06.2018
@@ -13,7 +14,7 @@
     <script type="text/javascript">
         var check = function () {
             var count = 0;
-            var inp = document.getElementsByName('a');
+            var inp = document.getElementsByName('shop');
             for (var i = 0; i < inp.length; i++) {
                 if (inp[i].type == "radio" && inp[i].checked) {
                     count++;
@@ -38,8 +39,8 @@ for (String s: list) { %>
     }
 %>
 <form name="f" method="post" class="form-container" action="uploadFile" enctype="multipart/form-data">
-    Рынок:<input type="radio" value="1" id="1" name="a">
-    Петр:<input type="radio" value="2" id="2" name="a">
+    <%
+        for (Shop s: (List<Shop>)request.getAttribute("shops") ) {%>Магазин<%= s.getName()%> <input type="radio" name="shop"><br><br><%}%>
 
     <input class="form-field" type="file" name="file" onclick="check()" id="excel"><br/>
 
@@ -52,7 +53,7 @@ for (String s: list) { %>
     <button type="submit">Загрузить шаблон</button>
   </form>
   </body>
-    <input hidden class="form-field" type="submit" value="Загрузить файл" id="send">
+    <input hidden class="form-field" type="submit" value="Загрузить файл" id="send2">
 </form>
 </body>
 </html>

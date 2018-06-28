@@ -50,10 +50,10 @@ public class EventInstallOrUninstall {
     private String type;
     @SerializedName("version")
     @Expose
-    private Integer version;
+    private Long version;
     @SerializedName("timestamp")
     @Expose
-    private Integer timestamp;
+    private Long timestamp;
 
     public Data getData() {
         return data;
@@ -79,19 +79,19 @@ public class EventInstallOrUninstall {
         this.type = type;
     }
 
-    public Integer getVersion() {
+    public Long getVersion() {
         return version;
     }
 
-    public void setVersion(Integer version) {
+    public void setVersion(Long version) {
         this.version = version;
     }
 
-    public Integer getTimestamp() {
+    public Long getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(Integer timestamp) {
+    public void setTimestamp(Long timestamp) {
         this.timestamp = timestamp;
     }
 

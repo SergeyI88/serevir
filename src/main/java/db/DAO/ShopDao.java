@@ -10,10 +10,11 @@ public interface ShopDao {
 
     Shop getShopClientByUuid(String uuid);
 
-    boolean createShop(String shop_uuid, long client_id);
+    boolean createShop(String shop_uuid, long client_id, String name);
 
     List<Shop> getAllShopFromClientByIdClient(long id);
 
     List<Shop> getAllShopFromClientByUuidClient(String uuid);
 
+    boolean downLoadShops(String userUuid, List<Shop> list);
 }

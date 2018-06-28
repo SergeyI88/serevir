@@ -6,7 +6,7 @@ public interface ClientDao {
 
     Client getClientById(long id);
 
-    Client getClientClientByUuid(String uuid);
+    Client getClientByUuid(String uuid);
 
     boolean createClient(String token, String company_name, String uuid);
 }

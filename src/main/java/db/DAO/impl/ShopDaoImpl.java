@@ -5,10 +5,7 @@ import db.connection.ConnectionPostgres;
 import db.entity.Shop;
 import org.springframework.stereotype.Repository;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,6 +22,7 @@ public class ShopDaoImpl implements ShopDao {
             shop.setId(set.getLong("id"));
             shop.setUuid(set.getString("shop_uuid"));
             shop.setClientId(set.getLong("client_id"));
+            shop.setName(set.getString("name"));
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -41,6 +39,7 @@ public class ShopDaoImpl implements ShopDao {
             shop.setId(set.getLong("id"));
             shop.setUuid(set.getString("shop_uuid"));
             shop.setClientId(set.getLong("client_id"));
+            shop.setName(set.getString("name"));
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -48,13 +47,14 @@ public class ShopDaoImpl implements ShopDao {
     }
 
     @Override
-    public boolean createShop(String shop_uuid, long client_id) {
+    public boolean createShop(String shop_uuid, long client_id, String name) {
         PreparedStatement statement = null;
         int result = 0;
         try (Connection connection = ConnectionPostgres.getConnection();) {
-            statement = connection.prepareStatement("INSERT INTO shop VALUES(DEFAULT, ?, ?)");
-            statement.setString(2, shop_uuid);
-            statement.setLong(3, client_id);
+            statement = connection.prepareStatement("INSERT INTO shop VALUES(DEFAULT, ?, ?, ?)");
+            statement.setString(1, shop_uuid);
+            statement.setLong(2, client_id);
+            statement.setString(3, name);
             result = statement.executeUpdate();
 
         } catch (SQLException e) {
@@ -71,11 +71,12 @@ public class ShopDaoImpl implements ShopDao {
                     "SELECT * from shop as s inner join client as c on s.client_id = c.client_id where c.client_id = ?");
             statement.setLong(1, id);
             ResultSet set = statement.executeQuery();
-            while (set.isFirst()) {
+            while (set.next()) {
                 Shop shop = new Shop();
                 shop.setId(set.getLong("id"));
                 shop.setClientId(set.getLong("client_id"));
                 shop.setUuid(set.getString("uuid"));
+                shop.setName(set.getString("name"));
                 shopList.add(shop);
             }
         } catch (SQLException e) {
@@ -87,6 +88,40 @@ public class ShopDaoImpl implements ShopDao {
     @Override
     @Deprecated
     public List<Shop> getAllShopFromClientByUuidClient(String uuid) {
-        return null;
+        List<Shop> shopList = new ArrayList<>();
+        try (Connection connection = ConnectionPostgres.getConnection()) {
+            PreparedStatement statement = connection.prepareStatement(
+                    "SELECT * from shop as s inner join client as c on s.client_id = c.client_id where c.uuid = ?");
+            statement.setString(1, uuid);
+            ResultSet set = statement.executeQuery();
+            while (set.next()) {
+                Shop shop = new Shop();
+                shop.setId(set.getLong("id"));
+                shop.setClientId(set.getLong("client_id"));
+                shop.setUuid(set.getString("uuid"));
+                shop.setName(set.getString("name"));
+                shopList.add(shop);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return shopList;
+    }
+
+    @Override
+    public boolean downLoadShops(String userUuid, List<Shop> list) {
+        int[] result = null;
+        try (Connection connection = ConnectionPostgres.getConnection()) {
+            Statement statement = connection.createStatement();
+            for (Shop s : list) {
+                statement.addBatch("INSERT INTO shop VALUES(DEFAULT, " +
+                        "'" + s.getUuid() + "'" + ", (SELECT client_id FROM client WHERE client.uuid = "+ "'" + userUuid + "'" +"), " + "'" + s.getName() + "" + ")");
+            }
+            statement.executeBatch();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return result != null;
     }
 }
