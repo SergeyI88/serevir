@@ -54,8 +54,9 @@ public class FileHandler<T extends Workbook> {
         return (T) apply;
     }
 
-    public List<String> getResult(Workbook workbook) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+    public HashMap<String, List> getResult(Workbook workbook) throws UnsupportedEncodingException, NoSuchAlgorithmException {
         boolean match = false;
+        HashMap map = new HashMap();
         List<String> listErrors = new ArrayList<>();
         Sheet sheet = workbook.getSheetAt(0);
         Queue<String> sequence = new ArrayDeque<>();
@@ -75,7 +76,8 @@ public class FileHandler<T extends Workbook> {
             match = false;
         }
         if(!listErrors.isEmpty()) {
-            return listErrors;
+            map.put("errors", listErrors);
+            return map;
         }
         int[] numberColumns = {0};
         for (Iterator<Cell> it = row.cellIterator(); it.hasNext(); ) {
@@ -98,7 +100,9 @@ public class FileHandler<T extends Workbook> {
             };
             goodList.add(groupOrNo(good, listErrors));
         });
-        return listErrors;
+        map.put("errors", listErrors);
+        map.put("goods", goodList);
+        return map;
     }
 
 

@@ -33,10 +33,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Controller
@@ -64,10 +61,11 @@ public class GoodsController {
 
         List<String> list = null;
         try (Workbook workbook = WorkbookFactory.create(convert(file))) {
-            list = fileHandler.getResult(workbook);
-            modelAndView.addObject("list", list.isEmpty() ? new ArrayList(Arrays.asList("Все товары загружены")) : list);
+            Map<String, List> map = fileHandler.getResult(workbook);
+            list = map.get("errors");
             SendGoods sendGoods = new SendGoods();
-//            sendGoods.send(list, shopService.getShop(storeUuid));
+            sendGoods.send(map.get("goods"), storeUuid);
+            modelAndView.addObject("list", list.isEmpty() ? new ArrayList(Arrays.asList("Все товары загружены")) : list);
         } catch (InvalidFormatException e) {
             e.printStackTrace();
         } catch (IOException e) {
