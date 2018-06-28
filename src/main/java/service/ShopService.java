@@ -27,7 +27,6 @@ public class ShopService {
     public List<Shop> getShops(String userUuid, String token) {
         List<Shop> list = shopDao.getAllShopFromClientByUuidClient(userUuid);
         if (list.isEmpty()) {
-            System.out.println(token);
             List<ShopHttp> list1 = null;
             Retrofit retrofit = new Retrofit.Builder()
                     .baseUrl("https://umorili.herokuapp.com") //Базовая часть адреса
