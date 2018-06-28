@@ -2,7 +2,7 @@ package utils;
 
 import com.fasterxml.uuid.Generators;
 import consts.EnumFields;
-import controllers.Good;
+import http.entity.Good;
 import org.apache.poi.ss.usermodel.Cell;
 import org.springframework.stereotype.Component;
 

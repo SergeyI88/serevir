@@ -1,4 +1,4 @@
-package controllers;
+package http;
 
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;

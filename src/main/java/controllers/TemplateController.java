@@ -11,7 +11,7 @@ import java.io.*;
 import java.net.URL;
 
 @Controller
-public class workWithFiles {
+public class TemplateController {
 
     @Autowired
     ServletContext servlerContext;

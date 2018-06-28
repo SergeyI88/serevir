@@ -1,6 +1,8 @@
-package controllers;
+package http;
 
 import java.util.List;
+
+import http.entity.Good;
 import retrofit2.Call;
 import retrofit2.http.*;
 

@@ -1,6 +1,4 @@
-package controllers;
-
-import java.util.List;
+package http.entity;
 
 public class Group extends Good {
 

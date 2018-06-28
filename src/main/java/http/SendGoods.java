@@ -1,9 +1,8 @@
-package controllers;
+package http;
 
 import com.google.gson.Gson;
 import consts.Const;
-import controllers.Good;
-import controllers.GoodsPost;
+import http.entity.Good;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import retrofit2.GsonConverterFactory;
