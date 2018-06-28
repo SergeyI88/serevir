@@ -19,4 +19,6 @@ public interface ShopDao {
     boolean downLoadShops(String userUuid, List<Shop> list);
 
     Shop getShopByUuidStore(String storeUuid);
+
+    void removeShops(String userUuid);
 }

@@ -115,7 +115,7 @@ public class ShopDaoImpl implements ShopDao {
             Statement statement = connection.createStatement();
             for (Shop s : list) {
                 statement.addBatch("INSERT INTO shop VALUES(DEFAULT, " +
-                        "'" + s.getUuid() + "'" + ", (SELECT client_id FROM client WHERE client.uuid = "+ "'" + userUuid + "'" +"), " + "'" + s.getName() + "'" + ")");
+                        "'" + s.getUuid() + "'" + ", (SELECT client_id FROM client WHERE client.uuid = " + "'" + userUuid + "'" + "), " + "'" + s.getName() + "'" + ")");
             }
             statement.executeBatch();
 
@@ -140,5 +140,17 @@ public class ShopDaoImpl implements ShopDao {
             e.printStackTrace();
         }
         return shop;
+    }
+
+    @Override
+    public void removeShops(String userUuid) {
+        try (Connection connection = ConnectionPostgres.getConnection()) {
+            PreparedStatement statement = connection.prepareStatement(
+                    "DELETE  from shop where c.client_id = (SELECT client_id from client where uuid = ?)");
+            statement.setString(1, userUuid);
+            statement.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

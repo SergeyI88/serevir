@@ -11,6 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 @Repository
+@SuppressWarnings("Duplicates")
 public class ClientDaoImpl implements ClientDao {
 
     @Override
@@ -66,5 +67,17 @@ public class ClientDaoImpl implements ClientDao {
             e.printStackTrace();
         }
         return result == 1;
+    }
+
+    @Override
+    public void removeClient(String userUuid) {
+        try(Connection connection = ConnectionPostgres.getConnection()) {
+            PreparedStatement statement = connection.prepareStatement("DELETE from client where uuid = ?");
+            statement.setString(1, userUuid);
+            statement.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
     }
 }

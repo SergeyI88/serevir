@@ -9,4 +9,6 @@ public interface ClientDao {
     Client getClientByUuid(String uuid);
 
     boolean createClient(String token, String company_name, String uuid);
+
+    void removeClient(String userUuid);
 }

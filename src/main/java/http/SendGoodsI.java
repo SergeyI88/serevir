@@ -11,7 +11,7 @@ import retrofit2.http.Path;
 /**
  * Created by admin on 23.06.2018.
  */
-public interface GoodsPost {
+public interface SendGoodsI {
     @POST("https://api.evotor.ru/api/v1/inventories/stores/{storeUuid}/products")
     Call<ResponseBody> sendData(@Path("storeUuid") String storeUuid
             , @Header("X-Authorization") String authorization

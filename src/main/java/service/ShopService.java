@@ -48,4 +48,8 @@ public class ShopService {
         }
         return list;
     }
+
+    public Shop getShop(String storeUuid) {
+        return shopDao.getShopByUuidStore(storeUuid);
+    }
 }
