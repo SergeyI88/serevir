@@ -34,6 +34,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -64,7 +65,7 @@ public class GoodsController {
         List<String> list = null;
         try (Workbook workbook = WorkbookFactory.create(convert(file))) {
             list = fileHandler.getResult(workbook);
-            modelAndView.addObject("list", list);
+            modelAndView.addObject("list", list.isEmpty() ? new ArrayList(Arrays.asList("Все товары загружены")) : list);
             SendGoods sendGoods = new SendGoods();
 //            sendGoods.send(list, shopService.getShop(storeUuid));
         } catch (InvalidFormatException e) {
