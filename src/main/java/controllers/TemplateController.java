@@ -34,5 +34,6 @@ public class TemplateController {
         }
         outStream.flush();
         inStream.close();
+        outStream.close();
     }
 }
