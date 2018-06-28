@@ -27,7 +27,7 @@ public class CreateXlsxFormEvotor {
 
         Row headerRow = sheet.createRow(0);
         String[] columns = {"uuid", "code", "barCodes", "alcoCodes", "name", "price", "quantity", "costPrice", "measureName",
-                "tax", "allowToSell", "description", "articleNumber", "parentUuid",
+                "tax", "allowToSell", "description", "articleNumber", "parentCode",
                 "group", "type", "alcoholByVolume", "alcoholProductKindCode", "tareVolume"};
         for(int i = 0; i < columns.length; i++) {
             Cell cell = headerRow.createCell(i);
@@ -46,7 +46,7 @@ public class CreateXlsxFormEvotor {
                     String str = (String)obj;
                     barCodes.append(str);
                 }
-                row.createCell(3).setCellValue(barCodes.toString());
+                row.createCell(2).setCellValue(barCodes.toString());
             }
             StringBuilder AlcoCodes = new StringBuilder();
             if (good.getAlcoCodes() != null) {
@@ -54,23 +54,23 @@ public class CreateXlsxFormEvotor {
                     String str = (String)obj;
                     AlcoCodes.append(str);
                 }
-                row.createCell(4).setCellValue(AlcoCodes.toString());
+                row.createCell(3).setCellValue(AlcoCodes.toString());
             }
-            row.createCell(5).setCellValue(good.getName() != null ? good.getName() : "");
-            row.createCell(6).setCellValue(good.getPrice() != null ? good.getPrice().toString() : "");
-            row.createCell(7).setCellValue(good.getQuantity() != null ? good.getQuantity().toString() : "");
-            row.createCell(8).setCellValue(good.getCostPrice() != null ? good.getCostPrice().toString() : "");
-            row.createCell(9).setCellValue(good.getMeasureName() != null ? good.getMeasureName() : "");
-            row.createCell(10).setCellValue(good.getTax() != null ? good.getTax() : "");
-            row.createCell(11).setCellValue(good.getAllowToSell() != null ? good.getAllowToSell() ? "1" : "0" : "");
-            row.createCell(12).setCellValue(good.getDescription() != null ? good.getDescription() : "");
-            row.createCell(13).setCellValue(good.getArticleNumber() != null ? good.getArticleNumber() : "");
-            row.createCell(14).setCellValue(good.getParentUuid() != null ? good.getParentUuid() : "");
-            row.createCell(15).setCellValue(good.getGroup() != null ? good.getGroup() ? "1" : "0" : "");
-            row.createCell(16).setCellValue(good.getType() != null ? good.getType() : "");
-            row.createCell(17).setCellValue(good.getAlcoholByVolume() != null ? good.getAlcoholByVolume().toString() : "");
-            row.createCell(18).setCellValue(good.getAlcoholProductKindCode() != null ? good.getAlcoholProductKindCode().toString() :"");
-            row.createCell(19).setCellValue(good.getTareVolume() != null ? good.getTareVolume().toString() : "");
+            row.createCell(4).setCellValue(good.getName() != null ? good.getName() : "");
+            row.createCell(5).setCellValue(good.getPrice() != null ? good.getPrice().toString() : "");
+            row.createCell(6).setCellValue(good.getQuantity() != null ? good.getQuantity().toString() : "");
+            row.createCell(7).setCellValue(good.getCostPrice() != null ? good.getCostPrice().toString() : "");
+            row.createCell(8).setCellValue(good.getMeasureName() != null ? good.getMeasureName() : "");
+            row.createCell(9).setCellValue(good.getTax() != null ? good.getTax() : "");
+            row.createCell(10).setCellValue(good.getAllowToSell() != null ? good.getAllowToSell() ? "1" : "0" : "");
+            row.createCell(11).setCellValue(good.getDescription() != null ? good.getDescription() : "");
+            row.createCell(12).setCellValue(good.getArticleNumber() != null ? good.getArticleNumber() : "");
+            row.createCell(13).setCellValue(good.getParentUuid() != null ? good.getParentUuid() : "");
+            row.createCell(14).setCellValue(good.getGroup() != null ? good.getGroup() ? "1" : "0" : "");
+            row.createCell(15).setCellValue(good.getType() != null ? good.getType() : "");
+            row.createCell(16).setCellValue(good.getAlcoholByVolume() != null ? good.getAlcoholByVolume().toString() : "");
+            row.createCell(17).setCellValue(good.getAlcoholProductKindCode() != null ? good.getAlcoholProductKindCode().toString() :"");
+            row.createCell(18).setCellValue(good.getTareVolume() != null ? good.getTareVolume().toString() : "");
         }
         for(int i = 0; i < columns.length; i++) {
             sheet.autoSizeColumn(i);
