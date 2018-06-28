@@ -30,17 +30,22 @@
     </script>
 </head>
 <body class="container">
-<% if (request.getAttribute("errors") != null) {
-    List<String> list = (List<String>) request.getAttribute("errors");
+<% if (request.getAttribute("list") != null) {
+    List<String> list = (List<String>) request.getAttribute("list");
 for (String s: list) { %>
-Строка:<%=s%><br>
+<%=s%><br>
 <%
     }
     }
 %>
 <form name="f" method="post" class="form-container" action="uploadFile" enctype="multipart/form-data">
     <%
-        for (Shop s: (List<Shop>)session.getAttribute("shops") ) {%>Магазин: <%=s.getName()%> <input type="radio" name="shop" value="<%=s.getUuid()%>"><br><br><%}%>
+        for (Shop s: (List<Shop>)request.getAttribute("shops") ) {%>
+            <form action="/downloadGoods" class="submit-container" enctype="multipart/form-data">
+    <button type="submit" name="storeUuid" value="<%=s.getUuid()%>">Загрузить товары</button>
+  </form>
+    Магазин<%= s.getName()%> <input type="radio" name="shop" value="<%=s.getUuid()%>"><br><br><%
+    }%>
 
     <input class="form-field" type="file" name="file" onclick="check()" id="excel"><br/>
 
