@@ -42,7 +42,9 @@ public class ShopService {
                   return shop;
                 }).collect(Collectors.toList());
                 clientService.createClient(userUuid, token, "");
-                shopDao.downLoadShops(userUuid, list);
+                if (!shopDao.getAllShopFromClientByUuidClient(userUuid).containsAll(list)) {
+                    shopDao.downLoadShops(userUuid, list);
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
