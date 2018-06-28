@@ -21,6 +21,7 @@ public class ControllerEvents {
     public String installedOrDeleted(@RequestBody String body) {
         Gson gson = new Gson();
         EventInstallOrUninstall event = gson.fromJson(body, EventInstallOrUninstall.class);
+//        if(event.getType().equals())
         return "index";
     }
 }

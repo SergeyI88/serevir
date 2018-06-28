@@ -40,7 +40,7 @@ for (String s: list) { %>
 %>
 <form name="f" method="post" class="form-container" action="uploadFile" enctype="multipart/form-data">
     <%
-        for (Shop s: (List<Shop>)request.getAttribute("shops") ) {%>Магазин<%= s.getName()%> <input type="radio" name="shop"><br><br><%}%>
+        for (Shop s: (List<Shop>)request.getAttribute("shops") ) {%>Магазин<%= s.getName()%> <input type="radio" name="shop" value="<%=s.getUuid()%>"><br><br><%}%>
 
     <input class="form-field" type="file" name="file" onclick="check()" id="excel"><br/>
 

@@ -1,6 +1,7 @@
 package controllers;
 
 import consts.Const;
+import http.SendGoods;
 import org.apache.log4j.Logger;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+import service.ShopService;
 import validators.FileHandler;
 
 import java.io.File;
@@ -25,6 +27,8 @@ public class GoodsController {
     private final FileHandler fileHandler;
 
     final static Logger logger = Logger.getLogger(GoodsController.class);
+    @Autowired
+    ShopService shopService;
 
     @Autowired
     public GoodsController(FileHandler fileHandler) {
@@ -32,15 +36,15 @@ public class GoodsController {
     }
 
     @RequestMapping(value = "/uploadFile", method = RequestMethod.POST)
-    public ModelAndView uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("a") String shop) {
+    public ModelAndView uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("shop") String storeUuid) {
         ModelAndView modelAndView = new ModelAndView("index");
-        Const con = shop.equals("1") ? Const.STORE_R : Const.STORE_P;
+
         List<String> list = null;
         try (Workbook workbook = WorkbookFactory.create(convert(file))) {
             list = fileHandler.getResult(workbook);
             modelAndView.addObject("list", list);
-//            SendGoods sendGoods = new SendGoods();
-//            sendGoods.send(list, con);
+            SendGoods sendGoods = new SendGoods();
+//            sendGoods.send(list, shopService.getShop(storeUuid));
         } catch (InvalidFormatException e) {
             e.printStackTrace();
         } catch (IOException e) {

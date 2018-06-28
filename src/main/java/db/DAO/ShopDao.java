@@ -17,4 +17,6 @@ public interface ShopDao {
     List<Shop> getAllShopFromClientByUuidClient(String uuid);
 
     boolean downLoadShops(String userUuid, List<Shop> list);
+
+    Shop getShopByUuidStore(String storeUuid);
 }
