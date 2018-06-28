@@ -24,6 +24,7 @@ import java.util.*;
 
 
 @Controller
+@SessionAttributes(value = {"shops", "token"})
 public class MainController {
 
     final static Logger logger = Logger.getLogger(MainController.class);
@@ -34,10 +35,12 @@ public class MainController {
     private ShopService shopService;
 
     @RequestMapping(value = "/")
-    public ModelAndView open(@RequestParam String uid, @RequestParam String token) {
+
+    public ModelAndView open(HttpServletRequest request, @RequestParam String uid, @RequestParam String token) {
         List<Shop> list = shopService.getShops(uid, token);
         ModelAndView modelAndView = new ModelAndView("index");
-        modelAndView.addObject("shops", list);
+        request.getSession().setAttribute("shops", list);
+        request.getSession().setAttribute("token", token);
         return modelAndView;
     }
 

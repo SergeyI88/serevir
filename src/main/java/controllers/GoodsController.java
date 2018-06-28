@@ -20,6 +20,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Controller
@@ -42,7 +44,8 @@ public class GoodsController {
         List<String> list = null;
         try (Workbook workbook = WorkbookFactory.create(convert(file))) {
             list = fileHandler.getResult(workbook);
-            modelAndView.addObject("list", list);
+
+            modelAndView.addObject("errors", list.isEmpty() ? new ArrayList(Arrays.asList("Товары загружены")): list);
             SendGoods sendGoods = new SendGoods();
 //            sendGoods.send(list, shopService.getShop(storeUuid));
         } catch (InvalidFormatException e) {
