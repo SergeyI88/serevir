@@ -40,10 +40,8 @@ for (String s: list) { %>
 %>
 <form name="f" method="post" class="form-container" action="uploadFile" enctype="multipart/form-data">
     <%
-        for (Shop s: (List<Shop>)request.getAttribute("shops") ) {%>
-            <form action="/downloadGoods" class="submit-container" enctype="multipart/form-data">
-    <button type="submit" name="storeUuid" value="<%=s.getUuid()%>">Загрузить товары</button>
-  </form>
+        for (Shop s: (List<Shop>)session.getAttribute("shops") ) {%>
+
     Магазин<%= s.getName()%> <input type="radio" name="shop" value="<%=s.getUuid()%>"><br><br><%
     }%>
 
@@ -54,6 +52,9 @@ for (String s: list) { %>
       <%--<button type="submit">Загрузить шаблон</button>--%>
     <%--</form>--%>
   </form>
+<form action="/downloadGoods" class="submit-container" enctype="multipart/form-data">
+    <button type="submit" name="storeUuid" value="20180620-B2F2-40AA-806C-5013E03BA9B8">Загрузить товары</button>
+</form>
   <form action="/download" class="submit-container" enctype="multipart/form-data">
     <button type="submit">Загрузить шаблон</button>
   </form>

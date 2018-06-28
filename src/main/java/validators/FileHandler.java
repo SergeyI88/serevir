@@ -74,6 +74,9 @@ public class FileHandler<T extends Workbook> {
             }
             match = false;
         }
+        if(!listErrors.isEmpty()) {
+            return listErrors;
+        }
         int[] numberColumns = {0};
         for (Iterator<Cell> it = row.cellIterator(); it.hasNext(); ) {
             sequence.offer(it.next().toString());

@@ -87,7 +87,8 @@ public class GoodsController {
                 .baseUrl("https://umorili.herokuapp.com") //Базовая часть адреса
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
-        String token = (String) request.getAttribute("token");
+        String token = (String) request.getSession().getAttribute("token");
+        System.out.println(token);
         List<Good> goods = retrofit.create(GetGoods.class).getData(storeUuid, token).execute().body();
 //        List<String> listForFile = goods.stream().map(g -> g.toString()).collect(Collectors.toList());
         Shop shop = shopDao.getShopByUuidStore(storeUuid);

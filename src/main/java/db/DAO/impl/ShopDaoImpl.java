@@ -132,10 +132,12 @@ public class ShopDaoImpl implements ShopDao {
             PreparedStatement statement = connection.prepareStatement("SELECT * from shop where shop_uuid = ?");
             statement.setString(1, storeUuid);
             ResultSet set = statement.executeQuery();
-            shop.setId(set.getLong("id"));
-            shop.setUuid(set.getString("shop_uuid"));
-            shop.setClientId(set.getLong("client_id"));
-            shop.setName(set.getString("name"));
+            if(set.next()) {
+                shop.setId(set.getLong("id"));
+                shop.setUuid(set.getString("shop_uuid"));
+                shop.setClientId(set.getLong("client_id"));
+                shop.setName(set.getString("name"));
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
