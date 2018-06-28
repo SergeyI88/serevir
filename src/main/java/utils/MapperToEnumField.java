@@ -70,22 +70,14 @@ public class MapperToEnumField {
         });
 
         mapFunc.put("barCodes", (cell, field, list, good) -> {
-            if (field.isRequired) {
-                if (!cell.toString().trim().isEmpty()) {
-                    good.setBarCodes(new ArrayList<>(Arrays.asList(cell.toString().split(" "))));
-                } else {
-                    list.add(good.getId() + " " + cell.toString() + " обязательно к заполнению " + field.name);
-                }
+            if (!cell.toString().trim().isEmpty()) {
+                good.setBarCodes(new ArrayList<>(Arrays.asList(cell.toString().split(" "))));
             }
             return good;
         });
         mapFunc.put("code", (cell, field, list, good) -> {
-            if (field.isRequired) {
-                if (!cell.toString().trim().isEmpty()) {
-                    good.setCode(cell.toString());
-                } else {
-                    list.add("Строка " + good.getId() + " " + cell.toString() + " обязателен к заполнению [0 ... 10] " + field.name);
-                }
+            if (!cell.toString().trim().isEmpty()) {
+                good.setCode(cell.toString());
             }
             return good;
         });
@@ -281,7 +273,7 @@ public class MapperToEnumField {
 
         mapFunc.put("alcoCodes", (cell, field, list, good) -> {
             if (!cell.toString().trim().isEmpty()) {
-               good.setAlcoCodes(Arrays.asList(cell.toString().split(" ")));
+                good.setAlcoCodes(Arrays.asList(cell.toString().split(" ")));
             }
             return good;
         });

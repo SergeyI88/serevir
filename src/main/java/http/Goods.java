@@ -27,9 +27,9 @@ public interface Goods {
         Goods goods = retrofit.create(Goods.class);
         try {
             Response response = goods.getData("20180620-B2F2-40AA-806C-5013E03BA9B8"
-                    , "2fabfbb4-5163-477a-b903-b0f389569a87").execute();
+                    , "f7bbb6d8-60a7-475a-9c8e-2c40797820dd").execute();
             List<Good> list = (List<Good>) response.body();
-            System.out.println(list);
+            list.forEach(System.out::println);
         } catch (IOException e) {
             e.printStackTrace();
         }
