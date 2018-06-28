@@ -19,10 +19,10 @@ public class SendGoods {
                 .build();
         Gson gson = new Gson();
         String body = gson.toJson(list);
-        GoodsPost goodsPost = retrofit.create(GoodsPost.class);
+        SendGoodsI sendGoodsI = retrofit.create(SendGoodsI.class);
         RequestBody requestBody =
                 RequestBody.create(MediaType.parse("text/plain"), body);
-        goodsPost.sendData(con.name
+        sendGoodsI.sendData(con.name
                 , "2fabfbb4-5163-477a-b903-b0f389569a87"
                 , "application/json"
                 , requestBody).execute();

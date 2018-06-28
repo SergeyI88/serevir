@@ -17,11 +17,13 @@ public class ControllerEvents {
     @Autowired
     private ClientService clientService;
 
-    @RequestMapping(value = "/", method = RequestMethod.POST)
+    @RequestMapping(value = "/events/subscription", method = RequestMethod.POST)
     public String installedOrDeleted(@RequestBody String body) {
         Gson gson = new Gson();
         EventInstallOrUninstall event = gson.fromJson(body, EventInstallOrUninstall.class);
-//        if(event.getType().equals())
+        if(event.getType().equals("ApplicationUninstalled")) {
+            clientService.removeClient(event.getData().getUserId());
+        }
         return "index";
     }
 }

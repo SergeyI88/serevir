@@ -20,4 +20,8 @@ public class ClientService {
        return false;
     }
 
+    public void removeClient(String userUuid) {
+        shopDao.removeShops(userUuid);
+        clientDao.removeClient(userUuid);
+    }
 }
