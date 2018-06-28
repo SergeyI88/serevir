@@ -26,7 +26,7 @@ public class ShopService {
 
     public List<Shop> getShops(String userUuid, String token) {
         List<Shop> list = shopDao.getAllShopFromClientByUuidClient(userUuid);
-        if(list.isEmpty()) {
+        if (list.isEmpty()) {
             System.out.println(token);
             List<ShopHttp> list1 = null;
             Retrofit retrofit = new Retrofit.Builder()
@@ -36,15 +36,13 @@ public class ShopService {
             try {
                 list1 = retrofit.create(Shops.class).getData(token).execute().body();
                 list = list1.stream().map(s -> {
-                  Shop shop = new Shop();
-                  shop.setUuid(s.getUuid());
-                  shop.setName(s.getName());
-                  return shop;
+                    Shop shop = new Shop();
+                    shop.setUuid(s.getUuid());
+                    shop.setName(s.getName());
+                    return shop;
                 }).collect(Collectors.toList());
                 clientService.createClient(userUuid, token, "");
-                if (!shopDao.getAllShopFromClientByUuidClient(userUuid).containsAll(list)) {
-                    shopDao.downLoadShops(userUuid, list);
-                }
+                shopDao.downLoadShops(userUuid, list);
             } catch (IOException e) {
                 e.printStackTrace();
             }
