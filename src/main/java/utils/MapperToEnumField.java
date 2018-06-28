@@ -132,7 +132,7 @@ public class MapperToEnumField {
         mapFunc.put("group", (cell, field, list, good) -> {
             if (field.isRequired) {
                 if (!cell.toString().trim().isEmpty()) {
-                    if (cell.toString().equals("1.0") || cell.toString().equals("0.0")) {
+                    if (cell.toString().equals("1.0") || cell.toString().equals("0.0") || cell.toString().equals("1") || cell.toString().equals("0")) {
                         good.setGroup(cell.toString().equals("1.0"));
                     } else {
                         list.add(cell.toString() + " group должна быть 0 если не является и 1 если является группой" + field.name);
@@ -244,7 +244,7 @@ public class MapperToEnumField {
         mapFunc.put("allowToSell", (cell, field, list, good) -> {
             if (field.isRequired) {
                 if (!cell.toString().trim().isEmpty()) {
-                    if (cell.toString().equals("1.0") || cell.toString().equals("0.0")) {
+                    if (cell.toString().equals("1.0") || cell.toString().equals("0.0") || cell.toString().equals("1") || cell.toString().equals("0")) {
                         good.setAllowToSell(cell.toString().equals("1"));
                     } else {
                         list.add(good.getId() + " " + cell.toString() + " allowToSell должна быть 0 если товар нельзя добавлять в чек и 1 если можно" + field.name);
