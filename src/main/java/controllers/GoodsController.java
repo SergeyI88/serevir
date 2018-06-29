@@ -65,8 +65,8 @@ public class GoodsController {
             System.out.println();
             System.out.println(storeUuid);
             System.out.println();
-            sendGoods.send(map.get("goods"), storeUuid, (String) request.getSession().getAttribute("token"));
-            modelAndView.addObject("list", list.isEmpty() ? new ArrayList(Arrays.asList("Все товары загружены")) : list);
+            int result = sendGoods.send(map.get("goods"), storeUuid, (String) request.getSession().getAttribute("token"));
+            modelAndView.addObject("list", !list.isEmpty() ? list : result == 200 ? new ArrayList(Arrays.asList("Все товары загружены")) : new ArrayList(Arrays.asList("Сервер ответил отказом, попробуйте позже")));
         } catch (InvalidFormatException e) {
             e.printStackTrace();
         } catch (IOException e) {

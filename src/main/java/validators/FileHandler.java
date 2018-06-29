@@ -45,6 +45,7 @@ public class FileHandler<T extends Workbook> {
                 }
                 Good good = new Good();
                 good.setCode(apply.getCode());
+                good.setName(apply.getName());
                 good.setGroup(apply.getGroup());
                 good.setParentUuid(apply.getParentUuid());
                 good.setUuid(apply.getUuid());
