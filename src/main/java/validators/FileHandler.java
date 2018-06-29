@@ -35,7 +35,7 @@ public class FileHandler<T extends Workbook> {
         return this;
     }
 
-    private <T> T groupOrNo(Good apply, List<String> listErrors) {
+    private Good groupOrNo(Good apply, List<String> listErrors) {
         if (apply.getGroup() != null) {
             if (apply.getGroup()) {
                 for (int i = 0; i < listErrors.size();) {
@@ -49,10 +49,10 @@ public class FileHandler<T extends Workbook> {
                 good.setGroup(apply.getGroup());
                 good.setParentUuid(apply.getParentUuid());
                 good.setUuid(apply.getUuid());
-                return (T) good;
+                return good;
             }
         }
-        return (T) apply;
+        return apply;
     }
 
     public HashMap<String, List> getResult(Workbook workbook) throws UnsupportedEncodingException, NoSuchAlgorithmException {

@@ -13,7 +13,7 @@ import java.util.*;
 
 public class SendGoods {
 
-    public void send(List<Good> list, String con, String token) throws IOException {
+    public int send(List<Good> list, String con, String token) throws IOException {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://umorili.herokuapp.com") //Базовая часть адреса
                 .addConverterFactory(GsonConverterFactory.create())
@@ -21,22 +21,29 @@ public class SendGoods {
         Gson gson = new Gson();
         System.out.println();
         System.out.println();
-        System.out.println(token);
-        System.out.println(con);
+        list.forEach(System.out::println);
         System.out.println();
         System.out.println();
         String body = gson.toJson(list);
         SendGoodsI sendGoodsI = retrofit.create(SendGoodsI.class);
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        System.out.println();
         RequestBody requestBody =
                 RequestBody.create(MediaType.parse("text/plain"), body);
+        System.out.println(body);
         Response<ResponseBody> responce = sendGoodsI.sendData(con
                 , token
                 , "application/json"
                 , requestBody).execute();
-        System.out.println(responce.code());
-//        System.out.println(responce.body().toString());
-//        System.out.println(responce.message());
-
+       return responce.code();
     }
 
 }
