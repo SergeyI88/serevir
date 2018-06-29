@@ -43,7 +43,7 @@ public class FileHandler<T extends Workbook> {
                         listErrors.remove(--i);
                     }
                 }
-                Group good = new Group();
+                Good good = new Good();
                 good.setCode(apply.getCode());
                 good.setGroup(apply.getGroup());
                 good.setParentUuid(apply.getParentUuid());
