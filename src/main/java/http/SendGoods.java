@@ -13,7 +13,7 @@ import java.util.*;
 
 public class SendGoods {
 
-    public void send(List<Good> list, String con, String token) throws IOException {
+    public int send(List<Good> list, String con, String token) throws IOException {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://umorili.herokuapp.com") //Базовая часть адреса
                 .addConverterFactory(GsonConverterFactory.create())
@@ -36,6 +36,7 @@ public class SendGoods {
         System.out.println(responce.code());
 //        System.out.println(responce.body().toString());
 //        System.out.println(responce.message());
+        return responce.code();
 
     }
 

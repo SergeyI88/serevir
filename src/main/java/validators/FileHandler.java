@@ -101,10 +101,49 @@ public class FileHandler<T extends Workbook> {
             };
             goodList.add(groupOrNo(good, listErrors));
         });
+        isMatch(goodList, listErrors);
         map.put("errors", listErrors);
         map.put("goods", goodList);
         return map;
     }
 
-
+    private void isMatch(List<Good> goods, List<String> listErrors){
+        Map<String,String> mapUuidOrCodeWithGoodId = new HashMap<>();
+        List<String> matchUuid = new ArrayList<>();
+        List<String> matchCode = new ArrayList<>();
+        Map<String, String> map = new HashMap<>();
+            for (Good good : goods) {
+                map.put(good.getCode(), good.getUuid());
+                String uuid = good.getUuid().trim().toLowerCase();
+                String code = good.getCode().trim().toLowerCase();
+                if (mapUuidOrCodeWithGoodId.containsKey(uuid)) {
+                    matchUuid.add(uuid);
+                    mapUuidOrCodeWithGoodId.put(uuid, mapUuidOrCodeWithGoodId.get(uuid) + " " + String.valueOf(good.getId()));
+                }
+                mapUuidOrCodeWithGoodId.put(uuid, String.valueOf(good.getId()));
+                if (mapUuidOrCodeWithGoodId.containsKey(code)) {
+                    matchCode.add(code);
+                    mapUuidOrCodeWithGoodId.put(code, mapUuidOrCodeWithGoodId.get(code) + " " + String.valueOf(good.getId()));
+                }
+                mapUuidOrCodeWithGoodId.put(uuid, String.valueOf(good.getId()));
+        }
+        if (!matchUuid.isEmpty()) {
+            for (String str : matchUuid) {
+                String errorString = "В строках " + mapUuidOrCodeWithGoodId.get(str) + "одинаковый Uuid";
+                listErrors.add(errorString);
+            }
+        }
+        if (!matchCode.isEmpty()) {
+            for (String str : matchCode) {
+                String errorString = "В строках " + mapUuidOrCodeWithGoodId.get(str) + "одинаковый Code";
+                listErrors.add(errorString);
+            }
+        }
+        for (Good good : goods) {
+            String parrentCode = good.getParentUuid();
+            if (parrentCode != null){
+                good.setParentUuid(map.get(parrentCode));
+            }
+        }
+    }
 }
