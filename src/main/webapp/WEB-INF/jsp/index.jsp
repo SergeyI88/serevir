@@ -12,21 +12,36 @@
     <title>Обмен</title>
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/css/login.css"/>
     <script type="text/javascript">
-        var check = function () {
+    var check1 = function () {
+        var count = 0;
+        var inp = document.getElementsByName('shop');
+        for (var i = 0; i < inp.length; i++) {
+            if (inp[i].type == "radio" && inp[i].checked) {
+                count++;
+                if (document.getElementById('excel').value != null) {
+                    document.getElementById('send').removeAttribute('hidden')
+                } else {
+                    alert("Загрузите файл")
+                }
+            }
+        }
+        if (count === 0 || count > 1) {
+            alert("Нужно выбрать один магазин для загрузки")
+        }
+    };
+</script>
+    <script type="text/javascript">
+        var check2 = function () {
             var count = 0;
-            var inp = document.getElementsByName('shop');
+            var inp = document.getElementsByName('storeUuid');
             for (var i = 0; i < inp.length; i++) {
                 if (inp[i].type == "radio" && inp[i].checked) {
                     count++;
-                    if (document.getElementById('excel').value != null) {
-                        document.getElementById('send').removeAttribute('hidden')
-                    } else {
-                        alert("Загрузите файл")
-                    }
+                    document.getElementById('get').removeAttribute('hidden')
                 }
             }
             if (count === 0 || count > 1) {
-                alert("Нужно выбрать один магазин")
+                alert("Нужно выбрать один магазин для выгрузки")
             }
         };
     </script>
@@ -44,15 +59,35 @@ for (String s: list) { %>
     <%
         for (Shop s: (List<Shop>)session.getAttribute("shops") ) {%>
 
-    Магазин<%= s.getName()%> <input type="radio" name="shop" value="<%=s.getUuid()%>"><br><br><%
+    Магазин: <%= s.getName()%> <input type="radio" name="shop" value="<%=s.getUuid()%>"><br><br><%
     }%>
 
-    <input class="form-field" type="file" name="file" onclick="check()" id="excel"><br/>
+    <input class="form-field" type="file" name="file" onclick="check1()" id="excel"><br/>
 
     <input hidden class="form-field" type="submit" value="Загрузить файл" id="send" >
   </form>
-<form action="/downloadGoods" class="submit-container" enctype="multipart/form-data">
-    <button type="submit" name="storeUuid" value="20180620-B2F2-40AA-806C-5013E03BA9B8">Загрузить товары</button>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<form name="f" method="get" class="form-container" action="downloadGoods" enctype="multipart/form-data">
+    <%
+        for (Shop s: (List<Shop>)session.getAttribute("shops") ) {%>
+
+    Магазин: <%= s.getName()%> <input type="radio" onclick="check2()" name="storeUuid" value="<%=s.getUuid()%>"><br><br><%
+    }%>
+
+    <br/>
+
+    <input hidden class="form-field" type="submit" value="Выгрузить остатки" id="get" >
 </form>
   <form action="/download" class="submit-container" enctype="multipart/form-data">
     <button type="submit">Загрузить шаблон</button>

@@ -51,10 +51,21 @@ public class Shop {
     }
 
     @Override
+    public String toString() {
+        return "Shop{" +
+                "id=" + id +
+                ", uuid='" + uuid + '\'' +
+                ", clientId=" + clientId +
+                ", name='" + name + '\'' +
+                '}';
+    }
+
+    @Override
     public int hashCode() {
         int result = uuid != null ? uuid.hashCode() : 0;
         result = 31 * result + (int) (clientId ^ (clientId >>> 32));
         result = 31 * result + (name != null ? name.hashCode() : 0);
         return result;
+
     }
 }

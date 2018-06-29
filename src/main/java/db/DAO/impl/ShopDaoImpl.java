@@ -74,7 +74,7 @@ public class ShopDaoImpl implements ShopDao {
                 Shop shop = new Shop();
                 shop.setId(set.getLong("id"));
                 shop.setClientId(set.getLong("client_id"));
-                shop.setUuid(set.getString("uuid"));
+                shop.setUuid(set.getString("shop_uuid"));
                 shop.setName(set.getString("name"));
                 shopList.add(shop);
             }
@@ -97,7 +97,7 @@ public class ShopDaoImpl implements ShopDao {
                 Shop shop = new Shop();
                 shop.setId(set.getLong("id"));
                 shop.setClientId(set.getLong("client_id"));
-                shop.setUuid(set.getString("uuid"));
+                shop.setUuid(set.getString("shop_uuid"));
                 shop.setName(set.getString("name"));
                 shopList.add(shop);
             }

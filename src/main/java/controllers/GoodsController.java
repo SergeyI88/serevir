@@ -52,7 +52,7 @@ public class GoodsController {
     }
 
     @RequestMapping(value = "/uploadFile", method = RequestMethod.POST)
-    public ModelAndView uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("shop") String storeUuid) {
+    public ModelAndView uploadFile(HttpServletRequest request, @RequestParam("file") MultipartFile file, @RequestParam("shop") String storeUuid) {
         ModelAndView modelAndView = new ModelAndView("index");
         if (file.isEmpty()) {
             return new ModelAndView("index");
@@ -62,7 +62,10 @@ public class GoodsController {
             Map<String, List> map = fileHandler.getResult(workbook);
             list = map.get("errors");
             SendGoods sendGoods = new SendGoods();
-            sendGoods.send(map.get("goods"), storeUuid);
+            System.out.println();
+            System.out.println(storeUuid);
+            System.out.println();
+            sendGoods.send(map.get("goods"), storeUuid, (String) request.getSession().getAttribute("token"));
             modelAndView.addObject("list", list.isEmpty() ? new ArrayList(Arrays.asList("Все товары загружены")) : list);
         } catch (InvalidFormatException e) {
             e.printStackTrace();
@@ -85,7 +88,6 @@ public class GoodsController {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         String token = (String) request.getSession().getAttribute("token");
-        System.out.println(token);
         List<Good> goods = retrofit.create(GetGoods.class).getData(storeUuid, token).execute().body();
         Shop shop = shopDao.getShopByUuidStore(storeUuid);
 

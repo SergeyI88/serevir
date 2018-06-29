@@ -31,6 +31,7 @@ public class MainController {
     public ModelAndView open(HttpServletRequest request, @RequestParam String uid, @RequestParam String token) {
         request.getSession().setAttribute("token", token);
         List<Shop> list = shopService.getShops(uid, (String) request.getSession().getAttribute("token"));
+        System.out.println(list);
         request.getSession().setAttribute("shops", list);
         ModelAndView modelAndView = new ModelAndView("index");
         return modelAndView;

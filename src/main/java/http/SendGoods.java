@@ -4,27 +4,39 @@ import com.google.gson.Gson;
 import http.entity.Good;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 import retrofit2.GsonConverterFactory;
+import retrofit2.Response;
 import retrofit2.Retrofit;
 import java.io.IOException;
 import java.util.*;
 
 public class SendGoods {
 
-    public void send(List<Good> list, String con) throws IOException {
+    public void send(List<Good> list, String con, String token) throws IOException {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://umorili.herokuapp.com") //Базовая часть адреса
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         Gson gson = new Gson();
+        System.out.println();
+        System.out.println();
+        System.out.println(token);
+        System.out.println(con);
+        System.out.println();
+        System.out.println();
         String body = gson.toJson(list);
         SendGoodsI sendGoodsI = retrofit.create(SendGoodsI.class);
         RequestBody requestBody =
                 RequestBody.create(MediaType.parse("text/plain"), body);
-        sendGoodsI.sendData(con
-                , "2fabfbb4-5163-477a-b903-b0f389569a87"
+        Response<ResponseBody> responce = sendGoodsI.sendData(con
+                , token
                 , "application/json"
                 , requestBody).execute();
+        System.out.println(responce.code());
+//        System.out.println(responce.body().toString());
+//        System.out.println(responce.message());
+
     }
 
 }
