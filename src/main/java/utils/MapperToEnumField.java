@@ -215,7 +215,7 @@ public class MapperToEnumField {
             if (field.isRequired) {
                 if (!cell.toString().trim().isEmpty()) {
                     if (Arrays.asList(field.value).contains(cell.toString().trim())) {
-                        good.setMeasureName(cell.toString().trim());
+                        good.setTax(cell.toString().trim());
                     } else {
                         list.add(good.getId() + " " + cell.toString() + " система налогооблажения дожна быть представлена как " + Arrays.asList(field.value) + " если пусто ставится упрощенная система");
                     }
@@ -230,12 +230,12 @@ public class MapperToEnumField {
             if (field.isRequired) {
                 if (!cell.toString().trim().isEmpty()) {
                     if (Arrays.asList(field.value).contains(cell.toString().toLowerCase().trim())) {
-                        good.setMeasureName(cell.toString().trim());
+                        good.setType(cell.toString().trim());
                     } else {
                         list.add(good.getId() + " " + cell.toString() + " дожно быть представлено одно из " + Arrays.asList(field.value) + " если пусто ставится NORMAL");
                     }
                 } else {
-                    good.setTax("NORMAL");
+                    good.setType("NORMAL");
                 }
             }
             return good;
