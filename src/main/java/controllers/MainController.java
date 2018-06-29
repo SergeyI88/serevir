@@ -1,25 +1,17 @@
 package controllers;
 
-import consts.Const;
 import db.entity.Shop;
 import org.apache.log4j.Logger;
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import service.ClientService;
 import service.ShopService;
-import validators.FileHandler;
 import javax.servlet.http.HttpServletRequest;
 import java.io.*;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.security.NoSuchAlgorithmException;
 import java.util.*;
 
 
@@ -37,10 +29,10 @@ public class MainController {
     @RequestMapping(value = "/")
 
     public ModelAndView open(HttpServletRequest request, @RequestParam String uid, @RequestParam String token) {
-        List<Shop> list = shopService.getShops(uid, token);
-        ModelAndView modelAndView = new ModelAndView("index");
-        request.getSession().setAttribute("shops", list);
         request.getSession().setAttribute("token", token);
+        List<Shop> list = shopService.getShops(uid, (String) request.getSession().getAttribute("token"));
+        request.getSession().setAttribute("shops", list);
+        ModelAndView modelAndView = new ModelAndView("index");
         return modelAndView;
     }
 

@@ -1,7 +1,6 @@
 package db.DAO;
 
 import db.entity.Shop;
-
 import java.util.*;
 
 public interface ShopDao {

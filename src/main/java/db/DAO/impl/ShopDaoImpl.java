@@ -4,7 +4,6 @@ import db.DAO.ShopDao;
 import db.connection.ConnectionPostgres;
 import db.entity.Shop;
 import org.springframework.stereotype.Repository;
-
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;

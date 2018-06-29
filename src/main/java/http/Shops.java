@@ -1,11 +1,9 @@
 package http;
 
-import http.entity.Good;
 import http.entity.ShopHttp;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
-import retrofit2.http.Path;
 
 import java.util.List;
 

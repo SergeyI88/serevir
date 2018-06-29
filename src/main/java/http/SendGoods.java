@@ -1,7 +1,6 @@
 package http;
 
 import com.google.gson.Gson;
-import consts.Const;
 import http.entity.Good;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
@@ -22,7 +21,7 @@ public class SendGoods {
         SendGoodsI sendGoodsI = retrofit.create(SendGoodsI.class);
         RequestBody requestBody =
                 RequestBody.create(MediaType.parse("text/plain"), body);
-        sendGoodsI.sendData(con.name
+        sendGoodsI.sendData(con
                 , "2fabfbb4-5163-477a-b903-b0f389569a87"
                 , "application/json"
                 , requestBody).execute();

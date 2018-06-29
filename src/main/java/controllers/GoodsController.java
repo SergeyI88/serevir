@@ -1,6 +1,5 @@
 package controllers;
 
-import consts.Const;
 import db.DAO.impl.ShopDaoImpl;
 import db.entity.Shop;
 import http.GetGoods;
@@ -9,8 +8,6 @@ import http.entity.Good;
 import org.apache.log4j.Logger;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Controller;
@@ -34,7 +31,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Controller
 public class GoodsController {
@@ -58,7 +54,9 @@ public class GoodsController {
     @RequestMapping(value = "/uploadFile", method = RequestMethod.POST)
     public ModelAndView uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("shop") String storeUuid) {
         ModelAndView modelAndView = new ModelAndView("index");
-
+        if (file.isEmpty()) {
+            return new ModelAndView("index");
+        }
         List<String> list = null;
         try (Workbook workbook = WorkbookFactory.create(convert(file))) {
             Map<String, List> map = fileHandler.getResult(workbook);
@@ -89,12 +87,9 @@ public class GoodsController {
         String token = (String) request.getSession().getAttribute("token");
         System.out.println(token);
         List<Good> goods = retrofit.create(GetGoods.class).getData(storeUuid, token).execute().body();
-//        List<String> listForFile = goods.stream().map(g -> g.toString()).collect(Collectors.toList());
         Shop shop = shopDao.getShopByUuidStore(storeUuid);
 
         Workbook workbook = createXlsxFormEvotor.getWorkbook(goods, shop.getName());
-
-
 
         BufferedOutputStream outStream = new BufferedOutputStream(resonse.getOutputStream());
         resonse.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + "products.xlsx");

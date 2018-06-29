@@ -18,8 +18,10 @@
             for (var i = 0; i < inp.length; i++) {
                 if (inp[i].type == "radio" && inp[i].checked) {
                     count++;
-                    if (document.getElementById('excel').valueOf() != null) {
+                    if (document.getElementById('excel').value != null) {
                         document.getElementById('send').removeAttribute('hidden')
+                    } else {
+                        alert("Загрузите файл")
                     }
                 }
             }
@@ -48,9 +50,6 @@ for (String s: list) { %>
     <input class="form-field" type="file" name="file" onclick="check()" id="excel"><br/>
 
     <input hidden class="form-field" type="submit" value="Загрузить файл" id="send" >
-    <%--<form action="/download">--%>
-      <%--<button type="submit">Загрузить шаблон</button>--%>
-    <%--</form>--%>
   </form>
 <form action="/downloadGoods" class="submit-container" enctype="multipart/form-data">
     <button type="submit" name="storeUuid" value="20180620-B2F2-40AA-806C-5013E03BA9B8">Загрузить товары</button>
