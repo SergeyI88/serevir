@@ -20,7 +20,7 @@ import org.springframework.web.servlet.ModelAndView;
 import retrofit2.GsonConverterFactory;
 import retrofit2.Retrofit;
 import service.ShopService;
-import utils.CreateXlsxFormEvotor;
+import utils.CreateXlsxFromEvotor;
 import validators.FileHandler;
 
 import javax.servlet.http.HttpServletRequest;
@@ -44,7 +44,7 @@ public class GoodsController {
     ShopDaoImpl shopDao;
 
     @Autowired
-    CreateXlsxFormEvotor createXlsxFormEvotor;
+    CreateXlsxFromEvotor createXlsxFromEvotor;
 
     @Autowired
     public GoodsController(FileHandler fileHandler) {
@@ -91,7 +91,7 @@ public class GoodsController {
         List<Good> goods = retrofit.create(GetGoods.class).getData(storeUuid, token).execute().body();
         Shop shop = shopDao.getShopByUuidStore(storeUuid);
 
-        Workbook workbook = createXlsxFormEvotor.getWorkbook(goods, shop.getName());
+        Workbook workbook = createXlsxFromEvotor.getWorkbook(goods, shop.getName());
 
         BufferedOutputStream outStream = new BufferedOutputStream(resonse.getOutputStream());
         resonse.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + "products.xlsx");

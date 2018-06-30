@@ -6,10 +6,30 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
+import java.util.*;
 
 @Component
-public class CreateXlsxFormEvotor {
+public class CreateXlsxFromEvotor {
+
+
+
+
+
+    public void sortListGood(List<Good> goods){
+        Map<String, Map<Good, List<Good>>> sortGoods = new HashMap<>();
+        List<Good> linkedList = new LinkedList<>(goods);
+        for (Good good : linkedList) {
+            String parentUuid = good.getParentUuid();
+            if (parentUuid == null || parentUuid.equals("")) {
+                    HashMap<Good, List<Good>> innerMap = new HashMap<>();
+                    sortGoods.put(parentUuid, (Map<Good, List<Good>>) innerMap.put(good, new ArrayList<>()));
+            } else {
+                if (sortGoods.containsKey(parentUuid)) {
+//                    sortGoods.get(parentUuid).set
+                }
+            }
+        }
+    }
 
 
     public Workbook getWorkbook (List<Good> goods, String shopName){
