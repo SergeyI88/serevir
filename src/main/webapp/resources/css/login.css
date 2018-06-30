@@ -5,28 +5,29 @@
 
 .form-container {
     position: absolute;
-    left: 40%;
-    border: 1px solid #f2e3d2;
+    left: 26%;
+    border: 2px solid #f2e3d2;
     background: #b2d982;
-    background: -webkit-gradient(linear, left top, left bottom, from(#402810), to(#b2d982));
-    background: -webkit-linear-gradient(top, #402810, #b2d982);
-    background: -moz-linear-gradient(top, #402810, #b2d982);
-    background: -ms-linear-gradient(top, #402810, #b2d982);
-    background: -o-linear-gradient(top, #402810, #b2d982);
-    background-image: -ms-linear-gradient(top, #402810 0%, #b2d982 100%);
+    /*background: -webkit-gradient(linear, left top, left bottom, from(#402810), to(#b2d982));*/
+    /*background: -webkit-linear-gradient(top, #402810, #b2d982);*/
+    /*background: -moz-linear-gradient(top, #402810, #b2d982);*/
+    /*background: -ms-linear-gradient(top, #402810, #b2d982);*/
+    /*background: -o-linear-gradient(top, #402810, #b2d982);*/
+    /*background-image: -ms-linear-gradient(top, #402810 0%, #b2d982 100%);*/
     -webkit-border-radius: 30px;
     -moz-border-radius: 30px;
     border-radius: 30px;
-    -webkit-box-shadow: rgba(000,000,000,0.9) 0 1px 2px, inset rgba(255,255,255,0.4) 0 0px 0;
-    -moz-box-shadow: rgba(000,000,000,0.9) 0 1px 2px, inset rgba(255,255,255,0.4) 0 0px 0;
-    box-shadow: rgba(000,000,000,0.9) 0 1px 2px, inset rgba(255,255,255,0.4) 0 0px 0;
+    /*-webkit-box-shadow: rgba(000,000,000,0.9) 0 1px 2px, inset rgba(255,255,255,0.4) 0 0px 0;*/
+    /*-moz-box-shadow: rgba(000,000,000,0.9) 0 1px 2px, inset rgba(255,255,255,0.4) 0 0px 0;*/
+    /*box-shadow: rgba(000,000,000,0.9) 0 1px 2px, inset rgba(255,255,255,0.4) 0 0px 0;*/
     font-family: 'Helvetica Neue',Helvetica,sans-serif;
     text-decoration: none;
-    min-width:300px;
+    min-width:600px;
     padding:20px;
-    width:300px;
+    width:600px;
 }
 .form-field {
+    margin-left: 24%;
     border: 1px solid #c9b7a2;
     background: #e4d5c3;
     -webkit-border-radius: 4px;
@@ -52,9 +53,24 @@
     text-align:center;
 }
 .form-title {
+    margin-left: 32%;
     margin-bottom:10px;
-    color: #dee09f;
+    font-size: 20px;
+    color: #210805;
     text-shadow: #ccb9a1 0 1px 0;
+}
+.form-shop {
+    margin-left: 36%;
+    margin-bottom:10px;
+    color: #210805;
+    text-shadow: #ccb9a1 0 1px 0;
+}
+.form-error {
+    margin-bottom:10px;
+    font-size: 11px;
+    margin-left: 32%;
+    color: #cc8079;
+    text-shadow: #210805 0 1px 0;
 }
 .submit-container {
     margin:8px 0;
@@ -110,5 +126,4 @@
 .title {
     text-align: center;
     font-stretch: expanded;
-
 }

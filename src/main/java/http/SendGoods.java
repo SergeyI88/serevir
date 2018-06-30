@@ -5,6 +5,7 @@ import http.entity.Good;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
+import org.apache.log4j.Logger;
 import retrofit2.GsonConverterFactory;
 import retrofit2.Response;
 import retrofit2.Retrofit;
@@ -12,6 +13,7 @@ import java.io.IOException;
 import java.util.*;
 
 public class SendGoods {
+    private static Logger logger = Logger.getLogger(SendGoods.class);
 
     public int send(List<Good> list, String con, String token) throws IOException {
         Retrofit retrofit = new Retrofit.Builder()
@@ -33,11 +35,8 @@ public class SendGoods {
                 , token
                 , "application/json"
                 , requestBody).execute();
-        System.out.println(responce.code());
-//        System.out.println(responce.body().toString());
-//        System.out.println(responce.message());
-        return responce.code();
-
+        logger.info(responce.message());
+       return responce.code();
     }
 
 }

@@ -61,11 +61,11 @@ public class GoodsController {
         try (Workbook workbook = WorkbookFactory.create(convert(file))) {
             Map<String, List> map = fileHandler.getResult(workbook);
             list = map.get("errors");
-            SendGoods sendGoods = new SendGoods();
-            System.out.println();
-            System.out.println(storeUuid);
-            System.out.println();
-            int result = sendGoods.send(map.get("goods"), storeUuid, (String) request.getSession().getAttribute("token"));
+            int result = 0;
+            if (list.isEmpty()) {
+                SendGoods sendGoods = new SendGoods();
+                result = sendGoods.send(map.get("goods"), storeUuid, (String) request.getSession().getAttribute("token"));
+            }
             modelAndView.addObject("list", !list.isEmpty() ? list : result == 200 ? new ArrayList(Arrays.asList("Все товары загружены")) : new ArrayList(Arrays.asList("Сервер ответил отказом, попробуйте позже")));
         } catch (InvalidFormatException e) {
             e.printStackTrace();
@@ -99,7 +99,6 @@ public class GoodsController {
         outStream.close();
         workbook.close();
     }
-
 
 
     public File convert(MultipartFile file) throws IOException {
