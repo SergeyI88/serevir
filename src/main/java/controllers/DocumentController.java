@@ -59,7 +59,7 @@ public class DocumentController {
 //                    LocalDate lcd = LocalDate.parse(d.getOpenDate().substring(0, 10));
 //                    return lcd.equals(LocalDate.now());
 //                });
-        Document document = documents.get(0);
+        Document document = documents.get(documents.size() - 1);
         logger.info(document);
         transactionHandler.getGoods(document.getType(), document.getTransactions(), shop, authorization);
         return "index";
