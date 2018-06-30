@@ -20,6 +20,6 @@ public class GetGoodsImpl {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         GetGoods getGoods = retrofit.create(GetGoods.class);
-        return (List<Good>) getGoods.getData(storeUuid, token);
+        return getGoods.getData(storeUuid, token).execute().body();
     }
 }
