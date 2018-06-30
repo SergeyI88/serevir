@@ -40,6 +40,7 @@ public class DocumentController {
             Document document = new Document();
             document.setType((String) map.get("type"));
             document.setTransactions((List<Document.Transaction>) map.get("transactions"));
+            documents.add(document);
 //            for(Document.Transaction t : (Document.Transaction[]) map.get("transactions")) {
 //                d
 //            }
