@@ -46,9 +46,9 @@ public class CreateXlsxFromEvotor {
         headerCellStyle.setFont(headerFont);
 
         Row headerRow = sheet.createRow(0);
-        String[] columns = {"uuid", "code", "barCodes", "alcoCodes", "name", "price", "quantity", "costPrice", "measureName",
-                "tax", "allowToSell", "description", "articleNumber", "parentCode",
-                "group", "type", "alcoholByVolume", "alcoholProductKindCode", "tareVolume"};
+        String[] columns = {"uuid", "код", "штрих-коды", "алко-коды", "имя", "цена", "количество", "цена закупки", "название меры",
+                "налог", "разрешено к продаже", "описание", "артикул", "код группы",
+                "группа", "тип", "объем алкогольной тары", "код алкоголя", "объем тары"};
         for(int i = 0; i < columns.length; i++) {
             Cell cell = headerRow.createCell(i);
             cell.setCellValue(columns[i]);
@@ -56,6 +56,12 @@ public class CreateXlsxFromEvotor {
         }
 
         int rowNum = 1;
+        if (goods == null) {
+            for(int i = 0; i < columns.length; i++) {
+                sheet.autoSizeColumn(i);
+            }
+            return workbook;
+        }
         for(Good good: goods) {
             Row row = sheet.createRow(rowNum++);
             row.createCell(0).setCellValue(good.getUuid() != null ? good.getUuid() : "");

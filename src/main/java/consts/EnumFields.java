@@ -8,7 +8,7 @@ public enum EnumFields {
     , MEASURE_NAME("название меры"
             , new String[]{"", "шт", "кг", "л", "м", "км", "м2", "м3", "компл", "упак", "ед", "дроб", "штука"}
             , true, true)
-    , CODE("коды", null, true, null) //[ 0 .. 10 ] characters
+    , CODE("код", null, true, null) //[ 0 .. 10 ] characters
     , BAR_CODES("штрих-коды", null, true, true)
     , PRICE("цена", null, true, true) //[ 0 .. 9999999.99 ] double
     , COST_PRICE("цена закупки", null, false, true) //[ 0 .. 9999999.99 ] double
@@ -17,7 +17,7 @@ public enum EnumFields {
     , DESCRIPTION("описание", null, true, true)
     , ARTICLE_NUMBER("артикул", null, false, true) //[ 0 .. 20 ] characters
     , PARENT_UUID("код группы", null, false, false)
-    , ALCOHOL_BY_VOLUME("объем тары алкоголя", null, false, true) //[ 0 .. 99.999 ] double
+    , ALCOHOL_BY_VOLUME("объем алкогольной тары", null, false, true) //[ 0 .. 99.999 ] double
     , ALCOHOL_PRODUCT_KIND_CODE("код алкоголя", null, false, true) //от 1 до 999. int
     , TARE_VOLUME("объем тары", null, false, true)//[ 0 .. 999.999 ] double
     , UUID("uuid", null, true, false)

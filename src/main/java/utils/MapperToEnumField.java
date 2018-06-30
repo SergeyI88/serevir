@@ -16,7 +16,7 @@ public class MapperToEnumField {
 
     @PostConstruct
     public void init() {
-        mapNames.put("объем алькогольной тары", EnumFields.ALCOHOL_BY_VOLUME);
+        mapNames.put("объем алкогольной тары", EnumFields.ALCOHOL_BY_VOLUME);
         mapNames.put("код алкоголя", EnumFields.ALCOHOL_PRODUCT_KIND_CODE);
         mapNames.put("артикул", EnumFields.ARTICLE_NUMBER);
         mapNames.put("штрих-коды", EnumFields.BAR_CODES);
@@ -36,13 +36,13 @@ public class MapperToEnumField {
         mapNames.put("uuid", EnumFields.UUID);
         mapNames.put("алко-коды", EnumFields.ALCO_CODES);
 
-        mapFunc.put("объем тары алкоголя", (cell, field, list, good) -> {
+        mapFunc.put("объем алкогольной тары", (cell, field, list, good) -> {
             if (!cell.toString().trim().isEmpty()) {
                 Double d = null;
                 try {
                     d = Double.valueOf(cell.toString());
                 } catch (NumberFormatException e) {
-                    list.add(good.getId() + " " + cell.toString() + "объем алькогольной тары - должно быть число [ 0 .. 99.999 ] столбец " + field.name);
+                    list.add(good.getId() + " " + cell.toString() + "объем алкогольной тары - должно быть число [ 0 .. 99.999 ] столбец " + field.name);
                 }
                 good.setAlcoholByVolume(d);
             }
@@ -62,20 +62,20 @@ public class MapperToEnumField {
             return good;
         });
 
-        mapFunc.put("articleNumber", (cell, field, list, good) -> {
+        mapFunc.put("артикул", (cell, field, list, good) -> {
             if (!cell.toString().trim().isEmpty()) {
                 good.setArticleNumber(cell.toString());
             }
             return good;
         });
 
-        mapFunc.put("barCodes", (cell, field, list, good) -> {
+        mapFunc.put("штрих-коды", (cell, field, list, good) -> {
             if (!cell.toString().trim().isEmpty()) {
                 good.setBarCodes(new ArrayList<>(Arrays.asList(cell.toString().split(" "))));
             }
             return good;
         });
-        mapFunc.put("code", (cell, field, list, good) -> {
+        mapFunc.put("код", (cell, field, list, good) -> {
             if (!cell.toString().trim().isEmpty()) {
 
                 good.setCode(cell.toString());
@@ -114,7 +114,7 @@ public class MapperToEnumField {
                         list.add(good.getId() + " " + cell.toString() + "цена должно быть число [ 0 .. 9999999.999 ] столбец " + field.name);
                     }
                 } else {
-                    list.add(good.getId() + " " + cell.toString() + "price обязателен к заполнению [ 0 .. 9999999.999 ] столбец " + field.name);
+                    list.add(good.getId() + " " + cell.toString() + "цена обязателен к заполнению [ 0 .. 9999999.999 ] столбец " + field.name);
                 }
             }
             good.setPrice(d);
@@ -134,7 +134,7 @@ public class MapperToEnumField {
             if (field.isRequired) {
                 if (!cell.toString().trim().isEmpty()) {
                     if (cell.toString().equals("1.0") || cell.toString().equals("0.0") || cell.toString().equals("1") || cell.toString().equals("0")) {
-                        good.setGroup(cell.toString().equals("1.0"));
+                        good.setGroup(cell.toString().equals("1.0") || cell.toString().equals("1"));
                     } else {
                         list.add(cell.toString() + " группа должна быть 0 если не является и 1 если является группой" + field.name);
                     }
@@ -242,7 +242,7 @@ public class MapperToEnumField {
             return good;
         });
 
-        mapFunc.put("разрещено к продаже", (cell, field, list, good) -> {
+        mapFunc.put("разрешено к продаже", (cell, field, list, good) -> {
             if (field.isRequired) {
                 if (!cell.toString().trim().isEmpty()) {
                     if (cell.toString().equals("1.0") || cell.toString().equals("0.0") || cell.toString().equals("1") || cell.toString().equals("0")) {
