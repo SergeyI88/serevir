@@ -33,7 +33,14 @@ public class DocumentController {
         String authorization = shopService.getTokenByStoreUuid(shop);
         Gson gson = new Gson();
         List<LinkedTreeMap> list = gson.fromJson(body, List.class);
-        logger.info(list);
+
+        logger.info(list.get(0).entrySet());
+        logger.info("");
+        logger.info("");
+        logger.info("");
+        logger.info("");
+        logger.info("");
+        logger.info(list.get(0).keySet());
 //        list = list.stream()
 //                .filter(d -> {
 //                    LocalDate lcd = LocalDate.parse(d.getOpenDate().substring(0, 10));
