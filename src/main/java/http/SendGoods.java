@@ -15,7 +15,7 @@ import java.util.*;
 public class SendGoods {
     private static Logger logger = Logger.getLogger(SendGoods.class);
 
-    public int send(List<Good> list, String con, String token) throws IOException {
+    public int send(List<Good> list, String storeUuid, String token) throws IOException {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://umorili.herokuapp.com") //Базовая часть адреса
                 .addConverterFactory(GsonConverterFactory.create())
@@ -24,14 +24,14 @@ public class SendGoods {
         System.out.println();
         System.out.println();
         System.out.println(token);
-        System.out.println(con);
+        System.out.println(storeUuid);
         System.out.println();
         System.out.println();
         String body = gson.toJson(list);
         SendGoodsI sendGoodsI = retrofit.create(SendGoodsI.class);
         RequestBody requestBody =
                 RequestBody.create(MediaType.parse("text/plain"), body);
-        Response<ResponseBody> responce = sendGoodsI.sendData(con
+        Response<ResponseBody> responce = sendGoodsI.sendData(storeUuid
                 , token
                 , "application/json"
                 , requestBody).execute();

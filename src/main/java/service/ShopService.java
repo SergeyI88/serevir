@@ -50,4 +50,8 @@ public class ShopService {
     public Shop getShop(String storeUuid) {
         return shopDao.getShopByUuidStore(storeUuid);
     }
+
+    public String getTokenByStoreUuid(String shop) {
+        return shopDao.getTokenByStoreUuid(shop);
+    }
 }

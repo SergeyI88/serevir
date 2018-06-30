@@ -154,4 +154,21 @@ public class ShopDaoImpl implements ShopDao {
             e.printStackTrace();
         }
     }
+
+    @Override
+    public String getTokenByStoreUuid(String shop) {
+        String res = null;
+        try(Connection connection = ConnectionPostgres.getConnection()) {
+            PreparedStatement statement = connection.prepareStatement("SELECT c.token FROM client where c.client_id =" +
+                    " (SELECT client_id from shop where shop_uuid = ?)");
+            statement.setString(1, shop);
+            ResultSet set = statement.executeQuery();
+            if (set.next()) {
+                res = set.getString("token");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return res;
+    }
 }

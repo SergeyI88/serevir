@@ -20,4 +20,6 @@ public interface ShopDao {
     Shop getShopByUuidStore(String storeUuid);
 
     void removeShops(String userUuid);
+
+    String getTokenByStoreUuid(String shop);
 }
