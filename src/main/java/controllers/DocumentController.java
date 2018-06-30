@@ -26,7 +26,7 @@ public class DocumentController {
     @Autowired
     ShopService shopService;
 
-    @RequestMapping(value = "/api/v1/inventories/stores/{storeUuid}/documents", method = RequestMethod.PUT)
+    @RequestMapping(value = "/api/v1/inventories/stores/$%7BstoreUuid%7D/documents/api/v1/inventories/stores/20180618-1AAC-4017-807E-33B65740B3CB/documents", method = RequestMethod.PUT)
     public String getDocuments(@PathVariable("storeUuid") String shop, @Header("Authorization") String a, @RequestBody String body) {
         logger.info(a);
         String authorization = shopService.getTokenByStoreUuid(shop);
