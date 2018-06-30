@@ -21,24 +21,14 @@ public class SendGoods {
         Gson gson = new Gson();
         System.out.println();
         System.out.println();
-        list.forEach(System.out::println);
+        System.out.println(token);
+        System.out.println(con);
         System.out.println();
         System.out.println();
         String body = gson.toJson(list);
         SendGoodsI sendGoodsI = retrofit.create(SendGoodsI.class);
-        System.out.println();
-        System.out.println();
-        System.out.println();
-        System.out.println();
-        System.out.println();
-        System.out.println();
-        System.out.println();
-        System.out.println();
-        System.out.println();
-        System.out.println();
         RequestBody requestBody =
                 RequestBody.create(MediaType.parse("text/plain"), body);
-        System.out.println(body);
         Response<ResponseBody> responce = sendGoodsI.sendData(con
                 , token
                 , "application/json"
