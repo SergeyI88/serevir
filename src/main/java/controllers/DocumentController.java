@@ -8,6 +8,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import retrofit2.http.Header;
 import service.ShopService;
 import validators.TransactionHandler;
 
@@ -26,7 +27,8 @@ public class DocumentController {
     ShopService shopService;
 
     @RequestMapping(value = "/api/v1/inventories/stores/{storeUuid}/documents", method = RequestMethod.PUT)
-    public String getDocuments(@PathVariable("storeUuid") String shop, @RequestBody String body) {
+    public String getDocuments(@PathVariable("storeUuid") String shop, @Header("Authorization") String a, @RequestBody String body) {
+        logger.info(a);
         String authorization = shopService.getTokenByStoreUuid(shop);
         Gson gson = new Gson();
         List<Document> list = gson.fromJson(body, List.class);
