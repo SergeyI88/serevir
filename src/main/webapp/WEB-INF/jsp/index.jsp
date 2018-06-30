@@ -16,9 +16,9 @@
         var count = 0;
         var inp = document.getElementsByName('shop');
         for (var i = 0; i < inp.length; i++) {
-            if (inp[i].type == "radio" && inp[i].checked) {
+            if (inp[i].type === "radio" && inp[i].checked) {
                 count++;
-                if (document.getElementById('excel').value != null) {
+                if (document.getElementById('excel').value !== null) {
                     document.getElementById('send').removeAttribute('hidden')
                 } else {
                     alert("Загрузите файл")
