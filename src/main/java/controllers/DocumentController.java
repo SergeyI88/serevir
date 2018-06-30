@@ -16,6 +16,7 @@ import validators.TransactionHandler;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -33,8 +34,19 @@ public class DocumentController {
         String authorization = shopService.getTokenByStoreUuid(shop);
         Gson gson = new Gson();
         List<LinkedTreeMap> list = gson.fromJson(body, List.class);
+        List<Document> documents = new ArrayList<>();
 
-        logger.info(list.get(0).entrySet());
+        for (LinkedTreeMap map : list) {
+            Document document = new Document();
+            document.setType((String) map.get("type"));
+            document.setTransactions((List<Document.Transaction>) map.get("transactions"));
+//            for(Document.Transaction t : (Document.Transaction[]) map.get("transactions")) {
+//                d
+//            }
+
+        }
+
+            logger.info(list.get(0).entrySet());
         logger.info("");
         logger.info("");
         logger.info("");
