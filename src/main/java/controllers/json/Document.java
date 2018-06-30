@@ -231,6 +231,32 @@ public class Document {
         this.version = version;
     }
 
+    @Override
+    public String toString() {
+        return "Document{" +
+                "uuid='" + uuid + '\'' +
+                ", type='" + type + '\'' +
+                ", deviceId='" + deviceId + '\'' +
+                ", deviceUuid='" + deviceUuid + '\'' +
+                ", transactions=" + transactions +
+                ", closeDate='" + closeDate + '\'' +
+                ", openDate='" + openDate + '\'' +
+                ", openUserCode=" + openUserCode +
+                ", openUserUuid='" + openUserUuid + '\'' +
+                ", closeUserCode=" + closeUserCode +
+                ", closeUserUuid='" + closeUserUuid + '\'' +
+                ", sessionUUID='" + sessionUUID + '\'' +
+                ", sessionNumber='" + sessionNumber + '\'' +
+                ", number=" + number +
+                ", closeResultSum='" + closeResultSum + '\'' +
+                ", closeSum='" + closeSum + '\'' +
+                ", storeUuid='" + storeUuid + '\'' +
+                ", completeInventory=" + completeInventory +
+                ", extras=" + extras +
+                ", version='" + version + '\'' +
+                '}';
+    }
+
     public class Transaction {
 
         @SerializedName("type")
