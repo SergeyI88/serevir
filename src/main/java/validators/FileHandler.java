@@ -114,28 +114,35 @@ public class FileHandler<T extends Workbook> {
         Map<String, String> map = new HashMap<>();
             for (Good good : goods) {
                 map.put(good.getCode(), good.getUuid());
-                String uuid = good.getUuid().trim().toLowerCase();
-                String code = good.getCode().trim().toLowerCase();
+                System.out.println("Uuid" + " " + good.getUuid() + " " + good.getId());
+                String uuid = good.getUuid();
+                String code = good.getCode();
                 if (mapUuidOrCodeWithGoodId.containsKey(uuid)) {
-                    matchUuid.add(uuid);
-                    mapUuidOrCodeWithGoodId.put(uuid, mapUuidOrCodeWithGoodId.get(uuid) + " " + String.valueOf(good.getId()));
+                    if (!matchUuid.contains(uuid)) {
+                        matchUuid.add(uuid);
+                    }
+                    mapUuidOrCodeWithGoodId.replace(uuid, (mapUuidOrCodeWithGoodId.get(uuid) + ", " + good.getId()));
+                } else {
+                    mapUuidOrCodeWithGoodId.put(uuid, String.valueOf(good.getId()));
                 }
-                mapUuidOrCodeWithGoodId.put(uuid, String.valueOf(good.getId()));
                 if (mapUuidOrCodeWithGoodId.containsKey(code)) {
-                    matchCode.add(code);
-                    mapUuidOrCodeWithGoodId.put(code, mapUuidOrCodeWithGoodId.get(code) + " " + String.valueOf(good.getId()));
+                    if (!matchCode.contains(code)) {
+                        matchCode.add(code);
+                    }
+                    mapUuidOrCodeWithGoodId.replace(code, mapUuidOrCodeWithGoodId.get(code) + " " + String.valueOf(good.getId()));
+                } else {
+                    mapUuidOrCodeWithGoodId.put(code, String.valueOf(good.getId()));
                 }
-                mapUuidOrCodeWithGoodId.put(uuid, String.valueOf(good.getId()));
         }
         if (!matchUuid.isEmpty()) {
             for (String str : matchUuid) {
-                String errorString = "В строках " + mapUuidOrCodeWithGoodId.get(str) + "одинаковый Uuid";
+                String errorString = "В строках " + mapUuidOrCodeWithGoodId.get(str) + " одинаковое поле Uuid";
                 listErrors.add(errorString);
             }
         }
         if (!matchCode.isEmpty()) {
             for (String str : matchCode) {
-                String errorString = "В строках " + mapUuidOrCodeWithGoodId.get(str) + "одинаковый Code";
+                String errorString = "В строках " + mapUuidOrCodeWithGoodId.get(str) + " одинаковое поле Code";
                 listErrors.add(errorString);
             }
         }
