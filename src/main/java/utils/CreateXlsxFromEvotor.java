@@ -11,25 +11,126 @@ import java.util.*;
 @Component
 public class CreateXlsxFromEvotor {
 
+    private class  Node{
+        public Node(Good good) {
+            this.good = good;
+        }
+
+        public Boolean getBoss() {
+            return boss;
+        }
+
+        public void setBoss(Boolean boss) {
+            this.boss = boss;
+        }
+
+        Boolean boss;
+
+        private Good good;
+
+        public Good getGood() {
+            return good;
+        }
+
+        public void setGood(Good good) {
+            this.good = good;
+        }
+
+        public List<Node> getNodes() {
+            return nodes;
+        }
+
+        public void setNodes(List<Node> nodes) {
+            this.nodes = nodes;
+        }
+
+        private List<Node> nodes;
 
 
+
+
+    }
 
 
     public void sortListGood(List<Good> goods){
-        Map<String, Map<Good, List<Good>>> sortGoods = new HashMap<>();
-        List<Good> linkedList = new LinkedList<>(goods);
-        for (Good good : linkedList) {
+        Map<String, Node> sortMap = new HashMap<>();
+        for (Good good : goods) {
             String parentUuid = good.getParentUuid();
             if (parentUuid == null || parentUuid.equals("")) {
-                    HashMap<Good, List<Good>> innerMap = new HashMap<>();
-                    sortGoods.put(parentUuid, (Map<Good, List<Good>>) innerMap.put(good, new ArrayList<>()));
+                if (sortMap.containsKey(good.getUuid())) {
+                    Node node = sortMap.get(good.getUuid());
+                    node.setGood(good);
+                    sortMap.put(good.getUuid(), node);
+                } else {
+                    Node node = new Node(good);
+                    node.setBoss(true);
+                    sortMap.put(good.getUuid(), node);
+                }
             } else {
-                if (sortGoods.containsKey(parentUuid)) {
-//                    sortGoods.get(parentUuid).set
+                if (sortMap.containsKey(parentUuid)) {
+                    Node nodeParent = sortMap.get(parentUuid);
+                    Node node = null;
+                    if (sortMap.containsKey(good.getUuid())) {
+                        node = sortMap.get(good.getUuid());
+                        node.setGood(good);
+                    } else {
+                        node = new Node(good);
+                    }
+                    node.setBoss(false);
+                    sortMap.put(good.getUuid(), node);
+                    List<Node> nodes = null;
+                    if (nodeParent.getNodes() != null) {
+                        nodes = nodeParent.getNodes();
+                        nodes.add(node);
+                    } else{
+                        nodes = new ArrayList<>();
+                        nodes.add(node);
+                    }
+                    nodeParent.setNodes(nodes);
+                    sortMap.put(parentUuid, nodeParent);
+
+                } else {
+                    Node node = null;
+                    if (sortMap.containsKey(good.getUuid())) {
+                        node = sortMap.get(good.getUuid());
+                        node.setGood(good);
+                    } else {
+                        node = new Node(good);
+                    }
+                    node.setBoss(false);
+                    Node nodeParent = new Node(null);
+                    List<Node> list = new ArrayList<>();
+                    list.add(node);
+                    node.setBoss(false);
+                    nodeParent.setBoss(true);
+                    nodeParent.setNodes(list);
+                    sortMap.put(parentUuid, nodeParent);
+                    sortMap.put(good.getUuid(), node);
                 }
             }
         }
+        goods.clear();
+        for (Map.Entry<String, Node> entry : sortMap.entrySet()) {
+            if (entry.getValue().getBoss()) {
+                Node node = entry.getValue();
+                putIntoList(goods, node);
+
+            }
+        }
     }
+
+    private void putIntoList(List<Good> goods, Node node){
+        if (node.getNodes() == null) {
+            goods.add(node.getGood());
+            return;
+        } else {
+
+            for (Node innerNode : node.getNodes()) {
+                putIntoList(goods, innerNode);
+            }
+        }
+    }
+
 
 
     public Workbook getWorkbook (List<Good> goods, String shopName){
@@ -56,6 +157,7 @@ public class CreateXlsxFromEvotor {
         }
 
         int rowNum = 1;
+        sortListGood(goods);
         for(Good good: goods) {
             Row row = sheet.createRow(rowNum++);
             row.createCell(0).setCellValue(good.getUuid() != null ? good.getUuid() : "");

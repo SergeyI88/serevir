@@ -111,9 +111,9 @@ public class FileHandler<T extends Workbook> {
         Map<String,String> mapUuidOrCodeWithGoodId = new HashMap<>();
         List<String> matchUuid = new ArrayList<>();
         List<String> matchCode = new ArrayList<>();
-        Map<String, String> map = new HashMap<>();
+        Map<String, String> codeWithUuidForSwap = new HashMap<>();
             for (Good good : goods) {
-                map.put(good.getCode(), good.getUuid());
+                codeWithUuidForSwap.put(good.getCode(), good.getUuid());
                 System.out.println("Uuid" + " " + good.getUuid() + " " + good.getId());
                 String uuid = good.getUuid();
                 String code = good.getCode();
@@ -148,8 +148,9 @@ public class FileHandler<T extends Workbook> {
         }
         for (Good good : goods) {
             String parrentCode = good.getParentUuid();
-            if (parrentCode != null){
-                good.setParentUuid(map.get(parrentCode));
+            if (codeWithUuidForSwap.containsKey(parrentCode)){
+                String uuid = codeWithUuidForSwap.get(parrentCode);
+                good.setParentUuid(uuid);
             }
         }
     }
