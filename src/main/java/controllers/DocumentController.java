@@ -1,6 +1,7 @@
 package controllers;
 
 import com.google.gson.Gson;
+import com.google.gson.internal.LinkedTreeMap;
 import controllers.json.Document;
 import http.SendGoods;
 import http.entity.Good;
@@ -31,14 +32,14 @@ public class DocumentController {
         logger.info(a);
         String authorization = shopService.getTokenByStoreUuid(shop);
         Gson gson = new Gson();
-        List<Document> list = gson.fromJson(body, List.class);
+        List<LinkedTreeMap> list = gson.fromJson(body, List.class);
 //        list = list.stream()
 //                .filter(d -> {
 //                    LocalDate lcd = LocalDate.parse(d.getOpenDate().substring(0, 10));
 //                    return lcd.equals(LocalDate.now());
 //                });
-        Document document = list.get(list.size() - 1);
-        transactionHandler.getGoods(document.getType(), document.getTransactions(), shop, authorization);
+//        Document document = list.get(list.size() - 1);
+//        transactionHandler.getGoods(document.getType(), document.getTransactions(), shop, authorization);
         return "{success : true}";
     }
 }
