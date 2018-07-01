@@ -6,7 +6,9 @@ import http.entity.Good;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 import controllers.json.Document.Transaction;
+
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,14 +29,24 @@ public class TransactionHandler {
             executeInventory(transactions, storeUuid, authorization, fromEvotor);
             return;
         }
-        List<Good> listFromTerminal = transactions.stream()
-                .filter(t -> t.getType().equals("REGISTER_POSITION"))
-                .map(t -> {
-                    Good good = new Good();
-                    good.setQuantity(t.getQuantity());
-                    good.setUuid(t.getCommodityUuid());
-                    return good;
-                }).collect(Collectors.toList());
+        List<Good> listFromTerminal = new ArrayList<>();
+        for (Transaction t : transactions) {
+            if (t.getType().equals("REGISTER_POSITION")) {
+                Good good = new Good();
+                good.setQuantity(t.getQuantity());
+                good.setUuid(t.getCommodityUuid());
+                listFromTerminal.add(good);
+            }
+        }
+
+//                transactions.stream()
+//                .filter(t -> t.getType().equals("REGISTER_POSITION"))
+//                .map(t -> {
+//                    Good good = new Good();
+//                    good.setQuantity(t.getQuantity());
+//                    good.setUuid(t.getCommodityUuid());
+//                    return good;
+//                }).collect(Collectors.toList());
         logger.info("get goods from the terminal");
         execute(listFromTerminal, fromEvotor, storeUuid, authorization, type);
 
