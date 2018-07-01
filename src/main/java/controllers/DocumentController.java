@@ -26,6 +26,7 @@ public class DocumentController {
     ShopService shopService;
 
     @RequestMapping(value = "/api/v1/inventories/stores/{storeUuid}/documents", method = RequestMethod.PUT)
+    @ResponseBody
     public String getDocuments(@PathVariable("storeUuid") String shop, @Header("Authorization") String a, @RequestBody String body) {
         logger.info(a);
         String authorization = shopService.getTokenByStoreUuid(shop);
@@ -37,9 +38,6 @@ public class DocumentController {
             Document document = new Document();
             document.setType((String) map.get("type"));
             document.setTransactions(new ArrayList<>());
-//            document.setTransactions(gson.toJson((map.get("tranzactions")).toString(), List.class));
-
-//            document.setTransactions((List<Document.Transaction>) map.get("transactions"));
             for(LinkedTreeMap t: (ArrayList<LinkedTreeMap>) map.get("transactions")) {
                 Document.Transaction transaction =  document.new Transaction();
                 transaction.setCommodityUuid((String) t.get("commodityUuid"));
@@ -50,22 +48,10 @@ public class DocumentController {
             documents.add(document);
 
         }
-
-            logger.info(list.get(0).entrySet());
-        logger.info("");
-        logger.info("");
-        logger.info("");
-        logger.info("");
-        logger.info("");
-        logger.info(list.get(0).keySet());
-//        list = list.stream()
-//                .filter(d -> {
-//                    LocalDate lcd = LocalDate.parse(d.getOpenDate().substring(0, 10));
-//                    return lcd.equals(LocalDate.now());
-//                });
+        documents.forEach(System.out::println);
         Document document = documents.get(documents.size() - 1);
         logger.info(document);
         transactionHandler.getGoods(document.getType(), document.getTransactions(), shop, authorization);
-        return "index";
+        return "{success:true}";
     }
 }
