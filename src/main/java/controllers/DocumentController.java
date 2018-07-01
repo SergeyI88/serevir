@@ -40,7 +40,7 @@ public class DocumentController {
 //            document.setTransactions(gson.toJson((map.get("tranzactions")).toString(), List.class));
 
 //            document.setTransactions((List<Document.Transaction>) map.get("transactions"));
-            for(LinkedTreeMap t: (LinkedTreeMap[]) map.get("transactions")) {
+            for(LinkedTreeMap t: (ArrayList<LinkedTreeMap>) map.get("transactions")) {
                 Document.Transaction transaction =  document.new Transaction();
                 transaction.setCommodityUuid((String) t.get("commodityUuid"));
                 transaction.setQuantity((Double) t.get("quantity"));
