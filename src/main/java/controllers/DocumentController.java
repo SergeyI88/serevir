@@ -36,7 +36,7 @@ public class DocumentController {
         for (LinkedTreeMap map : list) {
             Document document = new Document();
             document.setType((String) map.get("type"));
-            document.setTransactions(gson.toJson(map.get("tranzactions"), List.class));
+            document.setTransactions(gson.toJson(map.get("tranzactions").toString(), List.class));
 
 //            document.setTransactions((List<Document.Transaction>) map.get("transactions"));
 //            for(Document.Transaction t : (Document.Transaction[]) map.get("transactions")) {
