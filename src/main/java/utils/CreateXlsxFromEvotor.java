@@ -51,8 +51,8 @@ public class CreateXlsxFromEvotor {
 
     }
 
-
-    public void sortListGood(List<Good> goods){
+    public void sortListGood(List<Good> goods, Map<String, String> uuidWithCodeForSwap) {
+        System.out.println(goods.size());
         Map<String, Node> sortMap = new HashMap<>();
         for (Good good : goods) {
             String parentUuid = good.getParentUuid();
@@ -60,7 +60,7 @@ public class CreateXlsxFromEvotor {
                 if (sortMap.containsKey(good.getUuid())) {
                     Node node = sortMap.get(good.getUuid());
                     node.setGood(good);
-                    sortMap.put(good.getUuid(), node);
+                    sortMap.replace(good.getUuid(), node);
                 } else {
                     Node node = new Node(good);
                     node.setBoss(true);
@@ -82,12 +82,12 @@ public class CreateXlsxFromEvotor {
                     if (nodeParent.getNodes() != null) {
                         nodes = nodeParent.getNodes();
                         nodes.add(node);
-                    } else{
+                    } else {
                         nodes = new ArrayList<>();
                         nodes.add(node);
                     }
                     nodeParent.setNodes(nodes);
-                    sortMap.put(parentUuid, nodeParent);
+                    sortMap.replace(parentUuid, nodeParent);
 
                 } else {
                     Node node = null;
@@ -101,7 +101,6 @@ public class CreateXlsxFromEvotor {
                     Node nodeParent = new Node(null);
                     List<Node> list = new ArrayList<>();
                     list.add(node);
-                    node.setBoss(false);
                     nodeParent.setBoss(true);
                     nodeParent.setNodes(list);
                     sortMap.put(parentUuid, nodeParent);
@@ -110,12 +109,21 @@ public class CreateXlsxFromEvotor {
             }
         }
         goods.clear();
+        List<Node> justGood = new ArrayList<>();
+        System.out.println(sortMap.size());
         for (Map.Entry<String, Node> entry : sortMap.entrySet()) {
             if (entry.getValue().getBoss()) {
-                Node node = entry.getValue();
-                putIntoList(goods, node);
-
+                if (entry.getValue().getNodes() == null) {
+                    justGood.add(entry.getValue());
+                } else {
+                    Node node = entry.getValue();
+                    putIntoList(goods, node);
+                }
             }
+        }
+
+        for (Node node : justGood) {
+            putIntoList(goods, node);
         }
     }
 
@@ -124,7 +132,7 @@ public class CreateXlsxFromEvotor {
             goods.add(node.getGood());
             return;
         } else {
-
+            goods.add(node.getGood());
             for (Node innerNode : node.getNodes()) {
                 putIntoList(goods, innerNode);
             }
@@ -134,6 +142,11 @@ public class CreateXlsxFromEvotor {
 
 
     public Workbook getWorkbook (List<Good> goods, String shopName){
+        Map<String, String> uuidWithCodeForSwap = new HashMap<>();
+        for (Good good : goods) {
+            uuidWithCodeForSwap.put(good.getUuid(), good.getCode());
+        }
+
         XSSFWorkbook workbook = new XSSFWorkbook();
 
         XSSFSheet sheet = workbook.createSheet(shopName);
@@ -163,7 +176,13 @@ public class CreateXlsxFromEvotor {
             }
             return workbook;
         }
+        sortListGood(goods, uuidWithCodeForSwap);
         for(Good good: goods) {
+            String parentUuid = good.getParentUuid();
+            if (parentUuid != null && uuidWithCodeForSwap.containsKey(parentUuid)){
+                String code = uuidWithCodeForSwap.get(parentUuid);
+                good.setParentUuid(code);
+           }
             Row row = sheet.createRow(rowNum++);
             row.createCell(0).setCellValue(good.getUuid() != null ? good.getUuid() : "");
             row.createCell(1).setCellValue(good.getCode() != null ? good.getCode() : "");

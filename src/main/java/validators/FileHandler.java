@@ -1,6 +1,7 @@
 package validators;
 
 import consts.EnumFields;
+import http.DeleteGoods;
 import http.entity.Good;
 import http.entity.Group;
 import org.apache.poi.ss.usermodel.Cell;
@@ -31,6 +32,7 @@ public class FileHandler<T extends Workbook> {
             , List<Good> goods
             , Good good) {
         queue.offer(queue.poll());
+
         func.apply(cell, field, errors, good);
         return this;
     }
@@ -55,7 +57,7 @@ public class FileHandler<T extends Workbook> {
         return apply;
     }
 
-    public HashMap<String, List> getResult(Workbook workbook) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+    public HashMap<String, List> getResult(Workbook workbook, String storeUuid, String auth) throws UnsupportedEncodingException, NoSuchAlgorithmException {
         boolean match = false;
         HashMap map = new HashMap();
         List<String> listErrors = new ArrayList<>();
@@ -99,12 +101,46 @@ public class FileHandler<T extends Workbook> {
                 checkValues(mapperToEnumField.mapFunc.get(sequence.peek()), c, mapperToEnumField.mapNames.get(sequence.peek()), listErrors, sequence, goodList, good);
                 c = r.getCell(++i, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK);
             };
-            goodList.add(groupOrNo(good, listErrors));
+
+            Good temp = isEnd(good, listErrors);
+            if (temp != null) {
+                temp = isDelete(storeUuid, auth, temp, listErrors);
+            }
+
+            if (temp != null) {
+                goodList.add(groupOrNo(good, listErrors));
+            }
         });
         isMatch(goodList, listErrors);
         map.put("errors", listErrors);
         map.put("goods", goodList);
         return map;
+    }
+
+    private Good isDelete(String storeUuid, String auth, Good temp, List<String> listErrors) {
+        if (temp.getName().equals("-")) {
+            DeleteGoods deleteGoods = new DeleteGoods();
+            deleteGoods.execute( storeUuid,  auth,  temp);
+            for (int i = 0; i < listErrors.size();) {
+                if(listErrors.get(i++).startsWith(temp.getId() + "")) {
+                    listErrors.remove(--i);
+                }
+            }
+            return null;
+        }
+        return temp;
+    }
+
+    private Good isEnd(Good good, List<String> listErrors) {
+        if (good.getQuantity() == null && good.getName() == null && good.getPrice() == null) {
+            for (int i = 0; i < listErrors.size();) {
+                if(listErrors.get(i++).startsWith(good.getId() + "")) {
+                    listErrors.remove(--i);
+                }
+            }
+            return null;
+        }
+        return good;
     }
 
     private void isMatch(List<Good> goods, List<String> listErrors){
@@ -113,10 +149,13 @@ public class FileHandler<T extends Workbook> {
         List<String> matchCode = new ArrayList<>();
         Map<String, String> codeWithUuidForSwap = new HashMap<>();
             for (Good good : goods) {
-                codeWithUuidForSwap.put(good.getCode(), good.getUuid());
+                if (good.getCode() != null) {
+                    codeWithUuidForSwap.put(good.getCode(), good.getUuid());
+                }
                 System.out.println("Uuid" + " " + good.getUuid() + " " + good.getId());
                 String uuid = good.getUuid();
                 String code = good.getCode();
+                code = code != null ? Double.valueOf(code).toString() : null;
                 if (mapUuidOrCodeWithGoodId.containsKey(uuid)) {
                     if (!matchUuid.contains(uuid)) {
                         matchUuid.add(uuid);
@@ -131,7 +170,9 @@ public class FileHandler<T extends Workbook> {
                     }
                     mapUuidOrCodeWithGoodId.replace(code, mapUuidOrCodeWithGoodId.get(code) + " " + String.valueOf(good.getId()));
                 } else {
-                    mapUuidOrCodeWithGoodId.put(code, String.valueOf(good.getId()));
+                    if (code != null) {
+                        mapUuidOrCodeWithGoodId.put(code, String.valueOf(good.getId()));
+                    }
                 }
         }
         if (!matchUuid.isEmpty()) {
@@ -146,11 +187,13 @@ public class FileHandler<T extends Workbook> {
                 listErrors.add(errorString);
             }
         }
-        for (Good good : goods) {
-            String parrentCode = good.getParentUuid();
-            if (codeWithUuidForSwap.containsKey(parrentCode)){
-                String uuid = codeWithUuidForSwap.get(parrentCode);
-                good.setParentUuid(uuid);
+        if (listErrors.isEmpty()) {
+            for (Good good : goods) {
+                String parrentCode = good.getParentUuid();
+                if (parrentCode != null && codeWithUuidForSwap.containsKey(parrentCode)){
+                    String uuid = codeWithUuidForSwap.get(parrentCode);
+                    good.setParentUuid(uuid);
+                }
             }
         }
     }

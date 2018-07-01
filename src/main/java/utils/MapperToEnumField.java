@@ -165,7 +165,7 @@ public class MapperToEnumField {
                 if (!cell.toString().trim().isEmpty()) {
                     good.setName(cell.toString().trim());
                 } else {
-                    list.add("Поле имя не может быть пустым");
+                    list.add(good.getId() + " Поле имя не может быть пустым");
                 }
             }
             return good;

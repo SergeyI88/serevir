@@ -171,4 +171,20 @@ public class ShopDaoImpl implements ShopDao {
         }
         return res;
     }
+
+    @Override
+    public String getNameByStoreUuid(String storeUuid) {
+        String res = null;
+        try(Connection connection = ConnectionPostgres.getConnection()) {
+            PreparedStatement statement = connection.prepareStatement("SELECT name FROM shop where shop_uuid = ?");
+            statement.setString(1, storeUuid);
+            ResultSet set = statement.executeQuery();
+            if(set.next()) {
+                res = set.getString("name");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return res;
+    }
 }

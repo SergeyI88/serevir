@@ -30,16 +30,16 @@ public class CreateXlsxFromEvotorTest {
 
     @Test
     public void sortListGood() throws IOException, InvalidFormatException, NoSuchAlgorithmException {
-        Map<String, List> list = handler.getResult(WorkbookFactory.create(new File("src/test/resources/products.xlsx")));
-        List<Good> goods = list.get("goods");
-        for (Good good : goods) {
-            System.out.println(good.toString());
-        }
-        System.out.println("--------------------------------------------------------------");
-        createXlsxFromEvotor.sortListGood(goods);
-        for (Good good : goods) {
-            System.out.println(good.toString());
-        }
+//        Map<String, List> list = handler.getResult(WorkbookFactory.create(new File("src/test/resources/prod.xlsx")));
+//        List<Good> goods = list.get("goods");
+//        for (Good good : goods) {
+//            System.out.println(good.toString());
+//        }
+//        System.out.println("--------------------------------------------------------------");
+//        createXlsxFromEvotor.sortListGood(goods);
+//        for (Good good : goods) {
+//            System.out.println(good.toString());
+//        }
     }
 
 

@@ -59,7 +59,7 @@ public class GoodsController {
         }
         List<String> list = null;
         try (Workbook workbook = WorkbookFactory.create(convert(file))) {
-            Map<String, List> map = fileHandler.getResult(workbook);
+            Map<String, List> map = fileHandler.getResult(workbook, storeUuid, (String) request.getSession().getAttribute("token"));
             list = map.get("errors");
             int result = 0;
             if (list.isEmpty()) {
@@ -90,11 +90,10 @@ public class GoodsController {
         String token = (String) request.getSession().getAttribute("token");
         List<Good> goods = retrofit.create(GetGoods.class).getData(storeUuid, token).execute().body();
         Shop shop = shopDao.getShopByUuidStore(storeUuid);
-
         Workbook workbook = createXlsxFromEvotor.getWorkbook(goods, shop.getName());
 
         BufferedOutputStream outStream = new BufferedOutputStream(resonse.getOutputStream());
-        resonse.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + "products.xlsx");
+        resonse.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + shopService.getNameByStoreUuid(storeUuid) +".xlsx");
         workbook.write(outStream);
         outStream.close();
         workbook.close();
