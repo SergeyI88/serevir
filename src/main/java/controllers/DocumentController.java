@@ -13,9 +13,6 @@ import retrofit2.http.Header;
 import service.ShopService;
 import validators.TransactionHandler;
 
-import java.io.IOException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,11 +36,15 @@ public class DocumentController {
         for (LinkedTreeMap map : list) {
             Document document = new Document();
             document.setType((String) map.get("type"));
-            document.setTransactions((List<Document.Transaction>) map.get("transactions"));
+            document.setTransactions(new ArrayList<>());
+//            document.setTransactions((List<Document.Transaction>) map.get("transactions"));
+            for(Document.Transaction t : (Document.Transaction[]) map.get("transactions")) {
+                Document.Transaction transaction =  document.new Transaction();
+                transaction.setCommodityUuid(t.getCommodityUuid());
+                transaction.setQuantity(t.getQuantity());
+                document.getTransactions().add(transaction);
+            }
             documents.add(document);
-//            for(Document.Transaction t : (Document.Transaction[]) map.get("transactions")) {
-//                d
-//            }
 
         }
 
