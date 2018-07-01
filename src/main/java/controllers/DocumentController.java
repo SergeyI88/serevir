@@ -44,6 +44,7 @@ public class DocumentController {
                 Document.Transaction transaction =  document.new Transaction();
                 transaction.setCommodityUuid((String) t.get("commodityUuid"));
                 transaction.setQuantity((Double) t.get("quantity"));
+                transaction.setType((String) t.get("type"));
                 document.getTransactions().add(transaction);
             }
             documents.add(document);
