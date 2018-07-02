@@ -55,10 +55,8 @@ public class TransactionHandler {
     private void execute(List<Good> listFromTerminal, List<Good> fromEvotor, String storeUuid, String authorization, String type) {
         if (type.equals("SELL") || type.equals("WRITE_OFF") || type.equals("RETURN")) {
             decrement(listFromTerminal, fromEvotor, storeUuid, authorization);
-            logger.info("in decrement");
         } else if (type.equals("ACCEPT") || type.equals("PAYBACK")) {
             increment(listFromTerminal, fromEvotor, storeUuid, authorization);
-            logger.info("in increment");
         }
     }
 

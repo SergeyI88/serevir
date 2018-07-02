@@ -58,4 +58,12 @@ public class ShopService {
     public String getNameByStoreUuid(String storeUuid) {
        return shopDao.getNameByStoreUuid(storeUuid);
     }
+
+    public String getSequance(String storeUuid) {
+        return shopDao.getSequance(storeUuid);
+    }
+
+    public void writeSequenceColumns(String string, String storeUuid) {
+        shopDao.writeSequenceColumns(string, storeUuid);
+    }
 }

@@ -11,6 +11,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import service.ShopService;
 import utils.ThirdFunction;
 import utils.MapperToEnumField;
 
@@ -21,6 +22,8 @@ import java.util.*;
 @Component
 @Scope("prototype")
 public class FileHandler<T extends Workbook> {
+    @Autowired
+    ShopService shopService;
     @Autowired
     MapperToEnumField mapperToEnumField;
 
@@ -40,8 +43,8 @@ public class FileHandler<T extends Workbook> {
     private Good groupOrNo(Good apply, List<String> listErrors) {
         if (apply.getGroup() != null) {
             if (apply.getGroup()) {
-                for (int i = 0; i < listErrors.size();) {
-                    if(listErrors.get(i++).startsWith(apply.getId() + "")) {
+                for (int i = 0; i < listErrors.size(); ) {
+                    if (listErrors.get(i++).startsWith(apply.getId() + "")) {
                         listErrors.remove(--i);
                     }
                 }
@@ -62,13 +65,13 @@ public class FileHandler<T extends Workbook> {
         HashMap map = new HashMap();
         List<String> listErrors = new ArrayList<>();
         Sheet sheet = workbook.getSheetAt(0);
-        Queue<String> sequence = new ArrayDeque<>();
+
 
         Row row = sheet.getRow(0);
         for (EnumFields e : EnumFields.values()) {
             for (Iterator<Cell> it = row.cellIterator(); it.hasNext(); ) {
                 Cell c = it.next();
-                if (e.name.toLowerCase().equals(c.toString().toLowerCase())) {
+                if (e.name.toLowerCase().equals(c.toString().toLowerCase().trim())) {
                     match = true;
                     break;
                 }
@@ -78,29 +81,28 @@ public class FileHandler<T extends Workbook> {
             }
             match = false;
         }
-        if(!listErrors.isEmpty()) {
+        if (!listErrors.isEmpty()) {
             map.put("errors", listErrors);
             return map;
         }
-        int[] numberColumns = {0};
-        for (Iterator<Cell> it = row.cellIterator(); it.hasNext(); ) {
-            sequence.offer(it.next().toString());
-            numberColumns[0]++;
-        }
+
+        Queue<String> sequence = getSequenceAndWriteToDataBase(row, storeUuid);
+
         Integer[] integers = {1};
         sheet.removeRow(row);
-        System.out.println(sheet.getRow(2).getCell(4, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK ).getAddress());
+        System.out.println(sheet.getRow(2).getCell(4, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK).getAddress());
         sequence.forEach(System.out::println);
 
         List<Good> goodList = new ArrayList<>();
         sheet.forEach(r -> {
             Good good = new Good(++integers[0]);
             int i = 0;
-            Cell c = r.getCell (i, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK);
-            for (; i < numberColumns[0];) {
+            Cell c = r.getCell(i, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK);
+            for (; i < sequence.size(); ) {
                 checkValues(mapperToEnumField.mapFunc.get(sequence.peek()), c, mapperToEnumField.mapNames.get(sequence.peek()), listErrors, sequence, goodList, good);
                 c = r.getCell(++i, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK);
-            };
+            }
+            ;
 
             Good temp = isEnd(good, listErrors);
             if (temp != null) {
@@ -117,12 +119,30 @@ public class FileHandler<T extends Workbook> {
         return map;
     }
 
+    private Queue<String> getSequenceAndWriteToDataBase(Row row, String storeUuid) {
+        Queue<String> sequence = new ArrayDeque<>();
+        StringBuilder builder = new StringBuilder();
+        String[] columns = {"uuid", "код", "штрих-коды", "алко-коды", "имя", "цена", "количество", "цена закупки", "название меры",
+                "налог", "разрешено к продаже", "описание", "артикул", "код группы",
+                "группа", "тип", "объем алкогольной тары", "код алкоголя", "объем тары"};
+
+        for (Iterator<Cell> it = row.cellIterator(); it.hasNext(); ) {
+            String column = it.next().toString().toLowerCase().trim();
+            sequence.offer(column);
+            if ( Arrays.asList(columns).contains(column)) {
+                builder.append(column).append(" ");
+            }
+        }
+        shopService.writeSequenceColumns(builder.toString(), storeUuid);
+        return sequence;
+    }
+
     private Good isDelete(String storeUuid, String auth, Good temp, List<String> listErrors) {
         if (temp.getName().equals("-")) {
             DeleteGoods deleteGoods = new DeleteGoods();
-            deleteGoods.execute( storeUuid,  auth,  temp);
-            for (int i = 0; i < listErrors.size();) {
-                if(listErrors.get(i++).startsWith(temp.getId() + "")) {
+            deleteGoods.execute(storeUuid, auth, temp);
+            for (int i = 0; i < listErrors.size(); ) {
+                if (listErrors.get(i++).startsWith(temp.getId() + "")) {
                     listErrors.remove(--i);
                 }
             }
@@ -133,8 +153,8 @@ public class FileHandler<T extends Workbook> {
 
     private Good isEnd(Good good, List<String> listErrors) {
         if (good.getQuantity() == null && good.getName() == null && good.getPrice() == null) {
-            for (int i = 0; i < listErrors.size();) {
-                if(listErrors.get(i++).startsWith(good.getId() + "")) {
+            for (int i = 0; i < listErrors.size(); ) {
+                if (listErrors.get(i++).startsWith(good.getId() + "")) {
                     listErrors.remove(--i);
                 }
             }
@@ -143,37 +163,37 @@ public class FileHandler<T extends Workbook> {
         return good;
     }
 
-    private void isMatch(List<Good> goods, List<String> listErrors){
-        Map<String,String> mapUuidOrCodeWithGoodId = new HashMap<>();
+    private void isMatch(List<Good> goods, List<String> listErrors) {
+        Map<String, String> mapUuidOrCodeWithGoodId = new HashMap<>();
         List<String> matchUuid = new ArrayList<>();
         List<String> matchCode = new ArrayList<>();
         Map<String, String> codeWithUuidForSwap = new HashMap<>();
-            for (Good good : goods) {
-                if (good.getCode() != null) {
-                    codeWithUuidForSwap.put(good.getCode(), good.getUuid());
+        for (Good good : goods) {
+            if (good.getCode() != null) {
+                codeWithUuidForSwap.put(good.getCode(), good.getUuid());
+            }
+            System.out.println("Uuid" + " " + good.getUuid() + " " + good.getId());
+            String uuid = good.getUuid();
+            String code = good.getCode();
+            code = code != null ? Double.valueOf(code).toString() : null;
+            if (mapUuidOrCodeWithGoodId.containsKey(uuid)) {
+                if (!matchUuid.contains(uuid)) {
+                    matchUuid.add(uuid);
                 }
-                System.out.println("Uuid" + " " + good.getUuid() + " " + good.getId());
-                String uuid = good.getUuid();
-                String code = good.getCode();
-                code = code != null ? Double.valueOf(code).toString() : null;
-                if (mapUuidOrCodeWithGoodId.containsKey(uuid)) {
-                    if (!matchUuid.contains(uuid)) {
-                        matchUuid.add(uuid);
-                    }
-                    mapUuidOrCodeWithGoodId.replace(uuid, (mapUuidOrCodeWithGoodId.get(uuid) + ", " + good.getId()));
-                } else {
-                    mapUuidOrCodeWithGoodId.put(uuid, String.valueOf(good.getId()));
+                mapUuidOrCodeWithGoodId.replace(uuid, (mapUuidOrCodeWithGoodId.get(uuid) + ", " + good.getId()));
+            } else {
+                mapUuidOrCodeWithGoodId.put(uuid, String.valueOf(good.getId()));
+            }
+            if (mapUuidOrCodeWithGoodId.containsKey(code)) {
+                if (!matchCode.contains(code)) {
+                    matchCode.add(code);
                 }
-                if (mapUuidOrCodeWithGoodId.containsKey(code)) {
-                    if (!matchCode.contains(code)) {
-                        matchCode.add(code);
-                    }
-                    mapUuidOrCodeWithGoodId.replace(code, mapUuidOrCodeWithGoodId.get(code) + " " + String.valueOf(good.getId()));
-                } else {
-                    if (code != null) {
-                        mapUuidOrCodeWithGoodId.put(code, String.valueOf(good.getId()));
-                    }
+                mapUuidOrCodeWithGoodId.replace(code, mapUuidOrCodeWithGoodId.get(code) + " " + String.valueOf(good.getId()));
+            } else {
+                if (code != null) {
+                    mapUuidOrCodeWithGoodId.put(code, String.valueOf(good.getId()));
                 }
+            }
         }
         if (!matchUuid.isEmpty()) {
             for (String str : matchUuid) {
@@ -190,7 +210,7 @@ public class FileHandler<T extends Workbook> {
         if (listErrors.isEmpty()) {
             for (Good good : goods) {
                 String parrentCode = good.getParentUuid();
-                if (parrentCode != null && codeWithUuidForSwap.containsKey(parrentCode)){
+                if (parrentCode != null && codeWithUuidForSwap.containsKey(parrentCode)) {
                     String uuid = codeWithUuidForSwap.get(parrentCode);
                     good.setParentUuid(uuid);
                 }

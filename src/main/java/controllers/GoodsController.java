@@ -29,6 +29,7 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
 
@@ -93,7 +94,7 @@ public class GoodsController {
         Workbook workbook = createXlsxFromEvotor.getWorkbook(goods, shop.getName());
 
         BufferedOutputStream outStream = new BufferedOutputStream(resonse.getOutputStream());
-        resonse.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + shopService.getNameByStoreUuid(storeUuid) +".xlsx");
+        resonse.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + "goods" + ".xlsx");
         workbook.write(outStream);
         outStream.close();
         workbook.close();
@@ -108,4 +109,6 @@ public class GoodsController {
         fos.close();
         return convFile;
     }
+
+
 }

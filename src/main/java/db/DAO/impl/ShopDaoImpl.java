@@ -4,6 +4,7 @@ import db.DAO.ShopDao;
 import db.connection.ConnectionPostgres;
 import db.entity.Shop;
 import org.springframework.stereotype.Repository;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -131,7 +132,7 @@ public class ShopDaoImpl implements ShopDao {
             PreparedStatement statement = connection.prepareStatement("SELECT * from shop where shop_uuid = ?");
             statement.setString(1, storeUuid);
             ResultSet set = statement.executeQuery();
-            if(set.next()) {
+            if (set.next()) {
                 shop.setId(set.getLong("id"));
                 shop.setUuid(set.getString("shop_uuid"));
                 shop.setClientId(set.getLong("client_id"));
@@ -158,7 +159,7 @@ public class ShopDaoImpl implements ShopDao {
     @Override
     public String getTokenByStoreUuid(String shop) {
         String res = null;
-        try(Connection connection = ConnectionPostgres.getConnection()) {
+        try (Connection connection = ConnectionPostgres.getConnection()) {
             PreparedStatement statement = connection.prepareStatement("SELECT c.token FROM client as c where c.client_id =" +
                     " (SELECT client_id from shop where shop_uuid = ?)");
             statement.setString(1, shop);
@@ -175,12 +176,41 @@ public class ShopDaoImpl implements ShopDao {
     @Override
     public String getNameByStoreUuid(String storeUuid) {
         String res = null;
-        try(Connection connection = ConnectionPostgres.getConnection()) {
+        try (Connection connection = ConnectionPostgres.getConnection()) {
             PreparedStatement statement = connection.prepareStatement("SELECT name FROM shop where shop_uuid = ?");
             statement.setString(1, storeUuid);
             ResultSet set = statement.executeQuery();
-            if(set.next()) {
+            if (set.next()) {
                 res = set.getString("name");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return res;
+    }
+
+    @Override
+    public void writeSequenceColumns(String string, String storeUuid) {
+        try (Connection connection = ConnectionPostgres.getConnection()) {
+            PreparedStatement statement = connection
+                    .prepareStatement("UPDATE shop set sequence_columns = ? WHERE storeUuid = ?");
+            statement.setString(1, string);
+            statement.setString(2, storeUuid);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    @Override
+    public String getSequance(String storeUuid) {
+        String res = null;
+        try (Connection connection = ConnectionPostgres.getConnection()) {
+            PreparedStatement statement = connection.prepareStatement("SELECT sequence_columns FROM shop where shop_uuid = ?");
+            statement.setString(1, storeUuid);
+            ResultSet set = statement.executeQuery();
+            if (set.next()) {
+                res = set.getString("sequence_columns");
             }
         } catch (SQLException e) {
             e.printStackTrace();
