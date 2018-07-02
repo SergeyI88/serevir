@@ -1,15 +1,21 @@
 package utils;
 
+import db.entity.Shop;
 import http.entity.Good;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import service.ShopService;
 
 import java.util.*;
 
 @Component
 public class CreateXlsxFromEvotor {
+
+    @Autowired
+    ShopService shopService;
 
     private class  Node{
         public Node(Good good) {
@@ -141,7 +147,7 @@ public class CreateXlsxFromEvotor {
 
 
 
-    public Workbook getWorkbook (List<Good> goods, String shopName){
+    public Workbook getWorkbook (List<Good> goods, Shop shop){
         Map<String, String> uuidWithCodeForSwap = new HashMap<>();
         for (Good good : goods) {
             uuidWithCodeForSwap.put(good.getUuid(), good.getCode());
@@ -149,76 +155,156 @@ public class CreateXlsxFromEvotor {
 
         XSSFWorkbook workbook = new XSSFWorkbook();
 
-        XSSFSheet sheet = workbook.createSheet(shopName);
+        XSSFSheet sheet = workbook.createSheet(shop.getName());
 
         Font headerFont = workbook.createFont();
         headerFont.setBold(true);
         headerFont.setFontHeightInPoints((short) 14);
         headerFont.setColor(IndexedColors.RED.getIndex());
 
+//        Font groupFont = workbook.createFont();
+//        Font podGroupFont = workbook.createFont();
+
+//        groupFont.setColor(IndexedColors.RED1.getIndex());
+//        podGroupFont.setColor(IndexedColors.YELLOW1.getIndex());
+
         CellStyle headerCellStyle = workbook.createCellStyle();
         headerCellStyle.setFont(headerFont);
+        CellStyle groupCellStyle = workbook.createCellStyle();
+        groupCellStyle.setFillForegroundColor(IndexedColors.RED1.getIndex());
+        groupCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+//        groupCellStyle.setFont(groupFont);
+        CellStyle podGroupCellStyle = workbook.createCellStyle();
+        podGroupCellStyle.setFillForegroundColor(IndexedColors.YELLOW1.getIndex());
+        podGroupCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+//        podGroupCellStyle.setFont(podGroupFont);
 
         Row headerRow = sheet.createRow(0);
-        String[] columns = {"uuid", "код", "штрих-коды", "алко-коды", "имя", "цена", "количество", "цена закупки", "название меры",
-                "налог", "разрешено к продаже", "описание", "артикул", "код группы",
-                "группа", "тип", "объем алкогольной тары", "код алкоголя", "объем тары"};
-        for(int i = 0; i < columns.length; i++) {
+        List<String> columnList = Arrays.asList(shopService.getSequance(shop.getUuid()).trim().split(";"));
+        for(int i = 0; i < columnList.size(); i++) {
             Cell cell = headerRow.createCell(i);
-            cell.setCellValue(columns[i]);
+            cell.setCellValue(columnList.get(i));
             cell.setCellStyle(headerCellStyle);
         }
 
         int rowNum = 1;
         if (goods == null) {
-            for(int i = 0; i < columns.length; i++) {
+            for(int i = 0; i < columnList.size(); i++) {
                 sheet.autoSizeColumn(i);
             }
             return workbook;
         }
         sortListGood(goods, uuidWithCodeForSwap);
         for(Good good: goods) {
+            CellStyle justCellStyle = workbook.createCellStyle();
             String parentUuid = good.getParentUuid();
             if (parentUuid != null && uuidWithCodeForSwap.containsKey(parentUuid)){
                 String code = uuidWithCodeForSwap.get(parentUuid);
                 good.setParentUuid(code);
            }
             Row row = sheet.createRow(rowNum++);
-            row.createCell(0).setCellValue(good.getUuid() != null ? good.getUuid() : "");
-            row.createCell(1).setCellValue(good.getCode() != null ? good.getCode() : "");
+
+            if (good.getParentUuid() == null && good.getGroup()) {
+                justCellStyle = groupCellStyle;
+            } else if (good.getParentUuid() != null && good.getGroup()) {
+                justCellStyle = podGroupCellStyle;
+            }
+
+            Cell cell1 = row.createCell(columnList.indexOf("uuid"));
+            cell1.setCellValue(good.getUuid() != null ? good.getUuid() : "");
+            cell1.setCellStyle(justCellStyle);
+
+            Cell cell2 = row.createCell(columnList.indexOf("код"));
+            cell2.setCellValue(good.getCode() != null ? good.getCode() : "");
+            cell2.setCellStyle(justCellStyle);
+
             StringBuilder barCodes = new StringBuilder();
-            if (good.getBarCodes() != null) {
-                for (Object obj : good.getBarCodes()) {
-                    String str = (String)obj;
-                    barCodes.append(str);
+            if (good.getBarCodes() != null || good.getGroup()) {
+                if (good.getBarCodes() != null){
+                    for (Object obj : good.getBarCodes()) {
+                        String str = (String)obj;
+                        barCodes.append(str);
+                    }
                 }
-                row.createCell(2).setCellValue(barCodes.toString());
+                Cell cell3 = row.createCell(columnList.indexOf("штрих-коды"));
+                cell3.setCellValue(barCodes.toString());
+                cell3.setCellStyle(justCellStyle);
             }
+
             StringBuilder AlcoCodes = new StringBuilder();
-            if (good.getAlcoCodes() != null) {
-                for (Object obj : good.getAlcoCodes()) {
-                    String str = (String)obj;
-                    AlcoCodes.append(str);
+            if (good.getAlcoCodes() != null || good.getGroup()) {
+                if (good.getAlcoCodes() != null) {
+                    for (Object obj : good.getAlcoCodes()) {
+                        String str = (String)obj;
+                        AlcoCodes.append(str);
+                    }
                 }
-                row.createCell(3).setCellValue(AlcoCodes.toString());
+                Cell cell4 = row.createCell(columnList.indexOf("алко-коды"));
+                cell4.setCellValue(AlcoCodes.toString());
+                cell4.setCellStyle(justCellStyle);
             }
-            row.createCell(4).setCellValue(good.getName() != null ? good.getName() : "");
-            row.createCell(5).setCellValue(good.getPrice() != null ? good.getPrice().toString() : "");
-            row.createCell(6).setCellValue(good.getQuantity() != null ? good.getQuantity().toString() : "");
-            row.createCell(7).setCellValue(good.getCostPrice() != null ? good.getCostPrice().toString() : "");
-            row.createCell(8).setCellValue(good.getMeasureName() != null ? good.getMeasureName() : "");
-            row.createCell(9).setCellValue(good.getTax() != null ? good.getTax() : "");
-            row.createCell(10).setCellValue(good.getAllowToSell() != null ? good.getAllowToSell() ? "1" : "0" : "");
-            row.createCell(11).setCellValue(good.getDescription() != null ? good.getDescription() : "");
-            row.createCell(12).setCellValue(good.getArticleNumber() != null ? good.getArticleNumber() : "");
-            row.createCell(13).setCellValue(good.getParentUuid() != null ? good.getParentUuid() : "");
-            row.createCell(14).setCellValue(good.getGroup() != null ? good.getGroup() ? "1" : "0" : "");
-            row.createCell(15).setCellValue(good.getType() != null ? good.getType() : "");
-            row.createCell(16).setCellValue(good.getAlcoholByVolume() != null ? good.getAlcoholByVolume().toString() : "");
-            row.createCell(17).setCellValue(good.getAlcoholProductKindCode() != null ? good.getAlcoholProductKindCode().toString() :"");
-            row.createCell(18).setCellValue(good.getTareVolume() != null ? good.getTareVolume().toString() : "");
+
+            Cell cell5 = row.createCell(columnList.indexOf("имя"));
+            cell5.setCellValue(good.getName() != null ? good.getName() : "");
+            cell5.setCellStyle(justCellStyle);
+
+            Cell cell6 = row.createCell(columnList.indexOf("цена"));
+            cell6.setCellValue(good.getPrice() != null ? good.getPrice().toString() : "");
+            cell6.setCellStyle(justCellStyle);
+
+            Cell cell7 = row.createCell(columnList.indexOf("количество"));
+            cell7.setCellValue(good.getQuantity() != null ? good.getQuantity().toString() : "");
+            cell7.setCellStyle(justCellStyle);
+
+            Cell cell8 = row.createCell(columnList.indexOf("цена закупки"));
+            cell8.setCellValue(good.getCostPrice() != null ? good.getCostPrice().toString() : "");
+            cell8.setCellStyle(justCellStyle);
+
+            Cell cell9 = row.createCell(columnList.indexOf("название меры"));
+            cell9.setCellValue(good.getMeasureName() != null ? good.getMeasureName() : "");
+            cell9.setCellStyle(justCellStyle);
+
+            Cell cell10 = row.createCell(columnList.indexOf("налог"));
+            cell10.setCellValue(good.getTax() != null ? good.getTax() : "");
+            cell10.setCellStyle(justCellStyle);
+
+            Cell cell11 = row.createCell(columnList.indexOf("разрешено к продаже"));
+            cell11.setCellValue(good.getAllowToSell() != null ? good.getAllowToSell() ? "1" : "0" : "");
+            cell11.setCellStyle(justCellStyle);
+
+            Cell cell12 = row.createCell(columnList.indexOf("описание"));
+            cell12.setCellValue(good.getDescription() != null ? good.getDescription() : "");
+            cell12.setCellStyle(justCellStyle);
+
+            Cell cell13 = row.createCell(columnList.indexOf("артикул"));
+            cell13.setCellValue(good.getArticleNumber() != null ? good.getArticleNumber() : "");
+            cell13.setCellStyle(justCellStyle);
+
+            Cell cell14 = row.createCell(columnList.indexOf("код группы"));
+            cell14.setCellValue(good.getParentUuid() != null ? good.getParentUuid() : "");
+            cell14.setCellStyle(justCellStyle);
+
+            Cell cell15 = row.createCell(columnList.indexOf("группа"));
+            cell15.setCellValue(good.getGroup() != null ? good.getGroup() ? "1" : "0" : "");
+            cell15.setCellStyle(justCellStyle);
+
+            Cell cell16 = row.createCell(columnList.indexOf("тип"));
+            cell16.setCellValue(good.getType() != null ? good.getType() : "");
+            cell16.setCellStyle(justCellStyle);
+
+            Cell cell17 = row.createCell(columnList.indexOf("объем алкогольной тары"));
+            cell17.setCellValue(good.getAlcoholByVolume() != null ? good.getAlcoholByVolume().toString() : "");
+            cell17.setCellStyle(justCellStyle);
+
+            Cell cell18 = row.createCell(columnList.indexOf("код алкоголя"));
+            cell18.setCellValue(good.getAlcoholProductKindCode() != null ? good.getAlcoholProductKindCode().toString() :"");
+            cell18.setCellStyle(justCellStyle);
+
+            Cell cell19 = row.createCell(columnList.indexOf("объем тары"));
+            cell19.setCellValue(good.getTareVolume() != null ? good.getTareVolume().toString() : "");
+            cell19.setCellStyle(justCellStyle);
         }
-        for(int i = 0; i < columns.length; i++) {
+        for(int i = 0; i < columnList.size(); i++) {
             sheet.autoSizeColumn(i);
         }
 
