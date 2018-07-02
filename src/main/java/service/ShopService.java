@@ -63,7 +63,7 @@ public class ShopService {
         return shopDao.getSequance(storeUuid);
     }
 
-    public void writeSequenceColumns(String string, String storeUuid) {
-        shopDao.writeSequenceColumns(string, storeUuid);
+    public void writeSequenceColumns(String sequence, String storeUuid) {
+        shopDao.writeSequenceColumns(sequence, storeUuid);
     }
 }

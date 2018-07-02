@@ -193,9 +193,11 @@ public class ShopDaoImpl implements ShopDao {
     public void writeSequenceColumns(String string, String storeUuid) {
         try (Connection connection = ConnectionPostgres.getConnection()) {
             PreparedStatement statement = connection
-                    .prepareStatement("UPDATE shop set sequence_columns = ? WHERE storeUuid = ?");
+                    .prepareStatement("UPDATE shop set sequence_columns = ? WHERE shop_uuid = ?");
             statement.setString(1, string);
             statement.setString(2, storeUuid);
+            statement.execute();
+            System.out.println("ЗАПИСАЛИ");
         } catch (SQLException e) {
             e.printStackTrace();
         }

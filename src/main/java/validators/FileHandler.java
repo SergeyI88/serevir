@@ -23,9 +23,13 @@ import java.util.*;
 @Scope("prototype")
 public class FileHandler<T extends Workbook> {
     @Autowired
-    ShopService shopService;
+    private ShopService shopService;
     @Autowired
-    MapperToEnumField mapperToEnumField;
+    private MapperToEnumField mapperToEnumField;
+
+    private final List<String> columns = Arrays.asList("uuid", "код", "штрих-коды", "алко-коды", "имя", "цена", "количество", "цена закупки", "название меры",
+            "налог", "разрешено к продаже", "описание", "артикул", "код группы",
+            "группа", "тип", "объем алкогольной тары", "код алкоголя", "объем тары");
 
     public FileHandler checkValues(ThirdFunction<Cell, EnumFields, List<String>, Good, Good> func
             , Cell cell
@@ -65,12 +69,10 @@ public class FileHandler<T extends Workbook> {
         HashMap map = new HashMap();
         List<String> listErrors = new ArrayList<>();
         Sheet sheet = workbook.getSheetAt(0);
-
-
         Row row = sheet.getRow(0);
+        List<Cell> list = getFirstColumns(row);
         for (EnumFields e : EnumFields.values()) {
-            for (Iterator<Cell> it = row.cellIterator(); it.hasNext(); ) {
-                Cell c = it.next();
+            for (Cell c : list) {
                 if (e.name.toLowerCase().equals(c.toString().toLowerCase().trim())) {
                     match = true;
                     break;
@@ -90,26 +92,39 @@ public class FileHandler<T extends Workbook> {
 
         Integer[] integers = {1};
         sheet.removeRow(row);
-        System.out.println(sheet.getRow(2).getCell(4, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK).getAddress());
         sequence.forEach(System.out::println);
+        System.out.println(sequence.peek());
+        System.out.println(sequence.peek());
+        System.out.println(sequence.peek());
+        System.out.println(sequence.peek());
+        System.out.println(sequence.peek());
+        System.out.println(sequence.peek());
+        System.out.println(sequence.peek());
 
         List<Good> goodList = new ArrayList<>();
         sheet.forEach(r -> {
             Good good = new Good(++integers[0]);
+            System.out.println(sequence.peek());System.out.println(sequence.peek());
+            System.out.println(sequence.peek());System.out.println(sequence.peek());
+            System.out.println(sequence.peek());System.out.println(sequence.peek());
             int i = 0;
             Cell c = r.getCell(i, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK);
             for (; i < sequence.size(); ) {
-                checkValues(mapperToEnumField.mapFunc.get(sequence.peek()), c, mapperToEnumField.mapNames.get(sequence.peek()), listErrors, sequence, goodList, good);
+                System.out.println(sequence.peek());
+                if (columns.stream().anyMatch( s -> s.equals(sequence.peek().trim().toLowerCase()) )) {
+                    System.out.println(good);
+                    checkValues(mapperToEnumField.mapFunc.get(sequence.peek().trim().toLowerCase()), c, mapperToEnumField.mapNames.get(sequence.peek().trim().toLowerCase()), listErrors, sequence, goodList, good);
+                } else {
+                    sequence.offer(sequence.poll());
+                }
                 c = r.getCell(++i, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK);
             }
-            ;
-
             Good temp = isEnd(good, listErrors);
             if (temp != null) {
                 temp = isDelete(storeUuid, auth, temp, listErrors);
             }
 
-            if (temp != null) {
+            if (temp != null && temp.getName() != null && temp.getUuid() != null) {
                 goodList.add(groupOrNo(good, listErrors));
             }
         });
@@ -119,18 +134,25 @@ public class FileHandler<T extends Workbook> {
         return map;
     }
 
+    private List<Cell> getFirstColumns(Row r) {
+        List<Cell> columns = new ArrayList<>();
+        Cell c = null;
+        for (int i = 0; i < r.getLastCellNum(); i++) {
+            c = r.getCell(i, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK);
+            columns.add(c);
+        }
+        return columns;
+    }
+
     private Queue<String> getSequenceAndWriteToDataBase(Row row, String storeUuid) {
         Queue<String> sequence = new ArrayDeque<>();
         StringBuilder builder = new StringBuilder();
-        String[] columns = {"uuid", "код", "штрих-коды", "алко-коды", "имя", "цена", "количество", "цена закупки", "название меры",
-                "налог", "разрешено к продаже", "описание", "артикул", "код группы",
-                "группа", "тип", "объем алкогольной тары", "код алкоголя", "объем тары"};
-
-        for (Iterator<Cell> it = row.cellIterator(); it.hasNext(); ) {
-            String column = it.next().toString().toLowerCase().trim();
+        for (Cell cell : row) {
+            String column = cell.toString().toLowerCase().trim();
+            System.out.println(column + "========================================================================");
             sequence.offer(column);
-            if ( Arrays.asList(columns).contains(column)) {
-                builder.append(column).append(" ");
+            if (columns.contains(column)) {
+                builder.append(column).append(";");
             }
         }
         shopService.writeSequenceColumns(builder.toString(), storeUuid);

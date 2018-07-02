@@ -23,6 +23,8 @@ public class ControllerEvents {
         EventInstallOrUninstall event = gson.fromJson(body, EventInstallOrUninstall.class);
         if(event.getType().equals("ApplicationUninstalled")) {
             clientService.removeClient(event.getData().getUserId());
+        } else if (event.getType().equals("ApplicationInstalled")) {
+
         }
         return "index";
     }
