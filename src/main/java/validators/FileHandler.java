@@ -92,25 +92,13 @@ public class FileHandler<T extends Workbook> {
 
         Integer[] integers = {1};
         sheet.removeRow(row);
-        sequence.forEach(System.out::println);
-        System.out.println(sequence.peek());
-        System.out.println(sequence.peek());
-        System.out.println(sequence.peek());
-        System.out.println(sequence.peek());
-        System.out.println(sequence.peek());
-        System.out.println(sequence.peek());
-        System.out.println(sequence.peek());
 
         List<Good> goodList = new ArrayList<>();
         sheet.forEach(r -> {
             Good good = new Good(++integers[0]);
-            System.out.println(sequence.peek());System.out.println(sequence.peek());
-            System.out.println(sequence.peek());System.out.println(sequence.peek());
-            System.out.println(sequence.peek());System.out.println(sequence.peek());
             int i = 0;
             Cell c = r.getCell(i, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK);
             for (; i < sequence.size(); ) {
-                System.out.println(sequence.peek());
                 if (columns.stream().anyMatch( s -> s.equals(sequence.peek().trim().toLowerCase()) )) {
                     System.out.println(good);
                     checkValues(mapperToEnumField.mapFunc.get(sequence.peek().trim().toLowerCase()), c, mapperToEnumField.mapNames.get(sequence.peek().trim().toLowerCase()), listErrors, sequence, goodList, good);
@@ -149,7 +137,6 @@ public class FileHandler<T extends Workbook> {
         StringBuilder builder = new StringBuilder();
         for (Cell cell : row) {
             String column = cell.toString().toLowerCase().trim();
-            System.out.println(column + "========================================================================");
             sequence.offer(column);
             if (columns.contains(column)) {
                 builder.append(column).append(";");
