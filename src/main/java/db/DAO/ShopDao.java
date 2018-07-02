@@ -24,4 +24,8 @@ public interface ShopDao {
     String getTokenByStoreUuid(String shop);
 
     String getNameByStoreUuid(String storeUuid);
+
+    void writeSequenceColumns(String string, String storeUuid);
+
+    String getSequance(String storeUuid);
 }

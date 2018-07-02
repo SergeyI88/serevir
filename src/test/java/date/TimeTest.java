@@ -1,11 +1,12 @@
 package date;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-
+@Ignore
 public class TimeTest {
 @Test
     public void testTime() {

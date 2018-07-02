@@ -3,6 +3,7 @@ package validators;
 import config.Config;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import java.util.*;
 import java.io.File;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {Config.class})
+@Ignore
 public class FileHandlerTest {
     @Autowired
     FileHandler<Workbook> handler;
