@@ -13,18 +13,14 @@ import java.net.URL;
 @Controller
 public class TemplateController {
 
-    @Autowired
-    ServletContext servlerContext;
-
-    final String DEFAULT_FILE_NAME = "products.xlsx";
-    String urlString = "https://drive.google.com/uc?export=download&id=16uGeZvBL8Ttn4YBT-vo5GmUh1MHC_eXi";
+    String urlString1 = "https://drive.google.com/uc?export=download&id=1j-ipCS2FqvnpZ5ERUgKxaM1IXnpmosgL";
+    String urlString2 = "https://drive.google.com/uc?export=download&id=1vOTBoyoVRYnt1BtBNta0jS8dmBepTFGv";
 
     @GetMapping("/download")
-    public void downloadFile3(HttpServletResponse resonse,
-                              @RequestParam(defaultValue = DEFAULT_FILE_NAME) String fileName) throws IOException {
+    public void downloadFile3(HttpServletResponse resonse) throws IOException {
         resonse.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + "goods.xlsx");
 
-        BufferedInputStream inStream = new BufferedInputStream(new URL(urlString).openStream());
+        BufferedInputStream inStream = new BufferedInputStream(new URL(urlString1).openStream());
         BufferedOutputStream outStream = new BufferedOutputStream(resonse.getOutputStream());
 
         byte[] buffer = new byte[1024];
@@ -38,11 +34,10 @@ public class TemplateController {
     }
 
     @GetMapping("/manual")
-    public void manual(HttpServletResponse resonse,
-                              @RequestParam(defaultValue = DEFAULT_FILE_NAME) String fileName) throws IOException {
+    public void manual(HttpServletResponse resonse) throws IOException {
         resonse.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + "manual.xlsx");
 
-        BufferedInputStream inStream = new BufferedInputStream(new URL(urlString).openStream());
+        BufferedInputStream inStream = new BufferedInputStream(new URL(urlString2).openStream());
         BufferedOutputStream outStream = new BufferedOutputStream(resonse.getOutputStream());
 
         byte[] buffer = new byte[1024];

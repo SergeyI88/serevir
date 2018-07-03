@@ -2,7 +2,9 @@ package utils;
 
 import db.entity.Shop;
 import http.entity.Good;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFBorderFormatting;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,7 +55,7 @@ public class CreateXlsxFromEvotor {
         private List<Node> nodes;
     }
 
-    public void sortListGood(List<Good> goods, Map<String, String> uuidWithCodeForSwap) {
+    public String sortListGood(List<Good> goods, Map<String, String> uuidWithCodeForSwap) {
         System.out.println(goods.size());
         Map<String, Node> sortMap = new HashMap<>();
         for (Good good : goods) {
@@ -112,7 +114,6 @@ public class CreateXlsxFromEvotor {
         }
         goods.clear();
         List<Node> justGood = new ArrayList<>();
-        System.out.println(sortMap.size());
         for (Map.Entry<String, Node> entry : sortMap.entrySet()) {
             if (entry.getValue().getBoss()) {
                 if (entry.getValue().getNodes() == null && !entry.getValue().getGood().getGroup()) {
@@ -123,10 +124,14 @@ public class CreateXlsxFromEvotor {
                 }
             }
         }
-
+        String uuidFirstGood = null;
+        if (!justGood.isEmpty()) {
+            uuidFirstGood = justGood.get(0).getGood().getUuid();
+        }
         for (Node node : justGood) {
             putIntoList(goods, node);
         }
+        return uuidFirstGood;
     }
 
     private void putIntoList(List<Good> goods, Node node){
@@ -135,16 +140,16 @@ public class CreateXlsxFromEvotor {
             return;
         } else {
             goods.add(node.getGood());
+            List<Node> groups = new ArrayList<>();
             for (Node innerNode : node.getNodes()) {
-                List<Node> groups = new ArrayList<>();
-                if (innerNode.getNodes() != null) {
+                if (innerNode.getNodes() == null && !innerNode.getGood().getGroup()) {
                     putIntoList(goods, innerNode);
                 } else {
                     groups.add(innerNode);
                 }
-                for (Node group : groups) {
-                    putIntoList(goods, group);
-                }
+            }
+            for (Node group : groups){
+                putIntoList(goods, group);
             }
         }
     }
@@ -182,6 +187,8 @@ public class CreateXlsxFromEvotor {
         podGroupCellStyle.setFillForegroundColor(IndexedColors.YELLOW1.getIndex());
         podGroupCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 //        podGroupCellStyle.setFont(podGroupFont);
+        CellStyle firstGoodCellStyle = workbook.createCellStyle();
+        firstGoodCellStyle.setBorderTop(BorderStyle.MEDIUM);
 
         Row headerRow = sheet.createRow(0);
         List<String> columnList = Arrays.asList(shopService.getSequance(shop.getUuid()).trim().split(";"));
@@ -198,7 +205,7 @@ public class CreateXlsxFromEvotor {
             }
             return workbook;
         }
-        sortListGood(goods, uuidWithCodeForSwap);
+        String uuidFirstGood = sortListGood(goods, uuidWithCodeForSwap);
         for(Good good: goods) {
             CellStyle justCellStyle = workbook.createCellStyle();
             String parentUuid = good.getParentUuid();
@@ -212,6 +219,11 @@ public class CreateXlsxFromEvotor {
                 justCellStyle = groupCellStyle;
             } else if (good.getParentUuid() != null && good.getGroup()) {
                 justCellStyle = podGroupCellStyle;
+            }
+            if (uuidFirstGood != null) {
+                if (good.getUuid().equals(uuidFirstGood)) {
+                    justCellStyle = firstGoodCellStyle;
+                }
             }
 
             Cell cell1 = row.createCell(columnList.indexOf("uuid"));
