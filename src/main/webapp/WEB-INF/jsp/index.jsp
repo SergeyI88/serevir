@@ -91,7 +91,6 @@
   <form action="/download"  enctype="multipart/form-data">
     <input type="submit" class="form-field" value="Загрузить шаблон"/>
   </form>
-    <br>
     <form action="/manual"  enctype="multipart/form-data">
         <input type="submit" class="form-field" value="Загрузить инструкцию"/>
     </form>
