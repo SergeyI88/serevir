@@ -136,7 +136,15 @@ public class CreateXlsxFromEvotor {
         } else {
             goods.add(node.getGood());
             for (Node innerNode : node.getNodes()) {
-                putIntoList(goods, innerNode);
+                List<Node> groups = new ArrayList<>();
+                if (innerNode.getNodes() != null) {
+                    putIntoList(goods, innerNode);
+                } else {
+                    groups.add(innerNode);
+                }
+                for (Node group : groups) {
+                    putIntoList(goods, group);
+                }
             }
         }
     }
