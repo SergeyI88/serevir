@@ -65,4 +65,10 @@ public class MainController {
         }
         return "{succes: true}";
     }
+
+
+    @RequestMapping("/error")
+    public String error() {
+        return "error";
+    }
 }

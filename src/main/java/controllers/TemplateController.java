@@ -22,7 +22,25 @@ public class TemplateController {
     @GetMapping("/download")
     public void downloadFile3(HttpServletResponse resonse,
                               @RequestParam(defaultValue = DEFAULT_FILE_NAME) String fileName) throws IOException {
-        resonse.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + "products.xlsx");
+        resonse.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + "goods.xlsx");
+
+        BufferedInputStream inStream = new BufferedInputStream(new URL(urlString).openStream());
+        BufferedOutputStream outStream = new BufferedOutputStream(resonse.getOutputStream());
+
+        byte[] buffer = new byte[1024];
+        int bytesRead = 0;
+        while ((bytesRead = inStream.read(buffer)) != -1) {
+            outStream.write(buffer, 0, bytesRead);
+        }
+        outStream.flush();
+        inStream.close();
+        outStream.close();
+    }
+
+    @GetMapping("/manual")
+    public void manual(HttpServletResponse resonse,
+                              @RequestParam(defaultValue = DEFAULT_FILE_NAME) String fileName) throws IOException {
+        resonse.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + "manual.xlsx");
 
         BufferedInputStream inStream = new BufferedInputStream(new URL(urlString).openStream());
         BufferedOutputStream outStream = new BufferedOutputStream(resonse.getOutputStream());
