@@ -35,7 +35,7 @@ public class TemplateController {
 
     @GetMapping("/manual")
     public void manual(HttpServletResponse resonse) throws IOException {
-        resonse.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + "manual.xlsx");
+        resonse.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + "manual.doc");
 
         BufferedInputStream inStream = new BufferedInputStream(new URL(urlString2).openStream());
         BufferedOutputStream outStream = new BufferedOutputStream(resonse.getOutputStream());
