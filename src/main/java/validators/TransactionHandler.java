@@ -39,14 +39,6 @@ public class TransactionHandler {
             }
         }
 
-//                transactions.stream()
-//                .filter(t -> t.getType().equals("REGISTER_POSITION"))
-//                .map(t -> {
-//                    Good good = new Good();
-//                    good.setQuantity(t.getQuantity());
-//                    good.setUuid(t.getCommodityUuid());
-//                    return good;
-//                }).collect(Collectors.toList());
         logger.info("get goods from the terminal");
         execute(listFromTerminal, fromEvotor, storeUuid, authorization, type);
 
@@ -106,12 +98,6 @@ public class TransactionHandler {
                     return good;
                 }).collect(Collectors.toList());
         logger.info("method executeInventory got list from terminal");
-//
-//        List<Good> unionListWithFields = fromEvotor.stream()
-//                .filter(e -> {
-//
-//                   return listFromTerminal.stream().map(Good::getUuid).anyMatch(u -> u.equals(e.getUuid()));
-//                }).map().collect(Collectors.toList());
         for (Good withFields : fromEvotor) {
             for (Good without : listFromTerminal) {
                 if (withFields.getUuid().equals(without.getUuid())) {

@@ -3,7 +3,6 @@ package validators;
 import consts.EnumFields;
 import http.DeleteGoods;
 import http.entity.Good;
-import http.entity.Group;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;

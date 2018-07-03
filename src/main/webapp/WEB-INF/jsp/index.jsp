@@ -35,7 +35,7 @@
             var count = 0;
             var inp = document.getElementsByName('storeUuid');
             for (var i = 0; i < inp.length; i++) {
-                if (inp[i].type == "radio" && inp[i].checked) {
+                if (inp[i].type === "radio" && inp[i].checked) {
                     count++;
                     document.getElementById('get').removeAttribute('hidden')
                 }
