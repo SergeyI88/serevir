@@ -51,10 +51,6 @@ public class CreateXlsxFromEvotor {
         }
 
         private List<Node> nodes;
-
-
-
-
     }
 
     public void sortListGood(List<Good> goods, Map<String, String> uuidWithCodeForSwap) {
@@ -119,7 +115,7 @@ public class CreateXlsxFromEvotor {
         System.out.println(sortMap.size());
         for (Map.Entry<String, Node> entry : sortMap.entrySet()) {
             if (entry.getValue().getBoss()) {
-                if (entry.getValue().getNodes() == null) {
+                if (entry.getValue().getNodes() == null && !entry.getValue().getGood().getGroup()) {
                     justGood.add(entry.getValue());
                 } else {
                     Node node = entry.getValue();
