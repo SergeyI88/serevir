@@ -133,7 +133,7 @@ public class MapperToEnumField {
         mapFunc.put("группа", (cell, field, list, good) -> {
             if (field.isRequired) {
                 if (!cell.toString().trim().isEmpty()) {
-                    if (cell.toString().equals("1.0") || cell.toString().equals("0.0") || cell.toString().equals("1") || cell.toString().equals("0")) {
+                    if (cell.toString().trim().equals("1.0") || cell.toString().trim().equals("0.0") || cell.toString().trim().equals("1") || cell.toString().trim().equals("0")) {
                         good.setGroup(cell.toString().equals("1.0") || cell.toString().equals("1"));
                     } else {
                         list.add(cell.toString() + " группа должна быть 0 если не является и 1 если является группой" + field.name);

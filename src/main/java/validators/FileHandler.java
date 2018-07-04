@@ -3,6 +3,7 @@ package validators;
 import consts.EnumFields;
 import http.DeleteGoods;
 import http.entity.Good;
+import org.apache.log4j.Logger;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -21,6 +22,7 @@ import java.util.*;
 @Component
 @Scope("prototype")
 public class FileHandler<T extends Workbook> {
+    private final Logger logger = Logger.getLogger(FileHandler.class);
     @Autowired
     private ShopService shopService;
     @Autowired
@@ -46,6 +48,7 @@ public class FileHandler<T extends Workbook> {
     private Good groupOrNo(Good apply, List<String> listErrors) {
         if (apply.getGroup() != null) {
             if (apply.getGroup()) {
+                logger.info("Товар является группой " + apply.getId());
                 for (int i = 0; i < listErrors.size(); ) {
                     if (listErrors.get(i++).startsWith(apply.getId() + "")) {
                         listErrors.remove(--i);
@@ -120,7 +123,8 @@ public class FileHandler<T extends Workbook> {
             if (temp != null && temp.getName().equals("-")) {
                 forDelete.add(temp);
             }
-            if (temp != null && temp.getName() != null && temp.getUuid() != null && !temp.getName().equals("-")) {
+            temp = groupOrNo(temp, listErrors);
+            if (temp != null && temp.getName() != null && temp.getUuid() != null && !temp.getName().trim().equals("-")) {
                 goodList.add(groupOrNo(temp, listErrors));
             }
         });
