@@ -116,9 +116,8 @@ public class FileHandler<T extends Workbook> {
             if (temp != null && temp.getName().equals("-")) {
                 forDelete.add(temp);
             }
-
-            if (temp != null && temp.getName() != null && temp.getUuid() != null) {
-                goodList.add(groupOrNo(good, listErrors));
+            if (temp != null && temp.getName() != null && temp.getUuid() != null && !temp.getName().equals("-")) {
+                goodList.add(groupOrNo(temp, listErrors));
             }
         });
         isMatch(goodList, listErrors);
@@ -152,10 +151,11 @@ public class FileHandler<T extends Workbook> {
         return sequence;
     }
 
-    private void isDelete(String storeUuid, String auth, List<Good> temp) {
-        DeleteGoods deleteGoods = new DeleteGoods();
-        deleteGoods.execute(storeUuid, auth, temp);
-
+    private void isDelete(String storeUuid, String auth, List<Good> goods) {
+        if (goods.isEmpty()) {
+            DeleteGoods deleteGoods = new DeleteGoods();
+            deleteGoods.execute(storeUuid, auth, goods);
+        }
     }
 
     private Good isEnd(Good good, List<String> listErrors) {
