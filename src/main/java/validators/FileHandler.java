@@ -55,7 +55,6 @@ public class FileHandler<T extends Workbook> {
                     }
                 }
                 if (apply.getCode() == null || apply.getCode().isEmpty()) {
-                    logger.info(apply.getCode() + " группа без кода");
                     listErrors.add(apply.getId() + " Колонка код у группы не может быть пуста");
                 }
                 Good good = new Good();
