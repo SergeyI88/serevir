@@ -55,6 +55,7 @@ public class FileHandler<T extends Workbook> {
                     }
                 }
                 if (apply.getCode() == null || apply.getCode().isEmpty()) {
+                    logger.info(apply.getCode() + " группа без кода");
                     listErrors.add(apply.getId() + " Колонка код у группы не может быть пуста");
                 }
                 Good good = new Good();
@@ -125,7 +126,7 @@ public class FileHandler<T extends Workbook> {
             }
             temp = groupOrNo(temp, listErrors);
             if (temp != null && temp.getName() != null && temp.getUuid() != null && !temp.getName().trim().equals("-")) {
-                goodList.add(groupOrNo(temp, listErrors));
+                goodList.add(temp);
             }
         });
         isMatch(goodList, listErrors);

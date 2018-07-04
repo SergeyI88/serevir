@@ -77,7 +77,6 @@ public class MapperToEnumField {
         });
         mapFunc.put("код", (cell, field, list, good) -> {
             if (!cell.toString().trim().isEmpty()) {
-
                 good.setCode(cell.toString());
             }
             return good;
