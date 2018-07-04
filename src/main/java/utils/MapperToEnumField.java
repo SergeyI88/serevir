@@ -245,16 +245,15 @@ public class MapperToEnumField {
         });
 
         mapFunc.put("разрешено к продаже", (cell, field, list, good) -> {
-            if (field.isRequired) {
-                if (!cell.toString().trim().isEmpty()) {
-                    if (cell.toString().equals("1.0") || cell.toString().equals("0.0") || cell.toString().equals("1") || cell.toString().equals("0")) {
-                        good.setAllowToSell(cell.toString().equals("1"));
-                    } else {
-                        list.add(good.getId() + " " + cell.toString() + " allowToSell должна быть 0 если товар нельзя добавлять в чек и 1 если можно" + field.name);
-                    }
-                } else {
+
+            if (!cell.toString().trim().isEmpty()) {
+                if (cell.toString().equals("1.0") || cell.toString().equals("0.0") || cell.toString().equals("1") || cell.toString().equals("0")) {
                     good.setAllowToSell(true);
+                } else {
+                    list.add(good.getId() + " " + cell.toString() + " allowToSell должна быть 0 если товар нельзя добавлять в чек и 1 если можно" + field.name);
                 }
+            } else {
+                good.setAllowToSell(true);
             }
             return good;
         });
