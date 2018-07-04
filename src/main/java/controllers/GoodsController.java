@@ -65,8 +65,10 @@ public class GoodsController {
             list = map.get("errors");
             int result = 0;
             if (list.isEmpty()) {
-                DeleteGoods deleteGoods = new DeleteGoods();
-                deleteGoods.execute(storeUuid, (String) request.getSession().getAttribute("token"), map.get("forDelete"));
+                if (!map.get("forDelete").isEmpty()) {
+                    DeleteGoods deleteGoods = new DeleteGoods();
+                    deleteGoods.execute(storeUuid, (String) request.getSession().getAttribute("token"), map.get("forDelete"));
+                }
                 SendGoods sendGoods = new SendGoods();
                 result = sendGoods.send(map.get("goods"), storeUuid, (String) request.getSession().getAttribute("token"));
             }
