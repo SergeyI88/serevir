@@ -152,7 +152,7 @@ public class FileHandler<T extends Workbook> {
     }
 
     private void isDelete(String storeUuid, String auth, List<Good> goods) {
-        if (goods.isEmpty()) {
+        if (!goods.isEmpty()) {
             DeleteGoods deleteGoods = new DeleteGoods();
             deleteGoods.execute(storeUuid, auth, goods);
         }
