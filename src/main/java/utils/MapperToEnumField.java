@@ -253,7 +253,7 @@ public class MapperToEnumField {
                         list.add(good.getId() + " " + cell.toString() + " allowToSell должна быть 0 если товар нельзя добавлять в чек и 1 если можно" + field.name);
                     }
                 } else {
-                    good.setAllowToSell(false);
+                    good.setAllowToSell(true);
                 }
             }
             return good;
