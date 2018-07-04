@@ -52,6 +52,7 @@ public class FileHandler<T extends Workbook> {
                     }
                 }
                 Good good = new Good();
+                good.setId(apply.getId());
                 good.setCode(apply.getCode());
                 good.setName(apply.getName());
                 good.setGroup(apply.getGroup());
@@ -151,12 +152,6 @@ public class FileHandler<T extends Workbook> {
         return sequence;
     }
 
-    private void isDelete(String storeUuid, String auth, List<Good> goods) {
-        if (!goods.isEmpty()) {
-            DeleteGoods deleteGoods = new DeleteGoods();
-            deleteGoods.execute(storeUuid, auth, goods);
-        }
-    }
 
     private Good isEnd(Good good, List<String> listErrors) {
         if (good.getQuantity() == null && good.getName() == null && good.getPrice() == null) {
