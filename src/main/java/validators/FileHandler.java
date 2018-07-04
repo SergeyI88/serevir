@@ -121,7 +121,7 @@ public class FileHandler<T extends Workbook> {
             }
         });
         isMatch(goodList, listErrors);
-        isDelete(storeUuid, auth, forDelete);
+        map.put("forDelete", forDelete);
         map.put("errors", listErrors);
         map.put("goods", goodList);
         return map;

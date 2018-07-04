@@ -247,8 +247,10 @@ public class MapperToEnumField {
         mapFunc.put("разрешено к продаже", (cell, field, list, good) -> {
 
             if (!cell.toString().trim().isEmpty()) {
-                if (cell.toString().equals("1.0") || cell.toString().equals("0.0") || cell.toString().equals("1") || cell.toString().equals("0")) {
+                if (cell.toString().trim().equals("1.0") || cell.toString().trim().equals("1") ) {
                     good.setAllowToSell(true);
+                } else if(cell.toString().trim().equals("0") || cell.toString().trim().equals("0.0")) {
+                    good.setAllowToSell(false);
                 } else {
                     list.add(good.getId() + " " + cell.toString() + " allowToSell должна быть 0 если товар нельзя добавлять в чек и 1 если можно" + field.name);
                 }

@@ -2,6 +2,7 @@ package controllers;
 
 import db.DAO.impl.ShopDaoImpl;
 import db.entity.Shop;
+import http.DeleteGoods;
 import http.GetGoods;
 import http.SendGoods;
 import http.entity.Good;
@@ -64,6 +65,8 @@ public class GoodsController {
             list = map.get("errors");
             int result = 0;
             if (list.isEmpty()) {
+                DeleteGoods deleteGoods = new DeleteGoods();
+                deleteGoods.execute(storeUuid, (String) request.getSession().getAttribute("token"), map.get("forDelete"));
                 SendGoods sendGoods = new SendGoods();
                 result = sendGoods.send(map.get("goods"), storeUuid, (String) request.getSession().getAttribute("token"));
             }
