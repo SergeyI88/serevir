@@ -35,8 +35,8 @@ public class FileHandler<T extends Workbook> {
             , EnumFields field
             , List<String> errors
             , Queue<String> queue
-            , List<Good> goods
-            , Good good) {
+            , Good good
+            , List<Good> forDelete) {
         queue.offer(queue.poll());
 
         func.apply(cell, field, errors, good);
@@ -93,22 +93,28 @@ public class FileHandler<T extends Workbook> {
         sheet.removeRow(row);
 
         List<Good> goodList = new ArrayList<>();
+        List<Good> forDelete = new ArrayList<>();
         sheet.forEach(r -> {
             Good good = new Good(++integers[0]);
             int i = 0;
             Cell c = r.getCell(i, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK);
             for (; i < sequence.size(); ) {
-                if (columns.stream().anyMatch( s -> s.equals(sequence.peek().trim().toLowerCase()) )) {
-                    System.out.println(good);
-                    checkValues(mapperToEnumField.mapFunc.get(sequence.peek().trim().toLowerCase()), c, mapperToEnumField.mapNames.get(sequence.peek().trim().toLowerCase()), listErrors, sequence, goodList, good);
+                if (columns.stream().anyMatch(s -> s.equals(sequence.peek().trim().toLowerCase()))) {
+                    checkValues(mapperToEnumField.mapFunc.get(sequence.peek().trim().toLowerCase())
+                            , c
+                            , mapperToEnumField.mapNames.get(sequence.peek().trim().toLowerCase())
+                            , listErrors
+                            , sequence
+                            , good
+                            , forDelete);
                 } else {
                     sequence.offer(sequence.poll());
                 }
                 c = r.getCell(++i, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK);
             }
             Good temp = isEnd(good, listErrors);
-            if (temp != null) {
-                temp = isDelete(storeUuid, auth, temp, listErrors);
+            if (temp != null && temp.getName().equals("-")) {
+                forDelete.add(temp);
             }
 
             if (temp != null && temp.getName() != null && temp.getUuid() != null) {
@@ -116,6 +122,7 @@ public class FileHandler<T extends Workbook> {
             }
         });
         isMatch(goodList, listErrors);
+        isDelete(storeUuid, auth, forDelete);
         map.put("errors", listErrors);
         map.put("goods", goodList);
         return map;
@@ -145,18 +152,10 @@ public class FileHandler<T extends Workbook> {
         return sequence;
     }
 
-    private Good isDelete(String storeUuid, String auth, Good temp, List<String> listErrors) {
-        if (temp.getName().equals("-")) {
-            DeleteGoods deleteGoods = new DeleteGoods();
-            deleteGoods.execute(storeUuid, auth, temp);
-            for (int i = 0; i < listErrors.size(); ) {
-                if (listErrors.get(i++).startsWith(temp.getId() + "")) {
-                    listErrors.remove(--i);
-                }
-            }
-            return null;
-        }
-        return temp;
+    private void isDelete(String storeUuid, String auth, List<Good> temp) {
+        DeleteGoods deleteGoods = new DeleteGoods();
+        deleteGoods.execute(storeUuid, auth, temp);
+
     }
 
     private Good isEnd(Good good, List<String> listErrors) {

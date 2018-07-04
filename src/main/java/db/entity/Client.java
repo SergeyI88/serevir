@@ -5,6 +5,23 @@ public class Client {
     String token;
     String companyName;
     String uuid;
+    boolean isEnabled;
+
+    public long getClient_id() {
+        return client_id;
+    }
+
+    public void setClient_id(long client_id) {
+        this.client_id = client_id;
+    }
+
+    public boolean isEnabled() {
+        return isEnabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        isEnabled = enabled;
+    }
 
     public long getId() {
         return client_id;

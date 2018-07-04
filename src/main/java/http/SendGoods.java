@@ -21,12 +21,6 @@ public class SendGoods {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         Gson gson = new Gson();
-        System.out.println();
-        System.out.println();
-        System.out.println(token);
-        System.out.println(storeUuid);
-        System.out.println();
-        System.out.println();
         String body = gson.toJson(list);
         SendGoodsI sendGoodsI = retrofit.create(SendGoodsI.class);
         RequestBody requestBody =

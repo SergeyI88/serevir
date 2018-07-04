@@ -6,7 +6,6 @@ import http.entity.Good;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 import controllers.json.Document.Transaction;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;

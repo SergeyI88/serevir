@@ -164,6 +164,8 @@ public class MapperToEnumField {
             if (field.isRequired) {
                 if (!cell.toString().trim().isEmpty()) {
                     good.setName(cell.toString().trim());
+                } else if (good.getName().trim().toLowerCase().equals("-")) {
+                    good.setName("-");
                 } else {
                     list.add(good.getId() + " Поле имя не может быть пустым");
                 }

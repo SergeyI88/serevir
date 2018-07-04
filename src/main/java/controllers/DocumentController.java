@@ -28,7 +28,6 @@ public class DocumentController {
     @RequestMapping(value = "/api/v1/inventories/stores/{storeUuid}/documents", method = RequestMethod.PUT)
     @ResponseBody
     public String getDocuments(@PathVariable("storeUuid") String shop, @Header("Authorization") String a, @RequestBody String body) {
-        logger.info(a);
         String authorization = shopService.getTokenByStoreUuid(shop);
         Gson gson = new Gson();
         List<LinkedTreeMap> list = gson.fromJson(body, List.class);
@@ -48,9 +47,7 @@ public class DocumentController {
             documents.add(document);
 
         }
-        documents.forEach(System.out::println);
         Document document = documents.get(documents.size() - 1);
-        logger.info(document);
         transactionHandler.getGoods(document.getType(), document.getTransactions(), shop, authorization);
         return "{success:true}";
     }
