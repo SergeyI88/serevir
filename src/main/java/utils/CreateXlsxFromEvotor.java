@@ -56,7 +56,6 @@ public class CreateXlsxFromEvotor {
     }
 
     public String sortListGood(List<Good> goods, Map<String, String> uuidWithCodeForSwap) {
-        System.out.println(goods.size());
         Map<String, Node> sortMap = new HashMap<>();
         for (Good good : goods) {
             String parentUuid = good.getParentUuid();

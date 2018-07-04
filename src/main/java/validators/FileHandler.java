@@ -220,6 +220,8 @@ public class FileHandler<T extends Workbook> {
                 if (parrentCode != null && codeWithUuidForSwap.containsKey(parrentCode)) {
                     String uuid = codeWithUuidForSwap.get(parrentCode);
                     good.setParentUuid(uuid);
+                } else if (parrentCode != null && !codeWithUuidForSwap.containsKey(parrentCode)) {
+                    good.setParentUuid("");
                 }
             }
         }
