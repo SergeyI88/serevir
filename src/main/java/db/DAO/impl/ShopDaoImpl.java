@@ -51,7 +51,7 @@ public class ShopDaoImpl implements ShopDao {
         PreparedStatement statement = null;
         int result = 0;
         try (Connection connection = ConnectionPostgres.getConnection();) {
-            statement = connection.prepareStatement("INSERT INTO shop VALUES(DEFAULT, ?, ?, ?)");
+            statement = connection.prepareStatement("INSERT INTO shop VALUES(DEFAULT, ?, ?, ?, DEFAULT)");
             statement.setString(1, shop_uuid);
             statement.setLong(2, client_id);
             statement.setString(3, name);

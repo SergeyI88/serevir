@@ -11,4 +11,8 @@ public interface ClientDao {
     boolean createClient(String token, String company_name, String uuid);
 
     void removeClient(String userUuid);
+
+    void setIsEnable(String uuid, Boolean isEnabled);
+
+    boolean getIsEnable(String token);
 }

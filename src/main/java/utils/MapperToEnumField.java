@@ -87,13 +87,13 @@ public class MapperToEnumField {
             if (!cell.toString().trim().isEmpty()) {
                 if (field.isRequired) {
                     try {
-                        d = Double.valueOf(cell.toString());
+                        d = Double.valueOf(cell.toString().replace(",", "."));
                     } catch (NumberFormatException e) {
                         list.add(good.getId() + " " + cell.toString() + "цена закупки - должн быть число [ 0 .. 9999999.999 ] столбец " + field.name);
                     }
                 } else {
                     try {
-                        d = Double.valueOf(cell.toString());
+                        d = Double.valueOf(cell.toString().replace(",", "."));
                     } catch (NumberFormatException e) {
                         list.add(good.getId() + " " + cell.toString() + "цена закупки - должно быть число [ 0 .. 9999999.999 ] столбец " + field.name);
                     }
@@ -108,7 +108,7 @@ public class MapperToEnumField {
             if (field.isRequired) {
                 if (!cell.toString().trim().isEmpty()) {
                     try {
-                        d = Double.valueOf(cell.toString());
+                        d = Double.valueOf(cell.toString().replace(",", "."));
                     } catch (NumberFormatException e) {
                         list.add(good.getId() + " " + cell.toString() + "цена должно быть число [ 0 .. 9999999.999 ] столбец " + field.name);
                     }
@@ -183,7 +183,7 @@ public class MapperToEnumField {
             Double d = null;
             if (!cell.toString().trim().isEmpty()) {
                 try {
-                    d = Double.valueOf(cell.toString());
+                    d = Double.valueOf(cell.toString().replace(",", "."));
                 } catch (NumberFormatException e) {
                     list.add(good.getId() + " " + cell.toString() + "количество должно быть число [ 0 .. 9999999.999 ] столбец " + field.name);
                 }

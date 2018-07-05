@@ -24,4 +24,12 @@ public class ClientService {
         shopDao.removeShops(userUuid);
         clientDao.removeClient(userUuid);
     }
+
+    public void setSubscription(String userId, boolean b) {
+        clientDao.setIsEnable(userId, b);
+    }
+
+    public boolean getSubscription(String x_auth) {
+        return clientDao.getIsEnable(x_auth);
+    }
 }
