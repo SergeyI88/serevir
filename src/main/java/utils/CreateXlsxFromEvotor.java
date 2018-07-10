@@ -264,15 +264,15 @@ public class CreateXlsxFromEvotor {
             cell5.setCellStyle(justCellStyle);
 
             Cell cell6 = row.createCell(columnList.indexOf("цена"));
-            cell6.setCellValue(good.getPrice() != null ? good.getPrice().toString() : "");
+            cell6.setCellValue(good.getPrice() != null ? good.getPrice() : 0);
             cell6.setCellStyle(justCellStyle);
 
             Cell cell7 = row.createCell(columnList.indexOf("количество"));
-            cell7.setCellValue(good.getQuantity() != null ? good.getQuantity().toString() : "");
+            cell7.setCellValue(good.getQuantity() != null ? good.getQuantity() : 0);
             cell7.setCellStyle(justCellStyle);
 
             Cell cell8 = row.createCell(columnList.indexOf("цена закупки"));
-            cell8.setCellValue(good.getCostPrice() != null ? good.getCostPrice().toString() : "");
+            cell8.setCellValue(good.getCostPrice() != null ? good.getCostPrice() : 0);
             cell8.setCellStyle(justCellStyle);
 
             Cell cell9 = row.createCell(columnList.indexOf("название меры"));

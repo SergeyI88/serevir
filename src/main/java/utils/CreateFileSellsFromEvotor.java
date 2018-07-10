@@ -18,41 +18,43 @@ public class CreateFileSellsFromEvotor {
 
         for (Document document : documents) {
             if (document.getType().equals("SELL") || document.getType().equals("PAYBACK")) {
-                Document.Transaction transaction = document.getTransactions().stream().filter(t-> t.getType().equals("REGISTER_POSITION")).findFirst().orElseGet(()->document.new Transaction());
-                if (transaction.getCommodityCode() != null) {
-                    if (document.getType().equals("SELL")) {
-                        if (map.containsKey(transaction.getCommodityUuid())){
-                            Good good = map.get(transaction.getCommodityUuid());
-                            Double quanity = good.getQuantity();
-                            quanity += transaction.getQuantity();
-                            good.setQuantity(quanity);
-                            map.replace(transaction.getCommodityUuid(), good);
+                List<Document.Transaction> transactions = document.getTransactions();
+                for (Document.Transaction transaction : transactions) {
+                    if (transaction.equals("REGISTER_POSITION")) {
+                        if (document.getType().equals("SELL")) {
+                            if (map.containsKey(transaction.getCommodityUuid())){
+                                Good good = map.get(transaction.getCommodityUuid());
+                                Double quanity = good.getQuantity();
+                                quanity += transaction.getQuantity();
+                                good.setQuantity(quanity);
+                                map.replace(transaction.getCommodityUuid(), good);
+                            } else {
+                                Good good = new Good();
+                                good.setUuid(transaction.getCommodityUuid());
+                                good.setName(transaction.getCommodityName());
+                                good.setQuantity(transaction.getQuantity());
+                                good.setPrice(transaction.getPrice().doubleValue());
+                                good.setCode(transaction.getCommodityCode());
+                                map.put(transaction.getCommodityUuid(), good);
+                            }
                         } else {
-                            Good good = new Good();
-                            good.setUuid(transaction.getCommodityUuid());
-                            good.setName(transaction.getCommodityName());
-                            good.setQuantity(transaction.getQuantity());
-                            good.setPrice(transaction.getPrice().doubleValue());
-                            map.put(transaction.getCommodityUuid(), good);
-                        }
-                    } else {
-                        if (map.containsKey(transaction.getCommodityUuid())){
-                            Good good = map.get(transaction.getCommodityUuid());
-                            Double quanity = good.getQuantity();
-                            quanity -= transaction.getQuantity();
-                            good.setQuantity(quanity);
-                            map.replace(transaction.getCommodityUuid(), good);
-                        } else {
-                            Good good = new Good();
-                            good.setUuid(transaction.getCommodityUuid());
-                            good.setName(transaction.getCommodityName());
-                            good.setQuantity(-transaction.getQuantity());
-                            good.setPrice(transaction.getPrice().doubleValue());
-                            map.put(transaction.getCommodityUuid(), good);
+                            if (map.containsKey(transaction.getCommodityUuid())){
+                                Good good = map.get(transaction.getCommodityUuid());
+                                Double quanity = good.getQuantity();
+                                quanity -= transaction.getQuantity();
+                                good.setQuantity(quanity);
+                                map.replace(transaction.getCommodityUuid(), good);
+                            } else {
+                                Good good = new Good();
+                                good.setUuid(transaction.getCommodityUuid());
+                                good.setName(transaction.getCommodityName());
+                                good.setQuantity(-transaction.getQuantity());
+                                good.setPrice(transaction.getPrice().doubleValue());
+                                good.setCode(transaction.getCommodityCode());
+                                map.put(transaction.getCommodityUuid(), good);
+                            }
                         }
                     }
-                } else{
-                    continue;
                 }
             } else {
                 continue;
@@ -103,8 +105,8 @@ public class CreateFileSellsFromEvotor {
 
             row.createCell(0).setCellValue(good.getCode() != null ? good.getCode() : "");
             row.createCell(1).setCellValue(good.getName() != null ? good.getName() : "");
-            row.createCell(2).setCellValue(good.getQuantity() != null ? good.getQuantity().toString() : "");
-            row.createCell(3).setCellValue(good.getPrice() != null ? good.getPrice().toString() : "");
+            row.createCell(2).setCellValue(good.getQuantity() != null ? good.getQuantity() : 0);
+            row.createCell(3).setCellValue(good.getPrice() != null ? good.getPrice() : 0);
         }
 
         for(int i = 0; i < columnList.size(); i++) {
