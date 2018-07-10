@@ -23,6 +23,7 @@ import org.springframework.web.servlet.ModelAndView;
 import retrofit2.GsonConverterFactory;
 import retrofit2.Retrofit;
 import service.ShopService;
+import utils.CreateFileSellsFromEvotor;
 import utils.CreateXlsxFromEvotor;
 import validators.FileHandler;
 
@@ -53,6 +54,9 @@ public class GoodsController {
 
     @Autowired
     CreateXlsxFromEvotor createXlsxFromEvotor;
+
+    @Autowired
+    CreateFileSellsFromEvotor createFileSellsFromEvotor;
 
     @Autowired
     public GoodsController(FileHandler fileHandler) {
@@ -131,7 +135,11 @@ public class GoodsController {
     }
 
     @RequestMapping(value = "/sells", method = RequestMethod.POST)
-    public ModelAndView getSells(HttpServletRequest request, @RequestParam("store") String storeUuid, @RequestParam("dateFrom") String from, @RequestParam("dateTo") String to) {
+    public ModelAndView getSells(HttpServletResponse resonse,
+                                 HttpServletRequest request,
+                                 @RequestParam("store") String storeUuid,
+                                 @RequestParam("dateFrom") String from,
+                                 @RequestParam("dateTo") String to) throws IOException {
         ModelAndView modelAndView = new ModelAndView("index");
         if ("".equals(from) || from == null) {
             modelAndView.addObject("list", Arrays.asList("Неверный формат даты"));
@@ -166,6 +174,16 @@ public class GoodsController {
             System.out.println(d);
             System.out.println();
         });
+        
+        Shop shop = shopDao.getShopByUuidStore(storeUuid);
+        Workbook workbook = createFileSellsFromEvotor.convertFromDocToGood(documents, shop.getName());
+
+        BufferedOutputStream outStream = new BufferedOutputStream(resonse.getOutputStream());
+        resonse.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + "sell" + ".xlsx");
+        workbook.write(outStream);
+        outStream.close();
+        workbook.close();
+
         return modelAndView;
     }
 
