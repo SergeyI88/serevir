@@ -117,7 +117,7 @@ public class ShopDaoImpl implements ShopDao {
             Statement statement = connection.createStatement();
             for (Shop s : list) {
                 statement.addBatch("INSERT INTO shop VALUES(DEFAULT, " +
-                        "'" + s.getUuid() + "'" + ", (SELECT client_id FROM client WHERE client.uuid = " + "'" + userUuid + "'" + "), " + "'" + s.getName() + "', " + "'" +s.getDeviceUuid()+ "'" + ")");
+                        "'" + s.getUuid() + "'" + ", (SELECT client_id FROM client WHERE client.uuid = " + "'" + userUuid + "'" + "), " + "'" + s.getName() + "', DEFAULT, " + "'" +s.getDeviceUuid()+ "'" + ")");
             }
             statement.executeBatch();
             logger.info("downloadShop good");
