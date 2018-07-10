@@ -25,12 +25,6 @@ public class GetDocumentsImpl {
         return list;
     }
 
-    public static void main(String[] args) {
-        GetDocumentsImpl getDocuments = new GetDocumentsImpl();
-        getDocuments.get("20180620-B2F2-40AA-806C-5013E03BA9B8","4874893f-df06-46be-a0f0-68e32cbf4110").forEach(System.out::println);
-
-    }
-
     public List<Document> get(String storeUuid, String token, String to, String from) {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://umorili.herokuapp.com") //Базовая часть адреса

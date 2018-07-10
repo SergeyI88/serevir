@@ -83,8 +83,8 @@
 
     <div class="form-title">Просмотр продаж</div>
     <form name="f3" method="post" action="sells" enctype="multipart/form-data">
-        <div hidden id="dateFrom">C:<input type="date" class="form-field" name="dateFrom"/></div>
-        <div hidden id="dateTo">ПО:<input type="date" class="form-field" name="dateTo"/></div>
+        <div hidden id="dateFrom">C:<input type="date" class="form-field-data" name="dateFrom" placeholder="C"/></div>
+        <div hidden id="dateTo">ПО:<input type="date" class="form-field-data2" name="dateTo" placeholder="ПО"/></div>
         <input type="text" name="store" value="" id="viewSells" hidden/>
         <input hidden class="form-field" type="submit" value="Посмотреть продажи" id="getSells"/>
     </form>
