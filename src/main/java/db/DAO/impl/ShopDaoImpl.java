@@ -151,7 +151,7 @@ public class ShopDaoImpl implements ShopDao {
     public void removeShops(String userUuid) {
         try (Connection connection = ConnectionPostgres.getConnection()) {
             PreparedStatement statement = connection.prepareStatement(
-                    "DELETE  from shop where c.client_id = (SELECT client_id from client where uuid = ?)");
+                    "DELETE  from shop where client_id = (SELECT client_id from client where uuid = ?)");
             statement.setString(1, userUuid);
             statement.execute();
         } catch (SQLException e) {
