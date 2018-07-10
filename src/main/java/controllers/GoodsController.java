@@ -142,9 +142,17 @@ public class GoodsController {
 
         try {
             localDateTimeFrom = LocalDateTime.of(LocalDate.parse(from, DateTimeFormatter.ofPattern("yyyy-MM-dd")), LocalTime.of(0, 0, 0, 0));
-            localDateTimeTo = LocalDateTime.of(LocalDate.parse(to, DateTimeFormatter.ofPattern("yyyy-MM-dd")), LocalTime.now());
+            if ("".equals(to) || to == null) {
+                localDateTimeTo = LocalDateTime.now();
+            } else {
+                localDateTimeTo = LocalDateTime.of(LocalDate.parse(to, DateTimeFormatter.ofPattern("yyyy-MM-dd")), LocalTime.now());
+            }
         } catch (DateTimeParseException e) {
             modelAndView.addObject("list", Arrays.asList("Неверный формат даты"));
+            return modelAndView;
+        }
+        if (localDateTimeTo.isBefore(localDateTimeFrom)) {
+            modelAndView.addObject("list", Arrays.asList("Дата не может быть раньше или позже текущей даты"));
             return modelAndView;
         }
 
