@@ -3,6 +3,7 @@ package db.DAO.impl;
 import db.DAO.ShopDao;
 import db.connection.ConnectionPostgres;
 import db.entity.Shop;
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
@@ -12,6 +13,7 @@ import java.util.List;
 @Repository
 @SuppressWarnings("Duplicates")
 public class ShopDaoImpl implements ShopDao {
+    Logger logger = Logger.getLogger(ShopDaoImpl.class);
     @Override
     public Shop getShopById(long id) {
         Shop shop = new Shop();
@@ -118,8 +120,9 @@ public class ShopDaoImpl implements ShopDao {
                         "'" + s.getUuid() + "'" + ", (SELECT client_id FROM client WHERE client.uuid = " + "'" + userUuid + "'" + "), " + "'" + s.getName() + "', " + "'" +s.getDeviceUuid()+ "'" + ")");
             }
             statement.executeBatch();
-
+            logger.info("downloadShop good");
         } catch (SQLException e) {
+            logger.info("downloadShop");
             e.printStackTrace();
         }
         return result != null;
