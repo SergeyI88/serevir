@@ -258,6 +258,43 @@ public class Document {
     }
 
     public class Transaction {
+        @Override
+        public String toString() {
+            return "Transaction{" +
+                    "type='" + type + '\'' +
+                    ", uuid=" + uuid +
+                    ", id='" + id + '\'' +
+                    ", userCode=" + userCode +
+                    ", userUuid='" + userUuid + '\'' +
+                    ", creationDate='" + creationDate + '\'' +
+                    ", timezone=" + timezone +
+                    ", baseDocumentNumber=" + baseDocumentNumber +
+                    ", baseDocumentUUID=" + baseDocumentUUID +
+                    ", clientName=" + clientName +
+                    ", clientPhone=" + clientPhone +
+                    ", couponNumber=" + couponNumber +
+                    ", alcoholByVolume=" + alcoholByVolume +
+                    ", alcoholProductKindCode=" + alcoholProductKindCode +
+                    ", balanceQuantity=" + balanceQuantity +
+                    ", barcode='" + barcode + '\'' +
+                    ", commodityCode='" + commodityCode + '\'' +
+                    ", commodityUuid='" + commodityUuid + '\'' +
+                    ", commodityName='" + commodityName + '\'' +
+                    ", commodityType='" + commodityType + '\'' +
+                    ", costPrice=" + costPrice +
+                    ", fprintSection='" + fprintSection + '\'' +
+                    ", mark=" + mark +
+                    ", measureName='" + measureName + '\'' +
+                    ", tareVolume=" + tareVolume +
+                    ", price=" + price +
+                    ", quantity=" + quantity +
+                    ", resultPrice=" + resultPrice +
+                    ", resultSum=" + resultSum +
+                    ", sum=" + sum +
+                    ", positionId=" + positionId +
+                    ", extraKeys=" + extraKeys +
+                    '}';
+        }
 
         @SerializedName("type")
         @Expose
@@ -321,7 +358,7 @@ public class Document {
         private String commodityType;
         @SerializedName("costPrice")
         @Expose
-        private Integer costPrice;
+        private BigDecimal costPrice;
         @SerializedName("fprintSection")
         @Expose
         private String fprintSection;
@@ -516,11 +553,11 @@ public class Document {
             this.commodityType = commodityType;
         }
 
-        public Integer getCostPrice() {
+        public BigDecimal getCostPrice() {
             return costPrice;
         }
 
-        public void setCostPrice(Integer costPrice) {
+        public void setCostPrice(BigDecimal costPrice) {
             this.costPrice = costPrice;
         }
 

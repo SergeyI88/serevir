@@ -1,7 +1,6 @@
 package validators;
 
 import consts.EnumFields;
-import http.DeleteGoods;
 import http.entity.Good;
 import org.apache.log4j.Logger;
 import org.apache.poi.ss.usermodel.Cell;
@@ -181,7 +180,6 @@ public class FileHandler<T extends Workbook> {
             if (good.getCode() != null) {
                 codeWithUuidForSwap.put(good.getCode(), good.getUuid());
             }
-            System.out.println("Uuid" + " " + good.getUuid() + " " + good.getId());
             String uuid = good.getUuid();
             String code = good.getCode();
             code = code != null ? Double.valueOf(code).toString() : null;

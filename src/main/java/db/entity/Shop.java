@@ -5,6 +5,15 @@ public class Shop {
     String uuid;
     long clientId;
     String name;
+    String deviceUuid;
+
+    public String getDeviceUuid() {
+        return deviceUuid;
+    }
+
+    public void setDeviceUuid(String deviceUuid) {
+        this.deviceUuid = deviceUuid;
+    }
 
     public String getName() {
         return name;

@@ -2,6 +2,7 @@ package service;
 
 import db.DAO.ClientDao;
 import db.DAO.ShopDao;
+import http.impl.GetShopsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +16,9 @@ public class ClientService {
 
     public boolean createClient(String userUuid, String token, String company_name) {
         if (clientDao.getClientByUuid(userUuid).getId() == 0) {
-           return clientDao.createClient(token, "", userUuid);
+            GetShopsImpl getShops = new GetShopsImpl();
+            clientDao.createClient(userUuid, token, "");
+            shopDao.downLoadShops(userUuid, getShops.get(token));
         }
        return false;
     }

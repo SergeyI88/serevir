@@ -1,36 +1,21 @@
 package http;
 
-import com.google.gson.Gson;
-import http.entity.Good;
-import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
-import org.apache.log4j.Logger;
-import retrofit2.GsonConverterFactory;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import java.io.IOException;
-import java.util.*;
+import retrofit2.Call;
+import retrofit2.http.Body;
+import retrofit2.http.Header;
+import retrofit2.http.POST;
+import retrofit2.http.Path;
 
-public class SendGoods {
-    private static Logger logger = Logger.getLogger(SendGoods.class);
-
-    public int send(List<Good> list, String storeUuid, String token) throws IOException {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://umorili.herokuapp.com") //Базовая часть адреса
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        Gson gson = new Gson();
-        String body = gson.toJson(list);
-        SendGoodsI sendGoodsI = retrofit.create(SendGoodsI.class);
-        RequestBody requestBody =
-                RequestBody.create(MediaType.parse("text/plain"), body);
-        Response<ResponseBody> responce = sendGoodsI.sendData(storeUuid
-                , token
-                , "application/json"
-                , requestBody).execute();
-        logger.info(responce.message());
-       return responce.code();
-    }
+/**
+ * Created by admin on 23.06.2018.
+ */
+public interface SendGoods {
+    @POST("https://api.evotor.ru/api/v1/inventories/stores/{storeUuid}/products")
+    Call<ResponseBody> sendData(@Path("storeUuid") String storeUuid
+            , @Header("X-Authorization") String authorization
+            , @Header("Content-Type") String content_type
+            , @Body RequestBody body);
 
 }

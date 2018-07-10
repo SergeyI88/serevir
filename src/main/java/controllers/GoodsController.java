@@ -1,10 +1,12 @@
 package controllers;
 
+import controllers.json.Document;
 import db.DAO.impl.ShopDaoImpl;
 import db.entity.Shop;
-import http.DeleteGoods;
+import http.impl.DeleteGoodsImpl;
 import http.GetGoods;
-import http.SendGoods;
+import http.impl.GetDocumentsImpl;
+import http.impl.SendGoodsImpl;
 import http.entity.Good;
 import org.apache.log4j.Logger;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
@@ -30,8 +32,12 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.security.NoSuchAlgorithmException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.*;
 
 @Controller
@@ -66,11 +72,11 @@ public class GoodsController {
             int result = 0;
             if (list.isEmpty()) {
                 if (!map.get("forDelete").isEmpty()) {
-                    DeleteGoods deleteGoods = new DeleteGoods();
-                    deleteGoods.execute(storeUuid, (String) request.getSession().getAttribute("token"), map.get("forDelete"));
+                    DeleteGoodsImpl deleteGoodsImpl = new DeleteGoodsImpl();
+                    deleteGoodsImpl.execute(storeUuid, (String) request.getSession().getAttribute("token"), map.get("forDelete"));
                 }
-                SendGoods sendGoods = new SendGoods();
-                result = sendGoods.send(map.get("goods"), storeUuid, (String) request.getSession().getAttribute("token"));
+                SendGoodsImpl sendGoodsImpl = new SendGoodsImpl();
+                result = sendGoodsImpl.send(map.get("goods"), storeUuid, (String) request.getSession().getAttribute("token"));
             }
             modelAndView.addObject("list", !list.isEmpty() ? list : result == 200 ? new ArrayList(Arrays.asList("Все товары загружены")) : new ArrayList(Arrays.asList("Сервер ответил отказом, попробуйте позже")));
         } catch (InvalidFormatException e) {
@@ -86,7 +92,7 @@ public class GoodsController {
 
     @GetMapping("/downloadGoods")
     public void downloadFile3(HttpServletResponse resonse,
-                              @RequestParam String storeUuid,
+                              @RequestParam("store") String storeUuid,
                               HttpServletRequest request) throws Exception {
 
         Retrofit retrofit = new Retrofit.Builder()
@@ -105,6 +111,15 @@ public class GoodsController {
         workbook.close();
     }
 
+    @RequestMapping(value = "/removeAll", method = RequestMethod.POST)
+    public ModelAndView removeAll(HttpServletRequest request, @RequestParam("store") String storeUuid) {
+        DeleteGoodsImpl deleteGoodsImpl = new DeleteGoodsImpl();
+        deleteGoodsImpl.execute(storeUuid, (String) request.getSession().getAttribute("token"), null);
+        ModelAndView modelAndView = new ModelAndView("index");
+        modelAndView.addObject("list", Arrays.asList("Все товары удалены"));
+        return modelAndView;
+    }
+
 
     public File convert(MultipartFile file) throws IOException {
         File convFile = new File(file.getOriginalFilename());
@@ -113,6 +128,37 @@ public class GoodsController {
         fos.write(file.getBytes());
         fos.close();
         return convFile;
+    }
+
+    @RequestMapping(value = "/sells", method = RequestMethod.POST)
+    public ModelAndView getSells(HttpServletRequest request, @RequestParam("store") String storeUuid, @RequestParam("dateFrom") String from, @RequestParam("dateTo") String to) {
+        ModelAndView modelAndView = new ModelAndView("index");
+        if ("".equals(from) || from == null) {
+            modelAndView.addObject("list", Arrays.asList("Неверный формат даты"));
+            return modelAndView;
+        }
+        LocalDateTime localDateTimeFrom = null;
+        LocalDateTime localDateTimeTo = null;
+
+        try {
+            localDateTimeFrom = LocalDateTime.of(LocalDate.parse(from, DateTimeFormatter.ofPattern("yyyy-MM-dd")), LocalTime.of(0, 0, 0, 0));
+            localDateTimeTo = LocalDateTime.of(LocalDate.parse(to, DateTimeFormatter.ofPattern("yyyy-MM-dd")), LocalTime.now());
+        } catch (DateTimeParseException e) {
+            modelAndView.addObject("list", Arrays.asList("Неверный формат даты"));
+            return modelAndView;
+        }
+
+
+        GetDocumentsImpl getDocuments = new GetDocumentsImpl();
+        System.out.println(localDateTimeTo.toString());
+        System.out.println(localDateTimeFrom.toString());
+
+        List<Document> documents = getDocuments.get(storeUuid, (String) request.getSession().getAttribute("token"), localDateTimeTo.toString(), localDateTimeFrom.toString());
+        documents.forEach(d -> {
+            System.out.println(d);
+            System.out.println();
+        });
+        return modelAndView;
     }
 
 

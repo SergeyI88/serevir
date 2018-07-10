@@ -3,8 +3,6 @@ package controllers;
 import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
 import controllers.json.Document;
-import http.SendGoods;
-import http.entity.Good;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

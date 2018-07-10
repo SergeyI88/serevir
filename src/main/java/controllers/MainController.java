@@ -1,9 +1,14 @@
 package controllers;
 
+import com.google.gson.Gson;
+import com.sun.org.apache.bcel.internal.generic.NEW;
+import controllers.json.NewClient;
 import db.entity.Shop;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import service.ClientService;
@@ -30,7 +35,7 @@ public class MainController {
 
     public ModelAndView open(HttpServletRequest request, @RequestParam String uid, @RequestParam String token) {
         request.getSession().setAttribute("token", token);
-        List<Shop> list = shopService.getShops(uid, (String) request.getSession().getAttribute("token"));
+        List<Shop> list = shopService.getShops(uid);
         System.out.println(list);
         request.getSession().setAttribute("shops", list);
         ModelAndView modelAndView = new ModelAndView("index");
@@ -39,33 +44,13 @@ public class MainController {
 
     @ResponseBody
     @RequestMapping(value = "/api/v1/user/token", method = RequestMethod.POST)
-    public String install(HttpServletRequest request) {
-        Enumeration<String> enumerPar = request.getParameterNames();
-        while (enumerPar.hasMoreElements()) {
-            String param = enumerPar.nextElement();
-            logger.info(param);
-            logger.info(request.getParameter(param));
-        }
-
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(request.getInputStream()))) {
-            String string = reader.readLine();
-            while (string != null) {
-                logger.info(string + " зашли");
-                string = reader.readLine();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        Enumeration<String> enumer = request.getHeaderNames();
-        while (enumer.hasMoreElements()) {
-            String header = enumer.nextElement();
-            logger.info(header);
-            logger.info(request.getHeader(header));
-        }
+    public String install(@RequestBody String body) {
+        Gson gson = new Gson();
+        NewClient newClient = gson.fromJson(body, NewClient.class);
+        logger.info("new client" + newClient.getUserId());
+        clientService.createClient(newClient.getUserId(), newClient.getToken(), "");
         return "{succes: true}";
     }
-
 
     @RequestMapping("/error")
     public String error() {

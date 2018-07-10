@@ -1,7 +1,7 @@
 package validators;
 
-import http.GetGoodsImpl;
-import http.SendGoods;
+import http.impl.GetGoodsImpl;
+import http.impl.SendGoodsImpl;
 import http.entity.Good;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
@@ -60,9 +60,9 @@ public class TransactionHandler {
             }
         }
         logger.info("got union list in increment");
-        SendGoods sendGoods = new SendGoods();
+        SendGoodsImpl sendGoodsImpl = new SendGoodsImpl();
         try {
-            int code = sendGoods.send(fromEvotor, storeUuid, authorization);
+            int code = sendGoodsImpl.send(fromEvotor, storeUuid, authorization);
             logger.info(code + " sent in evotor after increment");
         } catch (IOException e) {
             e.printStackTrace();
@@ -78,9 +78,9 @@ public class TransactionHandler {
             }
         }
         logger.info("got union list in decrement");
-        SendGoods sendGoods = new SendGoods();
+        SendGoodsImpl sendGoodsImpl = new SendGoodsImpl();
         try {
-            int code = sendGoods.send(fromEvotor, storeUuid, authorization);
+            int code = sendGoodsImpl.send(fromEvotor, storeUuid, authorization);
             logger.info(code + " sent in evotor after decrement");
         } catch (IOException e) {
             e.printStackTrace();
@@ -105,9 +105,9 @@ public class TransactionHandler {
             }
         }
         logger.info("got union list");
-        SendGoods sendGoods = new SendGoods();
+        SendGoodsImpl sendGoodsImpl = new SendGoodsImpl();
         try {
-            int code = sendGoods.send(fromEvotor, shop, authorization);
+            int code = sendGoodsImpl.send(fromEvotor, shop, authorization);
             logger.info(code + " sent in evotor after inventory");
         } catch (IOException e) {
             e.printStackTrace();

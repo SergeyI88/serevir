@@ -1,5 +1,6 @@
-package http;
+package http.impl;
 
+import http.DeleteGood;
 import http.entity.Good;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
@@ -9,8 +10,8 @@ import retrofit2.*;
 import java.util.List;
 
 
-public class DeleteGoods {
-    Logger logger = Logger.getLogger(DeleteGoods.class);
+public class DeleteGoodsImpl {
+    Logger logger = Logger.getLogger(DeleteGoodsImpl.class);
 
     public void execute(String storeUuid, String auth, List<Good> goods) {
         Retrofit retrofit = new Retrofit.Builder()
@@ -18,10 +19,14 @@ public class DeleteGoods {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         StringBuilder body = new StringBuilder("[");
-        for (int i = 0; i < goods.size() - 1; i++) {
-            body.append(" { \"uuid\": " + "\"").append(goods.get(i).getUuid()).append("\"").append(" }, ");
+        if (goods != null) {
+            for (int i = 0; i < goods.size() - 1; i++) {
+                body.append(" { \"uuid\": " + "\"").append(goods.get(i).getUuid()).append("\"").append(" }, ");
+            }
+            body.append(" { \"uuid\": " + "\"").append(goods.get(goods.size() - 1).getUuid()).append("\"").append(" }] ");
+        } else {
+            body.append("]");
         }
-        body.append(" { \"uuid\": " + "\"").append(goods.get(goods.size() - 1).getUuid()).append("\"").append(" }] ");
 
         RequestBody requestBody =
                 RequestBody.create(MediaType.parse("text/plain"), body.toString());
