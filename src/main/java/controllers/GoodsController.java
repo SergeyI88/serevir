@@ -152,7 +152,7 @@ public class GoodsController {
             return modelAndView;
         }
         if (localDateTimeTo.isBefore(localDateTimeFrom)) {
-            modelAndView.addObject("list", Arrays.asList("Дата не может быть раньше или позже текущей даты"));
+            modelAndView.addObject("list", Arrays.asList("Дата от не может быть позже сегодняшней даты и даты до не может быть раньше сегодняшней даты"));
             return modelAndView;
         }
 
@@ -161,7 +161,7 @@ public class GoodsController {
         System.out.println(localDateTimeTo.toString());
         System.out.println(localDateTimeFrom.toString());
 
-        List<Document> documents = getDocuments.get(storeUuid, (String) request.getSession().getAttribute("token"), localDateTimeTo.toString(), localDateTimeFrom.toString());
+        List<Document> documents = getDocuments.get(storeUuid, (String) request.getSession().getAttribute("token"), localDateTimeTo.toString() + "+0000", localDateTimeFrom.toString() + ":00.000+0000 ");
         documents.forEach(d -> {
             System.out.println(d);
             System.out.println();
