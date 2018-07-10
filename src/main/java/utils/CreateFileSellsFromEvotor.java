@@ -20,8 +20,7 @@ public class CreateFileSellsFromEvotor {
             if (document.getType().equals("SELL") || document.getType().equals("PAYBACK")) {
                 List<Document.Transaction> transactions = document.getTransactions();
                 for (Document.Transaction transaction : transactions) {
-                    if (transaction.equals("REGISTER_POSITION")) {
-                        if (document.getType().equals("SELL")) {
+                    if (transaction.getType().equals("REGISTER_POSITION")) {
                             if (map.containsKey(transaction.getCommodityUuid())){
                                 Good good = map.get(transaction.getCommodityUuid());
                                 Double quanity = good.getQuantity();
@@ -37,23 +36,6 @@ public class CreateFileSellsFromEvotor {
                                 good.setCode(transaction.getCommodityCode());
                                 map.put(transaction.getCommodityUuid(), good);
                             }
-                        } else {
-                            if (map.containsKey(transaction.getCommodityUuid())){
-                                Good good = map.get(transaction.getCommodityUuid());
-                                Double quanity = good.getQuantity();
-                                quanity -= transaction.getQuantity();
-                                good.setQuantity(quanity);
-                                map.replace(transaction.getCommodityUuid(), good);
-                            } else {
-                                Good good = new Good();
-                                good.setUuid(transaction.getCommodityUuid());
-                                good.setName(transaction.getCommodityName());
-                                good.setQuantity(-transaction.getQuantity());
-                                good.setPrice(transaction.getPrice().doubleValue());
-                                good.setCode(transaction.getCommodityCode());
-                                map.put(transaction.getCommodityUuid(), good);
-                            }
-                        }
                     }
                 }
             } else {
