@@ -170,10 +170,9 @@ public class GoodsController {
         System.out.println(localDateTimeFrom.toString());
 
         List<Document> documents = getDocuments.get(storeUuid, (String) request.getSession().getAttribute("token"), localDateTimeTo.toString() + "+0000", localDateTimeFrom.toString() + ":00.000+0000 ");
-        documents.forEach(d -> {
-            System.out.println(d);
-            System.out.println();
-        });
+        if(documents == null) {
+            documents = new ArrayList<>();
+        }
         
         Shop shop = shopDao.getShopByUuidStore(storeUuid);
         Workbook workbook = createFileSellsFromEvotor.convertFromDocToGood(documents, shop.getName());
