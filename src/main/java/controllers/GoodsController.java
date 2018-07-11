@@ -178,7 +178,7 @@ public class GoodsController {
         Workbook workbook = createFileSellsFromEvotor.convertFromDocToGood(documents, shop.getName());
 
         BufferedOutputStream outStream = new BufferedOutputStream(resonse.getOutputStream());
-        resonse.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + "sell" + ".xlsx");
+        resonse.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + LocalDate.of(localDateTimeFrom.getYear(), localDateTimeFrom.getMonth(), localDateTimeFrom.getDayOfMonth()) + "_" + LocalDate.of(localDateTimeTo.getYear(), localDateTimeTo.getMonth(), localDateTimeTo.getDayOfMonth()) + ".xlsx");
         workbook.write(outStream);
         outStream.close();
         workbook.close();
