@@ -136,7 +136,7 @@ public class FileHandler<T extends Workbook> {
 
     private List<Cell> getFirstColumns(Row r) {
         List<Cell> columns = new ArrayList<>();
-        Cell c = null;
+        Cell c;
         for (int i = 0; i < r.getLastCellNum(); i++) {
             c = r.getCell(i, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK);
             columns.add(c);

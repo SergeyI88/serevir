@@ -105,7 +105,7 @@ public class GoodsController {
         BufferedOutputStream outStream = new BufferedOutputStream(response.getOutputStream());
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-        response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + shop.getName() + ".xlsx");
+        response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + "goods" + ".xlsx");
         workbook.write(outStream);
         outStream.close();
         workbook.close();

@@ -49,7 +49,7 @@ public class CreateFileSellsFromEvotor {
     }
 
 
-    public Workbook getWorkbook(List<Good> goods, String shopName) {
+    private Workbook getWorkbook(List<Good> goods, String shopName) {
 
         XSSFWorkbook workbook = new XSSFWorkbook();
         XSSFSheet sheet = workbook.createSheet(shopName);

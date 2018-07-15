@@ -20,8 +20,7 @@ public class ShopService {
     ClientService clientService;
 
     public List<Shop> getShops(String userUuid) {
-        List<Shop> list = shopDao.getAllShopFromClientByUuidClient(userUuid);
-        return list;
+        return shopDao.getAllShopFromClientByUuidClient(userUuid);
     }
 
     public Shop getShop(String storeUuid) {
