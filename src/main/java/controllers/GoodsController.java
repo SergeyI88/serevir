@@ -172,6 +172,7 @@ public class GoodsController {
         List<Document> documents = getDocuments.get(storeUuid, (String) request.getSession().getAttribute("token"), localDateTimeTo.toString() + "+0000", localDateTimeFrom.toString() + ":00.000+0000 ");
         if(documents == null) {
             documents = new ArrayList<>();
+            return modelAndView;
         }
         
         Shop shop = shopDao.getShopByUuidStore(storeUuid);
@@ -182,9 +183,7 @@ public class GoodsController {
         workbook.write(outStream);
         outStream.close();
         workbook.close();
-        
-
-        return modelAndView;
+        return null;
     }
 
 
