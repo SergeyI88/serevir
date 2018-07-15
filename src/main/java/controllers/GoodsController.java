@@ -164,17 +164,23 @@ public class GoodsController {
             return modelAndView;
         }
 
+        if (localDateTimeFrom.isBefore(LocalDateTime.now().minusDays(30))) {
+            modelAndView.addObject("list", Arrays.asList("Доступная история продаж - 30 дней"));
+            return modelAndView;
+        }
+
 
         GetDocumentsImpl getDocuments = new GetDocumentsImpl();
         System.out.println(localDateTimeTo.toString());
         System.out.println(localDateTimeFrom.toString());
 
         List<Document> documents = getDocuments.get(storeUuid, (String) request.getSession().getAttribute("token"), localDateTimeTo.toString() + "+0000", localDateTimeFrom.toString() + ":00.000+0000 ");
-        if(documents == null) {
+        if (documents == null) {
             documents = new ArrayList<>();
+            modelAndView.addObject("list", Arrays.asList("Что-то пошло не так"));
             return modelAndView;
         }
-        
+
         Shop shop = shopDao.getShopByUuidStore(storeUuid);
         Workbook workbook = createFileSellsFromEvotor.convertFromDocToGood(documents, shop.getName());
 
