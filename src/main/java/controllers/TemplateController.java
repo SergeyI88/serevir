@@ -13,8 +13,8 @@ import java.net.URL;
 @Controller
 public class TemplateController {
 
-    String urlString1 = "https://drive.google.com/uc?export=download&id=1j-ipCS2FqvnpZ5ERUgKxaM1IXnpmosgL";
-    String urlString2 = "https://drive.google.com/uc?export=download&id=1vOTBoyoVRYnt1BtBNta0jS8dmBepTFGv";
+    private String urlString1 = "https://drive.google.com/uc?export=download&id=1j-ipCS2FqvnpZ5ERUgKxaM1IXnpmosgL";
+    private String urlString2 = "https://drive.google.com/uc?export=download&id=1vOTBoyoVRYnt1BtBNta0jS8dmBepTFGv";
 
     @GetMapping("/download")
     public void downloadFile3(HttpServletResponse resonse) throws IOException {

@@ -18,10 +18,14 @@ import java.util.List;
 public class DocumentController {
     private static Logger logger = Logger.getLogger(DocumentController.class);
 
+    private final TransactionHandler transactionHandler;
+    private final ShopService shopService;
+
     @Autowired
-    TransactionHandler transactionHandler;
-    @Autowired
-    ShopService shopService;
+    public DocumentController(ShopService shopService, TransactionHandler transactionHandler) {
+        this.shopService = shopService;
+        this.transactionHandler = transactionHandler;
+    }
 
     @RequestMapping(value = "/api/v1/inventories/stores/{storeUuid}/documents", method = RequestMethod.PUT)
     @ResponseBody

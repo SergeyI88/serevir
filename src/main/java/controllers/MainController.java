@@ -38,8 +38,7 @@ public class MainController {
         List<Shop> list = shopService.getShops(uid);
         System.out.println(list);
         request.getSession().setAttribute("shops", list);
-        ModelAndView modelAndView = new ModelAndView("index");
-        return modelAndView;
+        return new ModelAndView("index");
     }
 
     @ResponseBody

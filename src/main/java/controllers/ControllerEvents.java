@@ -16,8 +16,12 @@ import service.ClientService;
 public class ControllerEvents {
     final static Logger logger = Logger.getLogger(ControllerEvents.class);
 
+    private final ClientService clientService;
+
     @Autowired
-    private ClientService clientService;
+    public ControllerEvents(ClientService clientService) {
+        this.clientService = clientService;
+    }
 
     @RequestMapping(value = "/events/install", method = RequestMethod.POST)
     @ResponseBody

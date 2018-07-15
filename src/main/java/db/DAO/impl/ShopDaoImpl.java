@@ -13,7 +13,7 @@ import java.util.List;
 @Repository
 @SuppressWarnings("Duplicates")
 public class ShopDaoImpl implements ShopDao {
-    Logger logger = Logger.getLogger(ShopDaoImpl.class);
+    private Logger logger = Logger.getLogger(ShopDaoImpl.class);
     @Override
     public Shop getShopById(long id) {
         Shop shop = new Shop();
@@ -50,9 +50,9 @@ public class ShopDaoImpl implements ShopDao {
 
     @Override
     public boolean createShop(String shop_uuid, long client_id, String name) {
-        PreparedStatement statement = null;
+        PreparedStatement statement;
         int result = 0;
-        try (Connection connection = ConnectionPostgres.getConnection();) {
+        try (Connection connection = ConnectionPostgres.getConnection()) {
             statement = connection.prepareStatement("INSERT INTO shop VALUES(DEFAULT, ?, ?, ?, DEFAULT)");
             statement.setString(1, shop_uuid);
             statement.setLong(2, client_id);
@@ -119,7 +119,7 @@ public class ShopDaoImpl implements ShopDao {
                 statement.addBatch("INSERT INTO shop VALUES(DEFAULT, " +
                         "'" + s.getUuid() + "'" + ", (SELECT client_id FROM client WHERE client.uuid = " + "'" + userUuid + "'" + "), " + "'" + s.getName() + "', DEFAULT, " + "'" +s.getDeviceUuid()+ "'" + ")");
             }
-            statement.executeBatch();
+            result = statement.executeBatch();
             logger.info("downloadShop good");
         } catch (SQLException e) {
             logger.info("downloadShop");

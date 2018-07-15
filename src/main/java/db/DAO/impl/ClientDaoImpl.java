@@ -54,7 +54,7 @@ public class ClientDaoImpl implements ClientDao {
 
     @Override
     public boolean createClient(String token, String company_name, String uuid) {
-        PreparedStatement statement = null;
+        PreparedStatement statement;
         int result = 0;
         try (Connection connection = ConnectionPostgres.getConnection()) {
             statement = connection.prepareStatement("INSERT INTO client VALUES(DEFAULT, ?, ?, ?, DEFAULT)");
