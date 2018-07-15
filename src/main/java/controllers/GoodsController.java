@@ -67,7 +67,7 @@ public class GoodsController {
         if (file.isEmpty()) {
             return new ModelAndView("index");
         }
-        List<String> list = null;
+        List<String> list;
         try (Workbook workbook = WorkbookFactory.create(convert(file))) {
             Map<String, List> map = fileHandler.getResult(workbook, storeUuid, (String) request.getSession().getAttribute("token"));
             list = map.get("errors");
@@ -89,7 +89,7 @@ public class GoodsController {
 
 
     @GetMapping("/downloadGoods")
-    public void downloadFile3(HttpServletResponse resonse,
+    public void downloadFile3(HttpServletResponse response,
                               @RequestParam("store") String storeUuid,
                               HttpServletRequest request) throws Exception {
 
@@ -102,8 +102,10 @@ public class GoodsController {
         Shop shop = shopDao.getShopByUuidStore(storeUuid);
         Workbook workbook = createXlsxFromEvotor.getWorkbook(goods, shop);
 
-        BufferedOutputStream outStream = new BufferedOutputStream(resonse.getOutputStream());
-        resonse.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + "goods" + ".xlsx");
+        BufferedOutputStream outStream = new BufferedOutputStream(response.getOutputStream());
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + shop.getName() + ".xlsx");
         workbook.write(outStream);
         outStream.close();
         workbook.close();
@@ -119,7 +121,7 @@ public class GoodsController {
     }
 
     @RequestMapping(value = "/sells", method = RequestMethod.POST)
-    public ModelAndView getSells(HttpServletResponse resonse,
+    public ModelAndView getSells(HttpServletResponse response,
                                  HttpServletRequest request,
                                  @RequestParam("store") String storeUuid,
                                  @RequestParam("dateFrom") String from,
@@ -167,8 +169,10 @@ public class GoodsController {
         Shop shop = shopDao.getShopByUuidStore(storeUuid);
         Workbook workbook = createFileSellsFromEvotor.convertFromDocToGood(documents, shop.getName());
 
-        BufferedOutputStream outStream = new BufferedOutputStream(resonse.getOutputStream());
-        resonse.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + LocalDate.of(localDateTimeFrom.getYear(), localDateTimeFrom.getMonth(), localDateTimeFrom.getDayOfMonth()) + "_" + LocalDate.of(localDateTimeTo.getYear(), localDateTimeTo.getMonth(), localDateTimeTo.getDayOfMonth()) + ".xlsx");
+        BufferedOutputStream outStream = new BufferedOutputStream(response.getOutputStream());
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + LocalDate.of(localDateTimeFrom.getYear(), localDateTimeFrom.getMonth(), localDateTimeFrom.getDayOfMonth()) + "_" + LocalDate.of(localDateTimeTo.getYear(), localDateTimeTo.getMonth(), localDateTimeTo.getDayOfMonth()) + ".xlsx");
         workbook.write(outStream);
         outStream.close();
         workbook.close();

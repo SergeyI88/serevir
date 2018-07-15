@@ -14,7 +14,7 @@ import java.io.IOException;
 @WebFilter("/main/")
 public class SubscriptionFilter implements Filter {
 
-    ClientService clientService;
+    private ClientService clientService;
 
     public void init(FilterConfig cfg) {
         ApplicationContext ctx = WebApplicationContextUtils
@@ -37,6 +37,5 @@ public class SubscriptionFilter implements Filter {
 
     @Override
     public void destroy() {
-
     }
 }

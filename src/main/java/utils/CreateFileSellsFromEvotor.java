@@ -13,7 +13,7 @@ import java.util.*;
 @Component
 public class CreateFileSellsFromEvotor {
 
-    public Workbook convertFromDocToGood(List<Document> documents, String shopName){
+    public Workbook convertFromDocToGood(List<Document> documents, String shopName) {
         Map<String, Good> map = new HashMap<>();
 
         for (Document document : documents) {
@@ -21,25 +21,23 @@ public class CreateFileSellsFromEvotor {
                 List<Document.Transaction> transactions = document.getTransactions();
                 for (Document.Transaction transaction : transactions) {
                     if (transaction.getType().equals("REGISTER_POSITION")) {
-                            if (map.containsKey(transaction.getCommodityUuid())){
-                                Good good = map.get(transaction.getCommodityUuid());
-                                Double quanity = good.getQuantity();
-                                quanity += transaction.getQuantity();
-                                good.setQuantity(quanity);
-                                map.replace(transaction.getCommodityUuid(), good);
-                            } else {
-                                Good good = new Good();
-                                good.setUuid(transaction.getCommodityUuid());
-                                good.setName(transaction.getCommodityName());
-                                good.setQuantity(transaction.getQuantity());
-                                good.setPrice(transaction.getPrice().doubleValue());
-                                good.setCode(transaction.getCommodityCode());
-                                map.put(transaction.getCommodityUuid(), good);
-                            }
+                        if (map.containsKey(transaction.getCommodityUuid())) {
+                            Good good = map.get(transaction.getCommodityUuid());
+                            Double quanity = good.getQuantity();
+                            quanity += transaction.getQuantity();
+                            good.setQuantity(quanity);
+                            map.replace(transaction.getCommodityUuid(), good);
+                        } else {
+                            Good good = new Good();
+                            good.setUuid(transaction.getCommodityUuid());
+                            good.setName(transaction.getCommodityName());
+                            good.setQuantity(transaction.getQuantity());
+                            good.setPrice(transaction.getPrice().doubleValue());
+                            good.setCode(transaction.getCommodityCode());
+                            map.put(transaction.getCommodityUuid(), good);
+                        }
                     }
                 }
-            } else {
-                continue;
             }
         }
 
@@ -51,7 +49,7 @@ public class CreateFileSellsFromEvotor {
     }
 
 
-    public Workbook getWorkbook (List<Good> goods, String shopName) {
+    public Workbook getWorkbook(List<Good> goods, String shopName) {
 
         XSSFWorkbook workbook = new XSSFWorkbook();
         XSSFSheet sheet = workbook.createSheet(shopName);
@@ -67,7 +65,7 @@ public class CreateFileSellsFromEvotor {
         Row headerRow = sheet.createRow(0);
         List<String> columnList = Arrays.asList("Код", "Имя", "Количество", "Цена");
 
-        for(int i = 0; i < columnList.size(); i++) {
+        for (int i = 0; i < columnList.size(); i++) {
             Cell cell = headerRow.createCell(i);
             cell.setCellValue(columnList.get(i));
             cell.setCellStyle(headerCellStyle);
@@ -75,13 +73,13 @@ public class CreateFileSellsFromEvotor {
 
         int rowNum = 1;
         if (goods == null) {
-            for(int i = 0; i < columnList.size(); i++) {
+            for (int i = 0; i < columnList.size(); i++) {
                 sheet.autoSizeColumn(i);
             }
             return workbook;
         }
 
-        for(Good good: goods) {
+        for (Good good : goods) {
 
             Row row = sheet.createRow(rowNum++);
 
@@ -91,7 +89,7 @@ public class CreateFileSellsFromEvotor {
             row.createCell(3).setCellValue(good.getPrice() != null ? good.getPrice() : 0);
         }
 
-        for(int i = 0; i < columnList.size(); i++) {
+        for (int i = 0; i < columnList.size(); i++) {
             sheet.autoSizeColumn(i);
         }
 

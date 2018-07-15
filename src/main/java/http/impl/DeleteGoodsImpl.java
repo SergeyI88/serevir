@@ -7,6 +7,7 @@ import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import org.apache.log4j.Logger;
 import retrofit2.*;
+
 import java.util.List;
 
 
@@ -31,17 +32,16 @@ public class DeleteGoodsImpl {
         RequestBody requestBody =
                 RequestBody.create(MediaType.parse("text/plain"), body.toString());
         DeleteGood deleteGood = retrofit.create(DeleteGood.class);
-            deleteGood.delete(storeUuid, auth, "application/json", requestBody).enqueue(new Callback<ResponseBody>() {
-                @Override
-                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                    logger.info(response.code() + " removing");
-                }
+        deleteGood.delete(storeUuid, auth, "application/json", requestBody).enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                logger.info(response.code() + " removing");
+            }
 
-                @Override
-                public void onFailure(Call<ResponseBody> call, Throwable throwable) {
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable throwable) {
 
-                }
-            });
-
+            }
+        });
     }
 }

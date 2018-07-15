@@ -200,7 +200,6 @@ public class ShopDaoImpl implements ShopDao {
             statement.setString(1, string);
             statement.setString(2, storeUuid);
             statement.execute();
-            System.out.println("ЗАПИСАЛИ");
         } catch (SQLException e) {
             e.printStackTrace();
         }
