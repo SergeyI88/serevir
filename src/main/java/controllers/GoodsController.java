@@ -46,21 +46,19 @@ public class GoodsController {
     private final FileHandler fileHandler;
 
     final static Logger logger = Logger.getLogger(GoodsController.class);
-    @Autowired
-    ShopService shopService;
+
+    private final ShopDaoImpl shopDao;
+
+    private final CreateXlsxFromEvotor createXlsxFromEvotor;
+
+    private final CreateFileSellsFromEvotor createFileSellsFromEvotor;
 
     @Autowired
-    ShopDaoImpl shopDao;
-
-    @Autowired
-    CreateXlsxFromEvotor createXlsxFromEvotor;
-
-    @Autowired
-    CreateFileSellsFromEvotor createFileSellsFromEvotor;
-
-    @Autowired
-    public GoodsController(FileHandler fileHandler) {
+    public GoodsController(FileHandler fileHandler, CreateFileSellsFromEvotor createFileSellsFromEvotor, CreateXlsxFromEvotor createXlsxFromEvotor, ShopDaoImpl shopDao) {
         this.fileHandler = fileHandler;
+        this.createFileSellsFromEvotor = createFileSellsFromEvotor;
+        this.createXlsxFromEvotor = createXlsxFromEvotor;
+        this.shopDao = shopDao;
     }
 
     @RequestMapping(value = "/uploadFile", method = RequestMethod.POST)
@@ -83,11 +81,7 @@ public class GoodsController {
                 result = sendGoodsImpl.send(map.get("goods"), storeUuid, (String) request.getSession().getAttribute("token"));
             }
             modelAndView.addObject("list", !list.isEmpty() ? list : result == 200 ? new ArrayList(Arrays.asList("Все товары загружены")) : new ArrayList(Arrays.asList("Сервер ответил отказом, попробуйте позже")));
-        } catch (InvalidFormatException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (NoSuchAlgorithmException e) {
+        } catch (InvalidFormatException | IOException | NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
         return modelAndView;
@@ -120,18 +114,8 @@ public class GoodsController {
         DeleteGoodsImpl deleteGoodsImpl = new DeleteGoodsImpl();
         deleteGoodsImpl.execute(storeUuid, (String) request.getSession().getAttribute("token"), null);
         ModelAndView modelAndView = new ModelAndView("index");
-        modelAndView.addObject("list", Arrays.asList("Все товары удалены"));
+        modelAndView.addObject("list", Collections.singletonList("Все товары удалены"));
         return modelAndView;
-    }
-
-
-    public File convert(MultipartFile file) throws IOException {
-        File convFile = new File(file.getOriginalFilename());
-        convFile.createNewFile();
-        FileOutputStream fos = new FileOutputStream(convFile);
-        fos.write(file.getBytes());
-        fos.close();
-        return convFile;
     }
 
     @RequestMapping(value = "/sells", method = RequestMethod.POST)
@@ -142,11 +126,11 @@ public class GoodsController {
                                  @RequestParam("dateTo") String to) throws IOException {
         ModelAndView modelAndView = new ModelAndView("index");
         if ("".equals(from) || from == null) {
-            modelAndView.addObject("list", Arrays.asList("Неверный формат даты"));
+            modelAndView.addObject("list", Collections.singletonList("Неверный формат даты"));
             return modelAndView;
         }
-        LocalDateTime localDateTimeFrom = null;
-        LocalDateTime localDateTimeTo = null;
+        LocalDateTime localDateTimeFrom;
+        LocalDateTime localDateTimeTo;
 
         try {
             localDateTimeFrom = LocalDateTime.of(LocalDate.parse(from, DateTimeFormatter.ofPattern("yyyy-MM-dd")), LocalTime.of(0, 0, 0, 0));
@@ -156,16 +140,16 @@ public class GoodsController {
                 localDateTimeTo = LocalDateTime.of(LocalDate.parse(to, DateTimeFormatter.ofPattern("yyyy-MM-dd")), LocalTime.now());
             }
         } catch (DateTimeParseException e) {
-            modelAndView.addObject("list", Arrays.asList("Неверный формат даты"));
+            modelAndView.addObject("list", Collections.singletonList("Неверный формат даты"));
             return modelAndView;
         }
         if (localDateTimeTo.isBefore(localDateTimeFrom)) {
-            modelAndView.addObject("list", Arrays.asList("Дата от не может быть позже сегодняшней даты и даты до не может быть раньше сегодняшней даты"));
+            modelAndView.addObject("list", Collections.singletonList("Дата от не может быть позже сегодняшней даты и даты до не может быть раньше сегодняшней даты"));
             return modelAndView;
         }
 
         if (localDateTimeFrom.isBefore(LocalDateTime.now().minusDays(30))) {
-            modelAndView.addObject("list", Arrays.asList("Доступная история продаж - 30 дней"));
+            modelAndView.addObject("list", Collections.singletonList("Доступная история продаж - 30 дней"));
             return modelAndView;
         }
 
@@ -176,8 +160,7 @@ public class GoodsController {
 
         List<Document> documents = getDocuments.get(storeUuid, (String) request.getSession().getAttribute("token"), localDateTimeTo.toString() + "+0000", localDateTimeFrom.toString() + ":00.000+0000 ");
         if (documents == null) {
-            documents = new ArrayList<>();
-            modelAndView.addObject("list", Arrays.asList("Что-то пошло не так"));
+            modelAndView.addObject("list", Collections.singletonList("Что-то пошло не так"));
             return modelAndView;
         }
 
@@ -192,5 +175,12 @@ public class GoodsController {
         return null;
     }
 
+    private File convert(MultipartFile file) throws IOException {
+        File convFile = new File(file.getOriginalFilename());
+        FileOutputStream fos = new FileOutputStream(convFile);
+        fos.write(file.getBytes());
+        fos.close();
+        return convFile;
+    }
 
 }
