@@ -27,6 +27,9 @@ public class MainController {
 
     @RequestMapping(value = "/")
     public ModelAndView open(HttpServletRequest request, @RequestParam String uid, @RequestParam String token) {
+        if (uid != null && token != null) {
+            clientService.createClient(uid, token, "");
+        }
         request.getSession().setAttribute("token", token);
         List<Shop> list = shopService.getShops(uid);
         System.out.println(list);
