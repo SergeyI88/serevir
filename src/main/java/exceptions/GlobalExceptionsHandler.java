@@ -17,7 +17,7 @@ public class GlobalExceptionsHandler {
     public ModelAndView handleException(Exception ex) {
         StringBuilder stringBuilder = new StringBuilder();
         Arrays.stream(ex.getStackTrace()).forEach(t -> stringBuilder.append(t.toString() + "\n"));
-        serviceError.writeError(ex.getMessage() + "\n" + stringBuilder);
+        serviceError.writeError(ex.getLocalizedMessage() + "\n" + stringBuilder);
         ModelAndView modelAndView = new ModelAndView("error");
         return modelAndView;
     }
