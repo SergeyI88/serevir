@@ -29,6 +29,8 @@ public class MainController {
     public ModelAndView open(HttpServletRequest request, @RequestParam String uid, @RequestParam String token) {
         if (uid != null && token != null) {
             clientService.createClient(uid, token, "");
+        } else {
+            return new ModelAndView("no-params");
         }
         request.getSession().setAttribute("token", token);
         List<Shop> list = shopService.getShops(uid);
