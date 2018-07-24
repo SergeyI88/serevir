@@ -16,7 +16,7 @@ public class ErrorDaoImpl implements ErrorDao {
     public void write(String message) {
         PreparedStatement statement;
         try (Connection connection = ConnectionPostgres.getConnection()) {
-            statement = connection.prepareStatement("INSERT INTO client VALUES(DEFAULT, ?, ?)");
+            statement = connection.prepareStatement("INSERT INTO errors VALUES(DEFAULT, ?, ?)");
             statement.setObject(1, LocalDateTime.now());
             statement.setString(2, message);
             statement.executeUpdate();
