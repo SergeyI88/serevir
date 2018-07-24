@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.ModelAndView;
 import service.ServiceError;
 
+import java.util.Arrays;
+
 @ControllerAdvice
 public class GlobalExceptionsHandler {
     @Autowired
@@ -13,7 +15,9 @@ public class GlobalExceptionsHandler {
 
     @ExceptionHandler(Throwable.class)
     public ModelAndView handleException(Exception ex) {
-        serviceError.writeError(ex.getMessage());
+        StringBuilder stringBuilder = new StringBuilder();
+        Arrays.stream(ex.getStackTrace()).forEach(t -> stringBuilder.append(t.toString() + "\n"));
+        serviceError.writeError(ex.getMessage() + "\n" + stringBuilder);
         ModelAndView modelAndView = new ModelAndView("error");
         return modelAndView;
     }
