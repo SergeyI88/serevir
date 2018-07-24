@@ -4,11 +4,11 @@ import db.DAO.ErrorDao;
 import db.connection.ConnectionPostgres;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Repository;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+
 @Repository
 public class ErrorDaoImpl implements ErrorDao {
     Logger logger = Logger.getLogger(ErrorDaoImpl.class);
@@ -21,10 +21,8 @@ public class ErrorDaoImpl implements ErrorDao {
             statement.setString(2, message);
             statement.executeUpdate();
             logger.info("записали дефект");
-
-
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.info(e.getMessage());
         }
     }
 }
