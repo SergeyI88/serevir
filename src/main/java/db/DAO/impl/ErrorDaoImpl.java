@@ -22,7 +22,7 @@ public class ErrorDaoImpl implements ErrorDao {
             statement.executeUpdate();
             logger.info("записали дефект");
         } catch (SQLException e) {
-            logger.info(e.getMessage());
+            logger.info(e.getMessage() + "=================================");
         }
     }
 }
