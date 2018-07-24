@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 public class ServiceError {
     @Autowired
     ErrorDao errorDao;
-    public void writeError(String string) {
-        errorDao.write(string);
+    public void writeError(String string, Object token) {
+        errorDao.write(string, (String) token);
     }
 }

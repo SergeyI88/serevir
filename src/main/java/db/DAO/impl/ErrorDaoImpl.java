@@ -13,16 +13,16 @@ import java.time.LocalDateTime;
 public class ErrorDaoImpl implements ErrorDao {
     Logger logger = Logger.getLogger(ErrorDaoImpl.class);
     @Override
-    public void write(String message) {
+    public void write(String message, String token) {
         PreparedStatement statement;
         try (Connection connection = ConnectionPostgres.getConnection()) {
-            statement = connection.prepareStatement("INSERT INTO errors VALUES(DEFAULT, ?, ?)");
+            statement = connection.prepareStatement("INSERT INTO errors VALUES(DEFAULT, ?, ?, ?)");
             statement.setObject(1, LocalDateTime.now());
             statement.setString(2, message);
+            statement.setString(3, token);
             statement.executeUpdate();
-            logger.info("записали дефект");
         } catch (SQLException e) {
-            logger.info(e.getMessage() + "=================================");
+            logger.info(e.getMessage());
         }
     }
 }

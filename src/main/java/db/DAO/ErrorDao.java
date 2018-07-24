@@ -1,5 +1,5 @@
 package db.DAO;
 
 public interface ErrorDao {
-    void write(String string);
+    void write(String string, String token);
 }
