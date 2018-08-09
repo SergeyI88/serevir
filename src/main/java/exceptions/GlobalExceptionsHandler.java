@@ -18,29 +18,9 @@ public class GlobalExceptionsHandler {
     public ModelAndView handleException(Exception ex, HttpServletRequest request) {
         StringBuilder stringBuilder = new StringBuilder();
         Arrays.stream(ex.getStackTrace()).forEach(t -> stringBuilder.append(t.toString() + "\n"));
-        serviceError.writeError(ex.getLocalizedMessage() + "\n" + stringBuilder, request.getSession().getAttribute("token"));
+        serviceError.writeError(ex.toString() + "\n" + stringBuilder, request.getSession().getAttribute("token"));
         ModelAndView modelAndView = new ModelAndView("error");
+        modelAndView.addObject("msg", ex.getLocalizedMessage());
         return modelAndView;
     }
-//
-//    public static class A<T> {
-//        T object;
-//
-//        <E> void setObject(E t) {
-//            this.object = (T) t;
-//        }
-//    }
-//
-//    static class Sparrow extends Bird {
-//    }
-//
-//    static class Bird {
-//    }
-//
-//    public static void main(String[] args) {
-//        List<? extends Bird> birds = new ArrayList<Sparrow>();
-//        birds.contains("fd");
-//    }
-
-
 }

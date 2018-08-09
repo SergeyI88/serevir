@@ -111,9 +111,9 @@ public class ShopDaoImpl implements ShopDao {
     }
 
     @Override
-    public boolean downLoadShops(String userUuid, List<Shop> list) {
+    public boolean downLoadShops(String userUuid, List<Shop> list, Connection connection) {
         int[] result = null;
-        try (Connection connection = ConnectionPostgres.getConnection()) {
+        try  {
             Statement statement = connection.createStatement();
             for (Shop s : list) {
                 statement.addBatch("INSERT INTO shop VALUES(DEFAULT, " +
@@ -121,9 +121,16 @@ public class ShopDaoImpl implements ShopDao {
             }
             result = statement.executeBatch();
             logger.info("downloadShop good");
+            connection.commit();
         } catch (SQLException e) {
             logger.info("downloadShop");
             e.printStackTrace();
+        } finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
         return result != null;
     }

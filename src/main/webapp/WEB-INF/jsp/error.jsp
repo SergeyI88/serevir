@@ -13,11 +13,15 @@
 </head>
 <body class="container">
 <div class="form-container">
-
+    <% if (request.getAttribute("msg") == null) { %>
     <div class="form-title">Возникла непредвиденная ошибка, возможно у вас закончилась сессия или сервер недоступен.
         Если ошибка повторится, просьба написать в тех. поддержку.
     </div>
-</div>
+    <%} else {%>
+    <div class="form-title"><%=request.getAttribute("msg")%>
+    </div>
+    <%}%>
+    </div>
 
 </body>
 </html>

@@ -2,10 +2,14 @@ package service;
 
 import db.DAO.ClientDao;
 import db.DAO.ShopDao;
+import db.connection.ConnectionPostgres;
 import http.impl.GetShopsImpl;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.sql.Connection;
+import java.sql.SQLException;
 
 @Service
 public class ClientService {
@@ -17,15 +21,28 @@ public class ClientService {
 
     Logger logger = Logger.getLogger(ClientService.class);
 
-
     public boolean createClient(String userUuid, String token, String company_name) {
-        serviceError.writeError("до проверки на нового клиента", userUuid + " : " + token);
         if (clientDao.getClientByUuid(userUuid).getId() == 0) {
-            GetShopsImpl getShops = new GetShopsImpl();
-            clientDao.createClient(token, "", userUuid);
-            serviceError.writeError("должен создать новый клиент", userUuid + " : " + token);
-            logger.info("create Client");
-            shopDao.downLoadShops(userUuid, getShops.get(token));
+            Connection connection = ConnectionPostgres.getConnection();
+            try {
+                GetShopsImpl getShops = new GetShopsImpl();
+                clientDao.createClient(token, "", userUuid, connection);
+                logger.info("create Client");
+                shopDao.downLoadShops(userUuid, getShops.get(token), connection);
+            } catch (Throwable e) {
+                try {
+                    connection.rollback();
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                }
+            } finally {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+                throw new RuntimeException("Некорректный токен");
+            }
         }
         return false;
     }

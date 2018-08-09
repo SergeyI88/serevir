@@ -40,7 +40,6 @@ public class TransactionHandler {
 
         logger.info("get goods from the terminal");
         execute(listFromTerminal, fromEvotor, storeUuid, authorization, type);
-
     }
 
     private void execute(List<Good> listFromTerminal, List<Good> fromEvotor, String storeUuid, String authorization, String type) {

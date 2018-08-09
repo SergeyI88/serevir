@@ -1,6 +1,8 @@
 package db.DAO;
 
 import db.entity.Shop;
+
+import java.sql.Connection;
 import java.util.*;
 
 public interface ShopDao {
@@ -15,7 +17,7 @@ public interface ShopDao {
 
     List<Shop> getAllShopFromClientByUuidClient(String uuid);
 
-    boolean downLoadShops(String userUuid, List<Shop> list);
+    boolean downLoadShops(String userUuid, List<Shop> list, Connection connection);
 
     Shop getShopByUuidStore(String storeUuid);
 

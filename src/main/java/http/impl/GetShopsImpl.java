@@ -13,26 +13,22 @@ import java.util.stream.Collectors;
 
 public class GetShopsImpl {
 
-    public List<Shop> get(String token) {
+    public List<Shop> get(String token) throws IOException {
         List<Shop> shopsFromAPI = null;
         List<Terminal> terminalList = null;
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://umorili.herokuapp.com") //Базовая часть адреса
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
-        try {
-            List<ShopHttp> list1 = retrofit.create(GetShops.class).getData(token).execute().body();
-            shopsFromAPI = list1.stream().map(s -> {
-                Shop shop = new Shop();
-                shop.setUuid(s.getUuid());
-                shop.setName(s.getName());
-                return shop;
-            }).collect(Collectors.toList());
-            terminalList = new GetTerminalsImpl().get(token);
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        List<ShopHttp> list1 = retrofit.create(GetShops.class).getData(token).execute().body();
+        shopsFromAPI = list1.stream().map(s -> {
+            Shop shop = new Shop();
+            shop.setUuid(s.getUuid());
+            shop.setName(s.getName());
+            return shop;
+        }).collect(Collectors.toList());
+        terminalList = new GetTerminalsImpl().get(token);
         return union(shopsFromAPI, terminalList);
     }
 

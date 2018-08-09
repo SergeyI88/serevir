@@ -11,7 +11,7 @@ import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
 import java.io.IOException;
 
-@WebFilter("/main/")
+@WebFilter("/")
 public class SubscriptionFilter implements Filter {
 
     private ClientService clientService;

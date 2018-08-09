@@ -104,7 +104,6 @@ public class GoodsController {
 
         BufferedOutputStream outStream = new BufferedOutputStream(response.getOutputStream());
         response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
         response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + "goods" + ".xlsx");
         workbook.write(outStream);
         outStream.close();
@@ -171,7 +170,6 @@ public class GoodsController {
 
         BufferedOutputStream outStream = new BufferedOutputStream(response.getOutputStream());
         response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
         response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + LocalDate.of(localDateTimeFrom.getYear(), localDateTimeFrom.getMonth(), localDateTimeFrom.getDayOfMonth()) + "_" + LocalDate.of(localDateTimeTo.getYear(), localDateTimeTo.getMonth(), localDateTimeTo.getDayOfMonth()) + ".xlsx");
         workbook.write(outStream);
         outStream.close();
