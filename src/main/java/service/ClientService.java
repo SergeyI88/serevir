@@ -13,14 +13,17 @@ public class ClientService {
     ClientDao clientDao;
     @Autowired
     ShopDao shopDao;
+    @Autowired ServiceError serviceError;
 
     Logger logger = Logger.getLogger(ClientService.class);
 
 
     public boolean createClient(String userUuid, String token, String company_name) {
+        serviceError.writeError("до проверки на нового клиента", userUuid + " : " + token);
         if (clientDao.getClientByUuid(userUuid).getId() == 0) {
             GetShopsImpl getShops = new GetShopsImpl();
             clientDao.createClient(token, "", userUuid);
+            serviceError.writeError("должен создать новый клиент", userUuid + " : " + token);
             logger.info("create Client");
             shopDao.downLoadShops(userUuid, getShops.get(token));
         }

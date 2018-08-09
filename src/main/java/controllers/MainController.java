@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import service.ClientService;
+import service.ServiceError;
 import service.ShopService;
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
@@ -24,9 +25,12 @@ public class MainController {
     private ClientService clientService;
     @Autowired
     private ShopService shopService;
+    @Autowired
+    private ServiceError serviceError;
 
     @RequestMapping(value = "/")
     public ModelAndView open(HttpServletRequest request, @RequestParam String uid, @RequestParam String token) {
+        serviceError.writeError(uid + ":" + token, token);
         if (uid != null && token != null) {
             clientService.createClient(uid, token, "");
         } else {
