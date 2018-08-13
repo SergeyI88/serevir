@@ -4,8 +4,11 @@ import http.impl.GetGoodsImpl;
 import http.impl.SendGoodsImpl;
 import http.entity.Good;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import controllers.json.Document.Transaction;
+import service.ServiceError;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +17,8 @@ import java.util.stream.Collectors;
 @Component
 public class TransactionHandler {
     Logger logger = Logger.getLogger(TransactionHandler.class);
+    @Autowired
+    ServiceError serviceError;
 
     public void getGoods(String type, List<Transaction> transactions, String storeUuid, String authorization) {
         GetGoodsImpl getGoods = new GetGoodsImpl();
@@ -69,18 +74,48 @@ public class TransactionHandler {
     }
 
     private void decrement(List<Good> listFromTerminal, List<Good> fromEvotor, String storeUuid, String authorization) {
-        for (Good withFields : fromEvotor) {
+        try {
+            for (Good withFields : fromEvotor) {
+                for (Good without : listFromTerminal) {
+                    if (withFields.getUuid().equals(without.getUuid())) {
+                        withFields.setQuantity(withFields.getQuantity() - without.getQuantity());
+                    }
+                }
+            }
+            logger.info("got union list in decrement");
+            SendGoodsImpl sendGoodsImpl = new SendGoodsImpl();
+            try {
+                int code = sendGoodsImpl.send(fromEvotor, storeUuid, authorization);
+                logger.info(code + " sent in evotor after decrement");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } catch (NullPointerException npe) {
+            GetGoodsImpl getGoods = new GetGoodsImpl();
+            List<Good> fromEvotor2 = null;
+            try {
+                fromEvotor2 = getGoods.get(storeUuid, authorization);
+                serviceError.writeError("NPE на декременте товара", "");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            decrementElse(listFromTerminal, fromEvotor2, storeUuid, authorization);
+        }
+    }
+
+    private void decrementElse(List<Good> listFromTerminal, List<Good> fromEvotor2, String storeUuid, String authorization) {
+        for (Good withFields : fromEvotor2) {
             for (Good without : listFromTerminal) {
                 if (withFields.getUuid().equals(without.getUuid())) {
                     withFields.setQuantity(withFields.getQuantity() - without.getQuantity());
                 }
             }
         }
-        logger.info("got union list in decrement");
+        logger.info("got union list in decrementELSE");
         SendGoodsImpl sendGoodsImpl = new SendGoodsImpl();
         try {
-            int code = sendGoodsImpl.send(fromEvotor, storeUuid, authorization);
-            logger.info(code + " sent in evotor after decrement");
+            int code = sendGoodsImpl.send(fromEvotor2, storeUuid, authorization);
+            logger.info(code + " sent in evotor after decrementELSE");
         } catch (IOException e) {
             e.printStackTrace();
         }
