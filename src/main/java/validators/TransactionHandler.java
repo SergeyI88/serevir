@@ -115,7 +115,7 @@ public class TransactionHandler {
         SendGoodsImpl sendGoodsImpl = new SendGoodsImpl();
         try {
             int code = sendGoodsImpl.send(fromEvotor2, storeUuid, authorization);
-            logger.info(code + " sent in evotor after decrementELSE");
+            serviceError.writeError(code + " sent in evotor after decrementELSE", "");
         } catch (IOException e) {
             e.printStackTrace();
         }
