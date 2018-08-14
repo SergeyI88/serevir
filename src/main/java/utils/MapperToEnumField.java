@@ -106,7 +106,9 @@ public class MapperToEnumField {
         mapFunc.put("цена", (cell, field, list, good) -> {
             Double d = null;
             if (field.isRequired) {
-                if (!cell.toString().trim().isEmpty()) {
+                if(cell.toString() == null || cell.toString().isEmpty()) {
+                    list.add(good.getId() + " " + cell.toString() + "цена обязателен к заполнению [ 0 .. 9999999.999 ] столбец " + field.name);
+                } else if (!cell.toString().trim().isEmpty()) {
                     try {
                         d = Double.valueOf(cell.toString().replace(",", "."));
                     } catch (NumberFormatException e) {
@@ -161,7 +163,9 @@ public class MapperToEnumField {
 
         mapFunc.put("имя", (cell, field, list, good) -> {
             if (field.isRequired) {
-                if (!cell.toString().trim().isEmpty()) {
+                if (cell.toString() == null || cell.toString().isEmpty()) {
+                    list.add(good.getId() + " Поле имя не может быть пустым");
+                } else if (!cell.toString().trim().isEmpty()) {
                     good.setName(cell.toString().trim());
                 } else if (good.getName().trim().toLowerCase().equals("-")) {
                     good.setName("-");
@@ -181,7 +185,9 @@ public class MapperToEnumField {
 
         mapFunc.put("количество", (cell, field, list, good) -> {
             Double d = null;
-            if (!cell.toString().trim().isEmpty()) {
+            if (cell.toString() == null || cell.toString().isEmpty()) {
+                list.add(good.getId() + " " + "Поле количество не может быть пустым");
+            } else if (!cell.toString().trim().isEmpty()) {
                 try {
                     d = Double.valueOf(cell.toString().replace(",", "."));
                 } catch (NumberFormatException e) {
@@ -246,9 +252,9 @@ public class MapperToEnumField {
         mapFunc.put("разрешено к продаже", (cell, field, list, good) -> {
 
             if (!cell.toString().trim().isEmpty()) {
-                if (cell.toString().trim().equals("1.0") || cell.toString().trim().equals("1") ) {
+                if (cell.toString().trim().equals("1.0") || cell.toString().trim().equals("1")) {
                     good.setAllowToSell(true);
-                } else if(cell.toString().trim().equals("0") || cell.toString().trim().equals("0.0")) {
+                } else if (cell.toString().trim().equals("0") || cell.toString().trim().equals("0.0")) {
                     good.setAllowToSell(false);
                 } else {
                     list.add(good.getId() + " " + cell.toString() + " allowToSell должна быть 0 если товар нельзя добавлять в чек и 1 если можно" + field.name);

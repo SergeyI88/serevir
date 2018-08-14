@@ -45,7 +45,7 @@ public class FileHandler<T extends Workbook> {
     }
 
     private Good groupOrNo(Good apply, List<String> listErrors) {
-        if (apply.getGroup() != null) {
+        if (apply != null && apply.getGroup() != null) {
             if (apply.getGroup()) {
                 logger.info("Товар является группой " + apply.getId());
                 for (int i = 0; i < listErrors.size(); ) {
@@ -105,18 +105,20 @@ public class FileHandler<T extends Workbook> {
             int i = 0;
             Cell c = r.getCell(i, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK);
             for (; i < sequence.size(); ) {
-                if (columns.stream().anyMatch(s -> s.equals(sequence.peek().trim().toLowerCase()))) {
-                    checkValues(mapperToEnumField.mapFunc.get(sequence.peek().trim().toLowerCase())
-                            , c
-                            , mapperToEnumField.mapNames.get(sequence.peek().trim().toLowerCase())
-                            , listErrors
-                            , sequence
-                            , good
-                            , forDelete);
-                } else {
-                    sequence.offer(sequence.poll());
+                if (c.toString() != null) {
+                    if (columns.stream().anyMatch(s -> s.equals(sequence.peek().trim().toLowerCase()))) {
+                        checkValues(mapperToEnumField.mapFunc.get(sequence.peek().trim().toLowerCase())
+                                , c
+                                , mapperToEnumField.mapNames.get(sequence.peek().trim().toLowerCase())
+                                , listErrors
+                                , sequence
+                                , good
+                                , forDelete);
+                    } else {
+                        sequence.offer(sequence.poll());
+                    }
+                    c = r.getCell(++i, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK);
                 }
-                c = r.getCell(++i, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK);
             }
             Good temp = isEnd(good, listErrors);
             if (temp != null && temp.getName().equals("-")) {
