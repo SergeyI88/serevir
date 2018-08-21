@@ -41,7 +41,6 @@ public class ClientService {
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
-                throw new RuntimeException("Некорректный токен");
             }
         }
         return false;
