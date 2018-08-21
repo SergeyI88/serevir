@@ -51,7 +51,7 @@ public class Document {
     private String sessionNumber;
     @SerializedName("number")
     @Expose
-    private Integer number;
+    private Double number;
     @SerializedName("closeResultSum")
     @Expose
     private String closeResultSum;
@@ -175,11 +175,11 @@ public class Document {
         this.sessionNumber = sessionNumber;
     }
 
-    public Integer getNumber() {
+    public Double getNumber() {
         return number;
     }
 
-    public void setNumber(Integer number) {
+    public void setNumber(Double number) {
         this.number = number;
     }
 
@@ -316,7 +316,7 @@ public class Document {
         private String creationDate;
         @SerializedName("timezone")
         @Expose
-        private Integer timezone;
+        private Double timezone;
         @SerializedName("baseDocumentNumber")
         @Expose
         private Object baseDocumentNumber;
@@ -334,10 +334,10 @@ public class Document {
         private Object couponNumber;
         @SerializedName("alcoholByVolume")
         @Expose
-        private Integer alcoholByVolume;
+        private Double alcoholByVolume;
         @SerializedName("alcoholProductKindCode")
         @Expose
-        private Integer alcoholProductKindCode;
+        private Double alcoholProductKindCode;
         @SerializedName("balanceQuantity")
         @Expose
         private BigDecimal balanceQuantity;
@@ -370,7 +370,7 @@ public class Document {
         private String measureName;
         @SerializedName("tareVolume")
         @Expose
-        private Integer tareVolume;
+        private Double tareVolume;
         @SerializedName("price")
         @Expose
         private BigDecimal price;
@@ -441,11 +441,11 @@ public class Document {
             this.creationDate = creationDate;
         }
 
-        public Integer getTimezone() {
+        public Double getTimezone() {
             return timezone;
         }
 
-        public void setTimezone(Integer timezone) {
+        public void setTimezone(Double timezone) {
             this.timezone = timezone;
         }
 
@@ -489,19 +489,19 @@ public class Document {
             this.couponNumber = couponNumber;
         }
 
-        public Integer getAlcoholByVolume() {
+        public Double getAlcoholByVolume() {
             return alcoholByVolume;
         }
 
-        public void setAlcoholByVolume(Integer alcoholByVolume) {
+        public void setAlcoholByVolume(Double alcoholByVolume) {
             this.alcoholByVolume = alcoholByVolume;
         }
 
-        public Integer getAlcoholProductKindCode() {
+        public Double getAlcoholProductKindCode() {
             return alcoholProductKindCode;
         }
 
-        public void setAlcoholProductKindCode(Integer alcoholProductKindCode) {
+        public void setAlcoholProductKindCode(Double alcoholProductKindCode) {
             this.alcoholProductKindCode = alcoholProductKindCode;
         }
 
@@ -585,11 +585,11 @@ public class Document {
             this.measureName = measureName;
         }
 
-        public Integer getTareVolume() {
+        public Double getTareVolume() {
             return tareVolume;
         }
 
-        public void setTareVolume(Integer tareVolume) {
+        public void setTareVolume(Double tareVolume) {
             this.tareVolume = tareVolume;
         }
 
