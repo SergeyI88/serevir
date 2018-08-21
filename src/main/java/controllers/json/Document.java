@@ -340,7 +340,7 @@ public class Document {
         private Double alcoholProductKindCode;
         @SerializedName("balanceQuantity")
         @Expose
-        private BigDecimal balanceQuantity;
+        private Double balanceQuantity;
         @SerializedName("barcode")
         @Expose
         private String barcode;
@@ -505,11 +505,11 @@ public class Document {
             this.alcoholProductKindCode = alcoholProductKindCode;
         }
 
-        public BigDecimal getBalanceQuantity() {
+        public Double getBalanceQuantity() {
             return balanceQuantity;
         }
 
-        public void setBalanceQuantity(BigDecimal balanceQuantity) {
+        public void setBalanceQuantity(Double balanceQuantity) {
             this.balanceQuantity = balanceQuantity;
         }
 

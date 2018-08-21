@@ -1,5 +1,6 @@
 package controllers;
 
+import com.google.gson.Gson;
 import controllers.json.Document;
 import db.DAO.impl.ShopDaoImpl;
 import db.entity.Shop;
@@ -161,7 +162,7 @@ public class GoodsController {
 
         List<Document> documents = getDocuments.get(storeUuid, (String) request.getSession().getAttribute("token"), localDateTimeTo.toString() + "+0000", localDateTimeFrom.toString() + ":00.000+0000 ");
         if (documents == null) {
-            modelAndView.addObject("list", Collections.singletonList("Что-то пошло не так"));
+            modelAndView.addObject("list", Collections.singletonList("Ошибка на сервере, пожалуйста попробуйте позже"));
             return modelAndView;
         }
 
