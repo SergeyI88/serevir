@@ -51,6 +51,16 @@
             }
         }
     %>
+    <br>
+    <% if (request.getAttribute("warnings") != null) {
+        List<String> list = (List<String>) request.getAttribute("warnings");
+        for (String s : list) { %>
+    <div class="form-warnings"><%=s%>
+    </div>
+    <%
+            }
+        }
+    %>
     <div class="form-title">Выбор магазина</div>
     <form name="f" method="post" action="uploadFile" enctype="multipart/form-data">
         <%

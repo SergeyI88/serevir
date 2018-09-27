@@ -7,8 +7,10 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 @Component
 public class MapperToEnumField {
@@ -42,7 +44,7 @@ public class MapperToEnumField {
                 try {
                     d = Double.valueOf(cell.toString());
                 } catch (NumberFormatException e) {
-                    list.add(good.getId() + " " + cell.toString() + "объем алкогольной тары - должно быть число [ 0 .. 99.999 ] столбец " + field.name);
+                    list.add(good.getId() + " " + cell.toString() + " Товар был загружен - Предупреждение: должно быть число [ 0 .. 99.999 ] столбец " + field.name + " выставлено - 0");
                 }
                 good.setAlcoholByVolume(d);
             }
@@ -55,7 +57,8 @@ public class MapperToEnumField {
                 try {
                     d = Double.parseDouble(cell.toString());
                 } catch (NumberFormatException e) {
-                    list.add(good.getId() + " " + cell.toString() + " не число [1 ... 999] столбец " + field.name);
+                    list.add(good.getId() + " " + cell.toString() + " Товар был загружен - Предупреждение: не число [1 ... 999] столбец " + field.name + " выставлено - пусто");
+                    good.setAlcoholProductKindCode(d);
                 }
                 good.setAlcoholProductKindCode(d);
             }
@@ -85,20 +88,13 @@ public class MapperToEnumField {
         mapFunc.put("цена закупки", (cell, field, list, good) -> {
             Double d = null;
             if (!cell.toString().trim().isEmpty()) {
-                if (field.isRequired) {
-                    try {
-                        d = Double.valueOf(cell.toString().replace(",", "."));
-                    } catch (NumberFormatException e) {
-                        list.add(good.getId() + " " + cell.toString() + "цена закупки - должн быть число [ 0 .. 9999999.999 ] столбец " + field.name);
-                    }
-                } else {
-                    try {
-                        d = Double.valueOf(cell.toString().replace(",", "."));
-                    } catch (NumberFormatException e) {
-                        list.add(good.getId() + " " + cell.toString() + "цена закупки - должно быть число [ 0 .. 9999999.999 ] столбец " + field.name);
-                    }
-
+                try {
+                    d = Double.valueOf(cell.toString().replace(",", "."));
+                } catch (NumberFormatException e) {
+                    list.add(good.getId() + " " + cell.toString() + " Товар был загружен - Предупреждение: должно быть число [ 0 .. 9999999.99 ] столбец " + field.name + " выставлено - 0");
                 }
+            } else {
+                d = 0.0;
             }
             good.setCostPrice(d);
             return good;
@@ -106,16 +102,16 @@ public class MapperToEnumField {
         mapFunc.put("цена", (cell, field, list, good) -> {
             Double d = null;
             if (field.isRequired) {
-                if(cell.toString() == null || cell.toString().isEmpty()) {
-                    list.add(good.getId() + " " + cell.toString() + "цена обязателен к заполнению [ 0 .. 9999999.999 ] столбец " + field.name);
+                if (cell.toString() == null || cell.toString().isEmpty()) {
+                    list.add(good.getId() + " " + cell.toString() + " цена обязателен к заполнению [ 0 .. 9999999.999 ] столбец " + field.name);
                 } else if (!cell.toString().trim().isEmpty()) {
                     try {
                         d = Double.valueOf(cell.toString().replace(",", "."));
                     } catch (NumberFormatException e) {
-                        list.add(good.getId() + " " + cell.toString() + "цена должно быть число [ 0 .. 9999999.999 ] столбец " + field.name);
+                        list.add(good.getId() + " " + cell.toString() + " цена должно быть число [ 0 .. 9999999.999 ] столбец " + field.name);
                     }
                 } else {
-                    list.add(good.getId() + " " + cell.toString() + "цена обязателен к заполнению [ 0 .. 9999999.999 ] столбец " + field.name);
+                    list.add(good.getId() + " " + cell.toString() + " цена обязателен к заполнению [ 0 .. 9999999.999 ] столбец " + field.name);
                 }
             }
             good.setPrice(d);
@@ -137,7 +133,8 @@ public class MapperToEnumField {
                     if (cell.toString().trim().equals("1.0") || cell.toString().trim().equals("0.0") || cell.toString().trim().equals("1") || cell.toString().trim().equals("0")) {
                         good.setGroup(cell.toString().equals("1.0") || cell.toString().equals("1"));
                     } else {
-                        list.add(cell.toString() + " группа должна быть 0 если не является и 1 если является группой" + field.name);
+                        list.add(good.getId() + " " + cell.toString() + " Товар был загружен - Предупреждение: 0 если товар не является группой и 1 если является " + field.name + " выставлено - 0");
+                        good.setGroup(false);
                     }
                 } else {
                     good.setGroup(false);
@@ -152,7 +149,7 @@ public class MapperToEnumField {
                     if (Arrays.asList(field.value).contains(cell.toString().trim())) {
                         good.setMeasureName(cell.toString().trim());
                     } else {
-                        list.add(good.getId() + " " + cell.toString() + " система подсчета остатков товара должна содержать одно из " + Arrays.asList(field.value) + " если пуста ставится шт");
+                        list.add(good.getId() + " " + cell.toString() + " Товар был загружен - Предупреждение: система подсчета остатков товара должна содержать одно из " + Arrays.asList(field.value) + " выставлено - шт.");
                     }
                 } else {
                     good.setMeasureName("шт");
@@ -186,16 +183,16 @@ public class MapperToEnumField {
         mapFunc.put("количество", (cell, field, list, good) -> {
             Double d = null;
             if (cell.toString() == null || cell.toString().isEmpty()) {
-                list.add(good.getId() + " " + "Поле количество не может быть пустым");
+               d = 0d;
             } else if (!cell.toString().trim().isEmpty()) {
                 try {
                     d = Double.valueOf(cell.toString().replace(",", "."));
                 } catch (NumberFormatException e) {
-                    list.add(good.getId() + " " + cell.toString() + "количество должно быть число [ 0 .. 9999999.999 ] столбец " + field.name);
+                    list.add(good.getId() + " Товар был загружен - Предупреждение: должно быть число [ 0 .. 9999999.999 ] столбец " + field.name + " выставлено - 0.0");
                 }
             } else {
                 if (field.isRequired) {
-                    list.add(good.getId() + " " + "Поле количество не может быть пустым");
+                    list.add(good.getId() + " Товар был загружен - Предупреждение: должно быть число [ 0 .. 9999999.999 ] столбец " + field.name + " выставлено - 0.0");
                 }
             }
             good.setQuantity(d);
@@ -208,7 +205,7 @@ public class MapperToEnumField {
                 try {
                     d = Double.valueOf(cell.toString());
                 } catch (NumberFormatException e) {
-                    list.add(good.getId() + " " + cell.toString() + "объем тары должно быть число [ 0 .. 999.999 ] столбец " + field.name);
+                    d = 0d;
                 }
             } else {
                 if (field.isRequired) {
@@ -225,7 +222,8 @@ public class MapperToEnumField {
                     if (Arrays.asList(field.value).contains(cell.toString().trim())) {
                         good.setTax(cell.toString().trim());
                     } else {
-                        list.add(good.getId() + " " + cell.toString() + " система налогооблажения дожна быть представлена как " + Arrays.asList(field.value) + " если пусто ставится упрощенная система");
+                        list.add(good.getId() + " " + cell.toString() + " Товар был загружен - Предупреждение: должен иметь значения " + Arrays.toString(field.value) + " выставлено - NO_VAT");
+                        good.setTax("NO_VAT");
                     }
                 } else {
                     good.setTax("NO_VAT");
@@ -240,7 +238,8 @@ public class MapperToEnumField {
                     if (Arrays.asList(field.value).contains(cell.toString().toLowerCase().trim())) {
                         good.setType(cell.toString().trim());
                     } else {
-                        list.add(good.getId() + " " + cell.toString() + " дожно быть представлено одно из " + Arrays.asList(field.value) + " если пусто ставится NORMAL");
+                        list.add(good.getId() + " " + cell.toString() + " Товар был загружен - Предупреждение: должен иметь значения " + Arrays.toString(field.value) + " выставлено - NORMAL");
+                        good.setType("NORMAL");
                     }
                 } else {
                     good.setType("NORMAL");
@@ -257,7 +256,7 @@ public class MapperToEnumField {
                 } else if (cell.toString().trim().equals("0") || cell.toString().trim().equals("0.0")) {
                     good.setAllowToSell(false);
                 } else {
-                    list.add(good.getId() + " " + cell.toString() + " allowToSell должна быть 0 если товар нельзя добавлять в чек и 1 если можно" + field.name);
+                    good.setAllowToSell(true);
                 }
             } else {
                 good.setAllowToSell(true);
@@ -271,7 +270,8 @@ public class MapperToEnumField {
                     if (cell.toString().trim().matches("[0-9A-f]{8}-[0-9A-f]{4}-[0-9A-f]{4}-[0-9A-f]{4}-[0-9A-f]{12}")) {
                         good.setUuid(cell.toString().trim());
                     } else {
-                        list.add(cell.toString() + " неверный формат uuid4, можете оставить пустым программа сама его заполнит" + field.name);
+                        list.add(good.getId() + " " + cell.toString() + " Товар был загружен - Предупреждение: программма генерирует автоматически, оставляйте пустым при первой загрузке товара" + field.name);
+                        good.setUuid(Generators.timeBasedGenerator().generate().toString());
                     }
                 }
             } else {

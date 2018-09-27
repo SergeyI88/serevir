@@ -11,12 +11,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import service.ShopService;
-import utils.ThirdFunction;
 import utils.MapperToEnumField;
+import utils.ThirdFunction;
 
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
 @Scope("prototype")
@@ -44,7 +45,7 @@ public class FileHandler<T extends Workbook> {
         return this;
     }
 
-    private Good groupOrNo(Good apply, List<String> listErrors) {
+    private Good groupOrNo(Good apply, List<String> listErrors, Double maxCode) {
         if (apply != null && apply.getGroup() != null) {
             if (apply.getGroup()) {
                 logger.info("Товар является группой " + apply.getId());
@@ -54,7 +55,7 @@ public class FileHandler<T extends Workbook> {
                     }
                 }
                 if (apply.getCode() == null || apply.getCode().isEmpty()) {
-                    listErrors.add(apply.getId() + " Колонка код у группы не может быть пуста");
+                    apply.setCode((++maxCode).toString());
                 }
                 Good good = new Good();
                 good.setId(apply.getId());
@@ -78,7 +79,12 @@ public class FileHandler<T extends Workbook> {
         List<Cell> list = getFirstColumns(row);
         for (EnumFields e : EnumFields.values()) {
             for (Cell c : list) {
-                if (e.name.toLowerCase().equals(c.toString().toLowerCase().trim())) {
+                if (e.isRequired) {
+                    if (e.name.toLowerCase().equals(c.toString().toLowerCase().trim())) {
+                        match = true;
+                        break;
+                    }
+                } else {
                     match = true;
                     break;
                 }
@@ -123,13 +129,21 @@ public class FileHandler<T extends Workbook> {
             Good temp = isEnd(good, listErrors);
             if (temp != null && temp.getName().equals("-")) {
                 forDelete.add(temp);
-            }
-            temp = groupOrNo(temp, listErrors);
-            if (temp != null && temp.getName() != null && temp.getUuid() != null && !temp.getName().trim().equals("-")) {
+            } else {
                 goodList.add(temp);
             }
+//            temp = groupOrNo(temp, listErrors, maxCode);
+//            if (temp != null && temp.getName() != null && temp.getUuid() != null && !temp.getName().trim().equals("-")) {
+//                goodList.add(temp);
+//            }
         });
-        isMatch(goodList, listErrors);
+        Double[] maxCode = {goodList.stream().filter(g -> g.getCode() != null && !g.getCode().matches("[^0-9.]")).map(g -> Double.valueOf(g.getCode())).max(Comparator.naturalOrder()).orElse(1.0)};
+        List<Good> endedList = goodList.stream().map(g -> {
+            Good temp =  groupOrNo(g, listErrors, maxCode[0]);
+            maxCode[0] = maxCode[0].equals(Double.valueOf(temp.getCode())) ? maxCode[0] : ++maxCode[0];
+            return temp;
+        }).collect(Collectors.toList());
+        isMatch(endedList, listErrors, maxCode[0]);
         map.put("forDelete", forDelete);
         map.put("errors", listErrors);
         map.put("goods", goodList);
@@ -148,15 +162,23 @@ public class FileHandler<T extends Workbook> {
 
     private Queue<String> getSequenceAndWriteToDataBase(Row row, String storeUuid) {
         Queue<String> sequence = new ArrayDeque<>();
-        StringBuilder builder = new StringBuilder();
-        for (Cell cell : row) {
-            String column = cell.toString().toLowerCase().trim();
-            sequence.offer(column);
-            if (columns.contains(column)) {
-                builder.append(column).append(";");
+
+        if (row.getRowNum() >= 19) {
+            StringBuilder builder = new StringBuilder();
+            for (Cell cell : row) {
+                String column = cell.toString().toLowerCase().trim();
+                sequence.offer(column);
+                if (columns.contains(column)) {
+                    builder.append(column).append(";");
+                }
+            }
+            shopService.writeSequenceColumns(builder.toString(), storeUuid);
+        } else {
+            String seq = shopService.getSequance(storeUuid);
+            for (String column : seq.split(";")) {
+                sequence.offer(column);
             }
         }
-        shopService.writeSequenceColumns(builder.toString(), storeUuid);
         return sequence;
     }
 
@@ -173,7 +195,7 @@ public class FileHandler<T extends Workbook> {
         return good;
     }
 
-    private void isMatch(List<Good> goods, List<String> listErrors) {
+    private void isMatch(List<Good> goods, List<String> listErrors, double maxCode) {
         Map<String, String> mapUuidOrCodeWithGoodId = new HashMap<>();
         List<String> matchUuid = new ArrayList<>();
         List<String> matchCode = new ArrayList<>();

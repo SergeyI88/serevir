@@ -41,6 +41,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Controller
 public class GoodsController {
@@ -73,7 +74,9 @@ public class GoodsController {
             Map<String, List> map = fileHandler.getResult(workbook, storeUuid, (String) request.getSession().getAttribute("token"));
             list = map.get("errors");
             int result = 0;
-            if (list.isEmpty()) {
+            List<String> warnings = list.stream().filter(s -> s.contains("Товар был загружен - Предупреждение:")).collect(Collectors.toList());
+            List<String> errors = list.stream().filter(s -> !s.contains("Товар был загружен - Предупреждение:")).collect(Collectors.toList());
+            if (errors.isEmpty()) {
                 if (!map.get("forDelete").isEmpty()) {
                     DeleteGoodsImpl deleteGoodsImpl = new DeleteGoodsImpl();
                     deleteGoodsImpl.execute(storeUuid, (String) request.getSession().getAttribute("token"), map.get("forDelete"));
@@ -81,7 +84,8 @@ public class GoodsController {
                 SendGoodsImpl sendGoodsImpl = new SendGoodsImpl();
                 result = sendGoodsImpl.send(map.get("goods"), storeUuid, (String) request.getSession().getAttribute("token"));
             }
-            modelAndView.addObject("list", !list.isEmpty() ? list : result == 200 ? new ArrayList(Arrays.asList("Все товары загружены")) : new ArrayList(Arrays.asList("Сервер ответил отказом, попробуйте позже")));
+            modelAndView.addObject("list", !errors.isEmpty() ? list : result == 200 ? new ArrayList(Arrays.asList("Все товары загружены")) : new ArrayList(Arrays.asList("Сервер ответил отказом, попробуйте позже")));
+            modelAndView.addObject("warnings", result == 200 ? warnings : new ArrayList(Arrays.asList("Сервер ответил отказом, попробуйте позже")));
         } catch (InvalidFormatException | IOException | NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
