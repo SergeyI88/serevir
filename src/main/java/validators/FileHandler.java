@@ -45,7 +45,7 @@ public class FileHandler<T extends Workbook> {
         return this;
     }
 
-    private Good groupOrNo(Good apply, List<String> listErrors, Double maxCode) {
+    private Good groupOrNoAndCheckParentCodeOnExists(Good apply, List<String> listErrors, List<Good> goodList) {
         if (apply != null && apply.getGroup() != null) {
             if (apply.getGroup()) {
                 logger.info("Товар является группой " + apply.getId());
@@ -53,9 +53,6 @@ public class FileHandler<T extends Workbook> {
                     if (listErrors.get(i++).startsWith(apply.getId() + "")) {
                         listErrors.remove(--i);
                     }
-                }
-                if (apply.getCode() == null || apply.getCode().isEmpty()) {
-                    apply.setCode((++maxCode).toString());
                 }
                 Good good = new Good();
                 good.setId(apply.getId());
@@ -66,6 +63,9 @@ public class FileHandler<T extends Workbook> {
                 good.setUuid(apply.getUuid());
                 return good;
             }
+        }
+        if (goodList.stream().map(Good::getCode).noneMatch(code -> code.equals(apply.getParentUuid()))) {
+            apply.setParentUuid(null);
         }
         return apply;
     }
@@ -132,15 +132,13 @@ public class FileHandler<T extends Workbook> {
             } else {
                 goodList.add(temp);
             }
-//            temp = groupOrNo(temp, listErrors, maxCode);
-//            if (temp != null && temp.getName() != null && temp.getUuid() != null && !temp.getName().trim().equals("-")) {
-//                goodList.add(temp);
-//            }
         });
-        Double[] maxCode = {goodList.stream().filter(g -> g.getCode() != null && !g.getCode().matches("[^0-9.]")).map(g -> Double.valueOf(g.getCode())).max(Comparator.naturalOrder()).orElse(1.0)};
+        Double[] maxCode = {goodList.stream().filter(g -> g.getCode() != null && g.getCode().matches("[0-9.]+")).map(g -> Double.valueOf(g.getCode())).max(Comparator.naturalOrder()).orElse(1.0)};
         List<Good> endedList = goodList.stream().map(g -> {
-            Good temp =  groupOrNo(g, listErrors, maxCode[0]);
-            maxCode[0] = maxCode[0].equals(Double.valueOf(temp.getCode())) ? maxCode[0] : ++maxCode[0];
+            Good temp = groupOrNoAndCheckParentCodeOnExists(g, listErrors, goodList);
+            if (temp.getCode() == null || !temp.getCode().matches("[0-9.]+")) {
+                temp.setCode(String.valueOf(++maxCode[0]));
+            }
             return temp;
         }).collect(Collectors.toList());
         isMatch(endedList, listErrors, maxCode[0]);

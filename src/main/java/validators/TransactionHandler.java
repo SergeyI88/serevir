@@ -117,6 +117,34 @@ public class TransactionHandler {
             int code = sendGoodsImpl.send(fromEvotor2, storeUuid, authorization);
             serviceError.writeError(code + " sent in evotor after decrementELSE", "");
         } catch (IOException e) {
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e1) {
+                e1.printStackTrace();
+            }
+            decrementElseTwo(listFromTerminal, fromEvotor2, storeUuid, authorization);
+        }
+    }
+
+    private void decrementElseTwo(List<Good> listFromTerminal, List<Good> fromEvotor2, String storeUuid, String authorization) {
+        for (Good withFields : fromEvotor2) {
+            for (Good without : listFromTerminal) {
+                if (withFields.getUuid().equals(without.getUuid())) {
+                    withFields.setQuantity(withFields.getQuantity() - without.getQuantity());
+                }
+            }
+        }
+        logger.info("got union list in decrementELSETWO");
+        SendGoodsImpl sendGoodsImpl = new SendGoodsImpl();
+        try {
+            int code = sendGoodsImpl.send(fromEvotor2, storeUuid, authorization);
+            serviceError.writeError(code + " sent in evotor after decrementELSETWO", "");
+        } catch (IOException e) {
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e1) {
+                e1.printStackTrace();
+            }
             e.printStackTrace();
         }
     }
