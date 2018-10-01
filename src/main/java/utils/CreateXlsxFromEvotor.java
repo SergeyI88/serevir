@@ -353,7 +353,7 @@ public class CreateXlsxFromEvotor {
     private List<Good> myAlgho(List<Good> goods) {
         List<Good> goodList = new ArrayList<>();
         for (Good g : goods) {
-            if (g.getGroup() && g.getParentUuid() == null) {
+            if (g.getGroup() != null && g.getGroup() && g.getParentUuid() == null) {
                 goodList.add(g);
                 goodList.addAll(getAll(goods, g.getCode()));
             }
