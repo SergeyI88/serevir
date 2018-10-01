@@ -70,6 +70,54 @@ public class TransactionHandler {
             logger.info(code + " sent in evotor after increment");
         } catch (IOException e) {
             e.printStackTrace();
+            incrementElse(listFromTerminal, fromEvotor, storeUuid, authorization);
+        }
+    }
+
+    private void incrementElse(List<Good> listFromTerminal, List<Good> fromEvotor, String storeUuid, String authorization) {
+        for (Good withFields : fromEvotor) {
+            for (Good without : listFromTerminal) {
+                if (withFields.getUuid().equals(without.getUuid())) {
+                    withFields.setQuantity(withFields.getQuantity() + without.getQuantity());
+                }
+            }
+        }
+        logger.info("got union list in increment");
+        SendGoodsImpl sendGoodsImpl = new SendGoodsImpl();
+        try {
+            int code = sendGoodsImpl.send(fromEvotor, storeUuid, authorization);
+            logger.info(code + " sent in evotor after incrementElse");
+            serviceError.writeError("NPE на increment товара ElseINSIDE", "");
+        } catch (IOException e) {
+            serviceError.writeError("NPE на increment товара Else" + " message:" + e.getLocalizedMessage(), "");
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e1) {
+                e1.printStackTrace();
+            }
+            incrementElseTwo(listFromTerminal, fromEvotor, storeUuid, authorization);
+        }
+    }
+
+    private void incrementElseTwo(List<Good> listFromTerminal, List<Good> fromEvotor, String storeUuid, String authorization) {
+        for (Good withFields : fromEvotor) {
+            for (Good without : listFromTerminal) {
+                if (withFields.getUuid().equals(without.getUuid())) {
+                    withFields.setQuantity(withFields.getQuantity() + without.getQuantity());
+                }
+            }
+        }
+        logger.info("got union list in increment");
+        SendGoodsImpl sendGoodsImpl = new SendGoodsImpl();
+        try {
+            int code = sendGoodsImpl.send(fromEvotor, storeUuid, authorization);
+            logger.info(code + " sent in evotor after incrementElseTwo");
+            serviceError.writeError("NPE на increment товара ElseTwoINSIDE", "");
+
+        } catch (IOException e) {
+            serviceError.writeError("NPE на increment товара ElseTwoItENDED" + " message:" + e.getLocalizedMessage(), "");
+            e.printStackTrace();
+
         }
     }
 
