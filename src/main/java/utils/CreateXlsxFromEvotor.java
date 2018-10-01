@@ -359,7 +359,7 @@ public class CreateXlsxFromEvotor {
             }
         }
         for (Good g : goods) {
-            if (g.getParentUuid() == null && !g.getGroup()) {
+            if (g.getGroup() == null || g.getParentUuid() == null && !g.getGroup()) {
                 goodList.add(g);
             }
         }
