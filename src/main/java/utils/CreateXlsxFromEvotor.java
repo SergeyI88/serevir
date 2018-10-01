@@ -228,6 +228,11 @@ public class CreateXlsxFromEvotor {
 
 //        String uuidFirstGood = sortListGood(goods, uuidWithCodeForSwap);
         replaceCodeAndParentUuid(goods);
+        for (Good g : goods) {
+            if (g.getGroup() == null) {
+                g.setGroup(Boolean.FALSE);
+            }
+        }
         for (Good good : myAlgho(goods)) {
             CellStyle justCellStyle = workbook.createCellStyle();
 //                String parentUuid = good.getParentUuid();
@@ -239,7 +244,7 @@ public class CreateXlsxFromEvotor {
 
             if (good.getParentUuid() == null && good.getGroup()) {
                 justCellStyle = groupCellStyle;
-            } else if (good.getParentUuid() != null && good.getGroup()) {
+            } else if ( good.getParentUuid() != null && good.getGroup()) {
                 justCellStyle = podGroupCellStyle;
             }
 //                if (uuidFirstGood != null) {
