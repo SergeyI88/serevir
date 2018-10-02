@@ -85,7 +85,7 @@ public class GoodsController {
                 result = sendGoodsImpl.send(map.get("goods"), storeUuid, (String) request.getSession().getAttribute("token"));
             }
             modelAndView.addObject("list", !errors.isEmpty() ? list : result == 200 ? new ArrayList(Arrays.asList("Все товары загружены")) : new ArrayList(Arrays.asList("Сервер ответил отказом, попробуйте позже")));
-            modelAndView.addObject("warnings", result == 200 ? warnings : new ArrayList(Arrays.asList("Сервер ответил отказом, попробуйте позже")));
+            modelAndView.addObject("warnings", result == 200 ? warnings : new ArrayList(Arrays.asList()));
         } catch (InvalidFormatException | IOException | NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
