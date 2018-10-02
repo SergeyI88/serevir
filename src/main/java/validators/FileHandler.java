@@ -77,14 +77,17 @@ public class FileHandler<T extends Workbook> {
         Sheet sheet = workbook.getSheetAt(0);
         Row row = sheet.getRow(0);
         List<Cell> list = getFirstColumns(row);
+        int countColumns = 0;
         for (EnumFields e : EnumFields.values()) {
             for (Cell c : list) {
                 if (e.isRequired) {
                     if (e.name.toLowerCase().equals(c.toString().toLowerCase().trim())) {
                         match = true;
+                        countColumns++;
                         break;
                     }
                 } else {
+                    countColumns++;
                     match = true;
                     break;
                 }
@@ -99,7 +102,7 @@ public class FileHandler<T extends Workbook> {
             return map;
         }
 
-        Queue<String> sequence = getSequenceAndWriteToDataBase(row, storeUuid);
+        Queue<String> sequence = getSequenceAndWriteToDataBase(row, storeUuid, countColumns);
 
         Integer[] integers = {1};
         sheet.removeRow(row);
@@ -158,10 +161,10 @@ public class FileHandler<T extends Workbook> {
         return columns;
     }
 
-    private Queue<String> getSequenceAndWriteToDataBase(Row row, String storeUuid) {
+    private Queue<String> getSequenceAndWriteToDataBase(Row row, String storeUuid, int countColumns) {
         Queue<String> sequence = new ArrayDeque<>();
 
-        if (row.getRowNum() >= 19) {
+        if (countColumns >= 19) {
             StringBuilder builder = new StringBuilder();
             for (Cell cell : row) {
                 String column = cell.toString().toLowerCase().trim();
@@ -182,7 +185,8 @@ public class FileHandler<T extends Workbook> {
 
 
     private Good isEnd(Good good, List<String> listErrors) {
-        if (good.getQuantity() == null && good.getName() == null && good.getPrice() == null) {
+        if (good.getQuantity() == null && good.getName() == null && good.getPrice() == null ||
+                good.getQuantity() == 0.0 && good.getName() == null && good.getPrice() == null) {
             for (int i = 0; i < listErrors.size(); ) {
                 if (listErrors.get(i++).startsWith(good.getId() + "")) {
                     listErrors.remove(--i);
