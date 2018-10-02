@@ -64,7 +64,7 @@ public class FileHandler<T extends Workbook> {
                 return good;
             }
         }
-        if (goodList.stream().map(Good::getCode).noneMatch(code -> code.equals(apply.getParentUuid()))) {
+        if (goodList.stream().filter(g -> g.getCode() != null).map(Good::getCode).noneMatch(code -> code.equals(apply.getParentUuid()))) {
             apply.setParentUuid(null);
         }
         return apply;
@@ -134,7 +134,7 @@ public class FileHandler<T extends Workbook> {
             }
         });
         Double[] maxCode = {goodList.stream().filter(g -> g.getCode() != null && g.getCode().matches("[0-9.]+")).map(g -> Double.valueOf(g.getCode())).max(Comparator.naturalOrder()).orElse(1.0)};
-        List<Good> endedList = goodList.stream().map(g -> {
+        List<Good> endedList = goodList.stream().filter(Objects::nonNull).map(g -> {
             Good temp = groupOrNoAndCheckParentCodeOnExists(g, listErrors, goodList);
             if (temp.getCode() == null || !temp.getCode().matches("[0-9.]+")) {
                 temp.setCode(String.valueOf(++maxCode[0]));
