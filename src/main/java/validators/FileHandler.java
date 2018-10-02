@@ -129,7 +129,7 @@ public class FileHandler<T extends Workbook> {
             Good temp = isEnd(good, listErrors);
             if (temp != null && temp.getName() != null && temp.getName().equals("-")) {
                 forDelete.add(temp);
-            } else {
+            } else if (temp != null){
                 goodList.add(temp);
             }
         });
