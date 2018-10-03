@@ -4,17 +4,22 @@ import com.fasterxml.uuid.Generators;
 import consts.EnumFields;
 import http.entity.Good;
 import org.apache.poi.ss.usermodel.Cell;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 @Component
+@PropertySource("classpath:sequence.properties")
 public class MapperToEnumField {
+    @Autowired
+    private Environment env;
+
     public final HashMap<String, EnumFields> mapNames = new HashMap<>();
+    public static final Queue<String> SEQUENCE = new PriorityQueue<>();
 
     @PostConstruct
     public void init() {
@@ -37,6 +42,8 @@ public class MapperToEnumField {
         mapNames.put("разрешено к продаже", EnumFields.ALLOW_TO_SELL);
         mapNames.put("uuid", EnumFields.UUID);
         mapNames.put("алко-коды", EnumFields.ALCO_CODES);
+
+        SEQUENCE.addAll(Arrays.asList(env.getProperty("sequence").split(";")));
 
         mapFunc.put("объем алкогольной тары", (cell, field, list, good) -> {
             if (!cell.toString().trim().isEmpty()) {
