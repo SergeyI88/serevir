@@ -211,7 +211,7 @@ public class CreateXlsxFromEvotor {
         List<String> columnList = Arrays.asList(shopService.getSequance(shop.getUuid()).trim().split(";"));
         for (int i = 0; i < columnList.size(); i++) {
             Cell cell = headerRow.createCell(i);
-            if (columnList.get(i).equals(EnumFields.NAME.name)) {
+            if (columnList.get(i).equals(EnumFields.NAME.nameColumn)) {
                 indexColumnNameGood = (byte) i;
             }
             cell.setCellValue(columnList.get(i));

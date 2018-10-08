@@ -1,5 +1,6 @@
 package http.entity;
 
+import java.util.HashMap;
 import java.util.List;
 
 public class Good {
@@ -25,6 +26,16 @@ public class Good {
     }
 
     private Double price;
+
+//    List<HashMap<>> attributes;
+//
+//    public List<List<String>> getAttributes() {
+//        return attributes;
+//    }
+//
+//    public void setAttributes(List<List<String>> attributes) {
+//        this.attributes = attributes;
+//    }
 
     public Good() {
     }
@@ -235,5 +246,23 @@ public class Good {
                 ", alcoholProductKindCode=" + alcoholProductKindCode +
                 ", tareVolume=" + tareVolume +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Good good = (Good) o;
+
+        return uuid.equals(good.uuid) && name.equals(good.name);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = uuid.hashCode();
+        result = 31 * result + name.hashCode();
+        result = 31 * result + price.hashCode();
+        return result;
     }
 }
