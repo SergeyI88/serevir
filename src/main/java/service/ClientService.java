@@ -3,6 +3,7 @@ package service;
 import db.DAO.ClientDao;
 import db.DAO.ShopDao;
 import db.connection.ConnectionPostgres;
+import db.entity.Client;
 import http.impl.GetShopsImpl;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,5 +59,17 @@ public class ClientService {
 
     public boolean getSubscription(String x_auth) {
         return clientDao.getIsEnable(x_auth);
+    }
+
+    public boolean getAlert(String x_auth) {
+        return clientDao.getWasAlert(x_auth);
+    }
+
+    public void setWasAlert(String x_auth){
+        clientDao.setWasAlert(x_auth);
+    }
+
+    public Client getClientByTokenAndUpdateWasAlert(String x_auth) {
+        return clientDao.getClientByTokenAndUpdateWasAlert(x_auth);
     }
 }

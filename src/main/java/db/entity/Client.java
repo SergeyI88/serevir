@@ -6,6 +6,7 @@ public class Client {
     String companyName;
     String uuid;
     boolean isEnabled;
+    boolean wasAlert;
 
     public long getClient_id() {
         return client_id;
@@ -71,5 +72,14 @@ public class Client {
 
     public void setUuid(String uuid) {
         this.uuid = uuid;
+    }
+
+
+    public boolean isWasAlert() {
+        return wasAlert;
+    }
+
+    public void setWasAlert(boolean wasAlert) {
+        this.wasAlert = wasAlert;
     }
 }

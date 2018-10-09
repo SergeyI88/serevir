@@ -38,6 +38,12 @@
         };
 
     </script>
+    <%
+        if (request.getAttribute("alert") != null && (boolean)request.getAttribute("alert")) {%>
+    <script>alert("Платите больше денег!!!!!");</script>
+    <%
+        }
+    %>
 </head>
 <body class="container">
 

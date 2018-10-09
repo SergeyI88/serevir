@@ -57,6 +57,32 @@ public class ClientDaoImpl implements ClientDao {
     }
 
     @Override
+    public Client getClientByTokenAndUpdateWasAlert(String token) {
+        Client client = new Client();
+        try (Connection connection = ConnectionPostgres.getConnection()) {
+            PreparedStatement statement = connection.prepareStatement("SELECT * from client where token = ?");
+            statement.setString(1, token);
+            ResultSet set = statement.executeQuery();
+            if (set.next()) {
+                client.setWasAlert(set.getBoolean("was_alert"));
+                client.setEnabled(set.getBoolean("is_enabled"));
+                client.setId(set.getLong("client_id"));
+                client.setToken(set.getString("token"));
+                client.setCompanyName(set.getString("company_name"));
+                client.setUuid(set.getString("uuid"));
+            }
+            if (!client.isWasAlert()) {
+                PreparedStatement statement2 = connection.prepareStatement("update client SET was_alert = TRUE WHERE token = ?");
+                statement2.setString(1, token);
+                statement2.execute();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return client;
+    }
+
+    @Override
     public boolean createClient(String token, String company_name, String uuid, Connection connection) {
         PreparedStatement statement;
         int result = 0;
@@ -114,6 +140,33 @@ public class ClientDaoImpl implements ClientDao {
             e.printStackTrace();
         }
         return res;
+    }
+
+    @Override
+    public boolean getWasAlert(String token) {
+        boolean res = false;
+        try (Connection connection = ConnectionPostgres.getConnection()) {
+            PreparedStatement statement = connection.prepareStatement("select was_alert from client where token = ?");
+            statement.setString(1, token);
+            ResultSet set = statement.executeQuery();
+            if (set.next()) {
+                res = set.getBoolean("was_alert");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return res;
+    }
+
+    @Override
+    public void setWasAlert(String token) {
+        try (Connection connection = ConnectionPostgres.getConnection()) {
+            PreparedStatement statement = connection.prepareStatement("update client SET was_alert = TRUE WHERE token = ?");
+            statement.setString(1, token);
+            statement.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public void main(String[] args) {
