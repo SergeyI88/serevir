@@ -1,5 +1,6 @@
 package filter;
 
+import db.entity.Client;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 import service.ClientService;
@@ -25,18 +26,28 @@ public class SubscriptionFilter implements Filter {
         System.out.println(clientService);
         System.out.println("in filter " + request.getParameter("token"));
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
+        Client client = clientService.getClientByTokenAndUpdateWasAlert(httpServletRequest.getParameter("token"));
         if (httpServletRequest.getSession().getAttribute("sub") != null
                 && (Boolean) httpServletRequest.getSession().getAttribute("sub")) {
+            isAlert(client, httpServletRequest);
             chain.doFilter(request, response);
-        } else if (!clientService.getSubscription(request.getParameter("token"))) {
+        } else if (!client.isEnabled()) {
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
             httpServletRequest.getSession().setAttribute("sub", Boolean.FALSE);
             response.getWriter().write("У вас не продлена подписка");
         } else {
             httpServletRequest.getSession().setAttribute("sub", Boolean.TRUE);
+            isAlert(client, httpServletRequest);
             chain.doFilter(request, response);
         }
+    }
+
+    private void isAlert(Client client, HttpServletRequest httpServletRequest) {
+        if (!client.isWasAlert()) {
+            httpServletRequest.setAttribute("alert", true);
+        }
+
     }
 
     @Override
