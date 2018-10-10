@@ -187,7 +187,7 @@ public class MapperToEnumField {
         mapFunc.put("налог", (cell, list, id, nameColumn) -> {
             if (!cell.toString().trim().isEmpty()) {
                 if (Arrays.asList(EnumFields.TAX.value).contains(cell.toString().trim())) {
-                    return cell.toString().trim();
+                    return cell.toString().trim().toUpperCase();
                 } else {
                     list.add(id + " строка - Товар был загружен - Предупреждение: должен иметь значения " + Arrays.toString(EnumFields.TAX.value) + " выставлено - NO_VAT " + ConstantsErrorWarning.NOT_TAX);
                 }
@@ -200,7 +200,7 @@ public class MapperToEnumField {
         {
             if (!cell.toString().isEmpty()) {
                 if (Arrays.asList(EnumFields.TYPE.value).contains(cell.toString().toLowerCase().trim())) {
-                    return cell.toString().trim();
+                    return cell.toString().trim().toUpperCase();
                 } else {
                     list.add(id + " строка - Товар был загружен - Предупреждение: должен иметь значения " + Arrays.toString(EnumFields.TYPE.value) + " выставлено - NORMAL " + ConstantsErrorWarning.NOT_TYPE);
                 }

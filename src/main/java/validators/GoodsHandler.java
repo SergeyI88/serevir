@@ -179,7 +179,7 @@ public class GoodsHandler {
             if (g.getType() == null) {
                 g.setType((String) EnumFields.TYPE.defaultValue);
             }
-            if (CONST_ALCO.contains(g.getType()) && g.getAlcoCodes() == null) {
+            if (CONST_ALCO.contains(g.getType().trim().toLowerCase()) && g.getAlcoCodes() == null) {
                 errors.add(g.getId() + " " + ConstantsErrorWarning.MISSING_CODE_ALCO_OF_ALCOHOL);
             }
         }

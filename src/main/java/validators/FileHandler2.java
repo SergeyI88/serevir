@@ -44,9 +44,9 @@ public class FileHandler2 {
         List<Good> listGood = new ArrayList<>();
         Map<Integer, String> mapIndexValueNameColumn = firstCells.stream().collect(Collectors.toMap((Cell::getColumnIndex), (c -> c.toString().trim().toLowerCase())));
         Queue<Integer> firstCellsTheirIndexes = firstCells.stream().map(Cell::getColumnIndex).collect(Collectors.toCollection(PriorityQueue::new));
-//        if (firstCells.size() >= 19) {
-//            writeToDataBase(firstCells, storeUuid);
-//        }
+        if (firstCells.size() >= 19) {
+            writeToDataBase(firstCells, storeUuid);
+        }
         sheet.removeRow(firstRow);
         for (int i = 1; i < capacityRow; i++) {
             Good good = new Good(i + 1);
@@ -83,7 +83,7 @@ public class FileHandler2 {
                     resultErrors.add("Оставьте поле UUID пустым, в строках одинаковый UUID (Уже существующей группы в облаке или файлк): " + e.getValue().stream().collect(Collectors.joining(",", "", "")));
                     break;
                 case 12:
-                    resultWarning.add("У алкогольных товаров не заполнена колонка \"алко-коды\" в строках: " + e.getValue().stream().collect(Collectors.joining(",", "", "")) + "совет заполняйте алкогольную продукцию через терминал");
+                    resultWarning.add("У алкогольных товаров не заполнена колонка \"алко-коды\" в строках: " + e.getValue().stream().collect(Collectors.joining(",", "", "")) + " совет заполняйте алкогольную продукцию через терминал");
                     break;
                 case 4:
                     resultWarning.add("Некорректное поле \"цена\" в строках: " + e.getValue().stream().collect(Collectors.joining(",", "", "")) + " выставлено 0");
@@ -104,10 +104,10 @@ public class FileHandler2 {
                     resultWarning.add("Некорректное поле \"тип\" должно быть " + Arrays.toString(EnumFields.TYPE.value) + " в строках: " + e.getValue().stream().collect(Collectors.joining(",", "", "")) + " выставлено \"normal\" ");
                     break;
                 case 10:
-                    resultWarning.add("Некорректное поле \"объем алкогольной тары\" должно быть число [ 0 .. 99.999 ] в строках: " + e.getValue().stream().collect(Collectors.joining(",", "", "")) + " выставлено 0");
+                    resultWarning.add("Некорректное поле \"объем алкогольной тары\" должно быть число [ 0 .. 99.999 ] в строках: " + e.getValue().stream().collect(Collectors.joining(",", "", "")) + " выставлено пусто");
                     break;
                 case 11:
-                    resultWarning.add("Некорректное поле \"код алкоголя\" Код вида алкогольной продукции ФСРАР [ 0 .. 999 ] в строках: " + e.getValue().stream().collect(Collectors.joining(",", "", "")) + " выставлено 0");
+                    resultWarning.add("Некорректное поле \"код алкоголя\" Код вида алкогольной продукции ФСРАР [ 0 .. 999 ] в строках: " + e.getValue().stream().collect(Collectors.joining(",", "", "")) + " выставлено пусто");
                     break;
                 case 13:
                     resultWarning.add("Некорректное поле \"цена закупки\" в строках: " + e.getValue().stream().collect(Collectors.joining(",", "", "")) + " выставлено 0");

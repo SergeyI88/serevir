@@ -45,6 +45,7 @@
     <% if (request.getAttribute("list") != null) {
         List<String> list = (List<String>) request.getAttribute("list");
         for (String s : list) { %>
+    <h3>Ошибки:</h3>
     <div class="form-error"><%=s%>
     </div>
     <%
@@ -55,6 +56,7 @@
     <% if (request.getAttribute("warnings") != null) {
         List<String> list = (List<String>) request.getAttribute("warnings");
         for (String s : list) { %>
+    <H3>Предупреждения(исправлять необязательно, но отображение товаров может быть некорректно):</H3>
     <div class="form-warnings"><%=s%>
     </div>
     <%
