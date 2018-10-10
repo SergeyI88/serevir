@@ -1,17 +1,17 @@
 package controllers;
 
-import com.google.gson.Gson;
 import controllers.json.Document;
 import db.DAO.impl.ShopDaoImpl;
 import db.entity.Shop;
-import http.impl.DeleteGoodsImpl;
 import http.GetGoods;
+import http.entity.Good;
+import http.impl.DeleteGoodsImpl;
 import http.impl.GetDocumentsImpl;
 import http.impl.SendGoodsImpl;
-import http.entity.Good;
 import org.apache.log4j.Logger;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Controller;
@@ -23,10 +23,9 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import retrofit2.GsonConverterFactory;
 import retrofit2.Retrofit;
-import service.ShopService;
 import utils.CreateFileSellsFromEvotor;
 import utils.CreateXlsxFromEvotor;
-import validators.FileHandler;
+import validators.FileHandler2;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -34,18 +33,16 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Controller
 public class GoodsController {
-    private final FileHandler fileHandler;
+    private final FileHandler2 fileHandler2;
 
     final static Logger logger = Logger.getLogger(GoodsController.class);
 
@@ -56,8 +53,8 @@ public class GoodsController {
     private final CreateFileSellsFromEvotor createFileSellsFromEvotor;
 
     @Autowired
-    public GoodsController(FileHandler fileHandler, CreateFileSellsFromEvotor createFileSellsFromEvotor, CreateXlsxFromEvotor createXlsxFromEvotor, ShopDaoImpl shopDao) {
-        this.fileHandler = fileHandler;
+    public GoodsController(FileHandler2 fileHandler2, CreateFileSellsFromEvotor createFileSellsFromEvotor, CreateXlsxFromEvotor createXlsxFromEvotor, ShopDaoImpl shopDao) {
+        this.fileHandler2 = fileHandler2;
         this.createFileSellsFromEvotor = createFileSellsFromEvotor;
         this.createXlsxFromEvotor = createXlsxFromEvotor;
         this.shopDao = shopDao;
@@ -69,13 +66,14 @@ public class GoodsController {
         if (file.isEmpty()) {
             return new ModelAndView("index");
         }
-        List<String> list;
+        List<String> errors;
         try (Workbook workbook = WorkbookFactory.create(convert(file))) {
-            Map<String, List> map = fileHandler.getResult(workbook, storeUuid, (String) request.getSession().getAttribute("token"));
-            list = map.get("errors");
+            String token = (String) request.getSession().getAttribute("token");
+            Map<String, List> map = fileHandler2.getResult(workbook, token, storeUuid);
+            errors = map.get("errors");
             int result = 0;
-            List<String> warnings = list.stream().filter(s -> s.contains("Товар был загружен - Предупреждение:")).collect(Collectors.toList());
-            List<String> errors = list.stream().filter(s -> !s.contains("Товар был загружен - Предупреждение:")).collect(Collectors.toList());
+//            List<String> warnings = list.stream().filter(s -> s.contains("Товар был загружен - Предупреждение:")).collect(Collectors.toList());
+//            List<String> errors = list.stream().filter(s -> !s.contains("Товар был загружен - Предупреждение:")).collect(Collectors.toList());
             if (errors.isEmpty()) {
                 if (!map.get("forDelete").isEmpty()) {
                     DeleteGoodsImpl deleteGoodsImpl = new DeleteGoodsImpl();
@@ -84,9 +82,9 @@ public class GoodsController {
                 SendGoodsImpl sendGoodsImpl = new SendGoodsImpl();
                 result = sendGoodsImpl.send(map.get("goods"), storeUuid, (String) request.getSession().getAttribute("token"));
             }
-            modelAndView.addObject("list", !errors.isEmpty() ? list : result == 200 ? new ArrayList(Arrays.asList("Все товары загружены")) : new ArrayList(Arrays.asList("Сервер ответил отказом, попробуйте позже")));
-            modelAndView.addObject("warnings", result == 200 ? warnings : new ArrayList(Arrays.asList()));
-        } catch (InvalidFormatException | IOException | NoSuchAlgorithmException e) {
+            modelAndView.addObject("list", !errors.isEmpty() ? errors : result == 200 ? new ArrayList(Arrays.asList("Все товары загружены")) : new ArrayList(Arrays.asList("Сервер ответил отказом, попробуйте позже")));
+            modelAndView.addObject("warnings", result == 200 ? map.get("warnings") : new ArrayList(Arrays.asList()));
+        } catch (InvalidFormatException | IOException e) {
             e.printStackTrace();
         }
         return modelAndView;

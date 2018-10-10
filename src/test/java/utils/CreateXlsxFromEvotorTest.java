@@ -11,7 +11,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import validators.FileHandler;
+//import validators.FileHandler;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,8 +27,8 @@ public class CreateXlsxFromEvotorTest {
     @Autowired
     CreateXlsxFromEvotor createXlsxFromEvotor;
 
-    @Autowired
-    FileHandler<Workbook> handler;
+//    @Autowired
+//    FileHandler<Workbook> handler;
 
     @Test
     public void sortListGood() throws IOException, InvalidFormatException, NoSuchAlgorithmException {

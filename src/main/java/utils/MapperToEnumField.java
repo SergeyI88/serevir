@@ -1,8 +1,7 @@
 package utils;
 
-import com.fasterxml.uuid.Generators;
+import consts.ConstantsErrorWarning;
 import consts.EnumFields;
-import http.entity.Good;
 import org.apache.poi.ss.usermodel.Cell;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
@@ -45,256 +44,200 @@ public class MapperToEnumField {
 
         SEQUENCE.addAll(Arrays.asList(env.getProperty("sequence").split(";")));
 
-        mapFunc.put("объем алкогольной тары", (cell, field, list, good) -> {
+        mapFunc.put("объем алкогольной тары", (cell, list, id, nameColumn) -> {
             if (!cell.toString().trim().isEmpty()) {
                 Double d = null;
                 try {
                     d = Double.valueOf(cell.toString());
                 } catch (NumberFormatException e) {
-                    list.add(good.getId() + " " + cell.toString() + " Товар был загружен - Предупреждение: должно быть число [ 0 .. 99.999 ] столбец " + field.name + " выставлено - 0");
-                }
-                good.setAlcoholByVolume(d);
+                    list.add(id + " строка -  Товар был загружен - Предупреждение: должно быть число [ 0 .. 99.999 ] столбец " + nameColumn + " выставлено - 0" + " " + ConstantsErrorWarning.NOT_ALCOHOL_BY_VOLUME);
             }
-            return good;
+                return d;
+            }
+            return null;
         });
 
-        mapFunc.put("код алкоголя", (cell, field, list, good) -> {
+        mapFunc.put("код алкоголя", (cell, list, id, nameColumn) -> {
             if (!cell.toString().trim().isEmpty()) {
                 Double d = null;
                 try {
                     d = Double.parseDouble(cell.toString());
                 } catch (NumberFormatException e) {
-                    list.add(good.getId() + " " + cell.toString() + " Товар был загружен - Предупреждение: не число [1 ... 999] столбец " + field.name + " выставлено - пусто");
-                    good.setAlcoholProductKindCode(d);
+                    list.add(id + " строка - Товар был загружен - Предупреждение: должно быть число [1 ... 999] столбец " + nameColumn + " выставлено - пусто" + " " + ConstantsErrorWarning.NOT_ALCOHOL_PRODUCT_KIND_CODE);
                 }
-                good.setAlcoholProductKindCode(d);
+                return d;
             }
-            return good;
+            return null;
         });
 
-        mapFunc.put("артикул", (cell, field, list, good) -> {
+        mapFunc.put("артикул", (cell, list, id, nameColumn) -> {
             if (!cell.toString().trim().isEmpty()) {
-                good.setArticleNumber(cell.toString());
+                return cell.toString().trim();
             }
-            return good;
+            return null;
         });
 
-        mapFunc.put("штрих-коды", (cell, field, list, good) -> {
+        mapFunc.put("штрих-коды", (cell, list, id, nameColumn) -> {
             if (!cell.toString().trim().isEmpty()) {
-                good.setBarCodes(new ArrayList<>(Arrays.asList(cell.toString().split(" "))));
+                return new ArrayList<>(Arrays.asList(cell.toString().split(" ")));
             }
-            return good;
+            return null;
         });
-        mapFunc.put("код", (cell, field, list, good) -> {
+        mapFunc.put("код", (cell, field, id, nameColumn) -> {
             if (!cell.toString().trim().isEmpty()) {
-                good.setCode(cell.toString());
+                return cell.toString().trim();
             }
-            return good;
+            return null;
         });
 
-        mapFunc.put("цена закупки", (cell, field, list, good) -> {
+        mapFunc.put("цена закупки", (cell, list, id, nameColumn) -> {
             Double d = null;
             if (!cell.toString().trim().isEmpty()) {
                 try {
                     d = Double.valueOf(cell.toString().replace(",", "."));
                 } catch (NumberFormatException e) {
-                    list.add(good.getId() + " " + cell.toString() + " Товар был загружен - Предупреждение: должно быть число [ 0 .. 9999999.99 ] столбец " + field.name + " выставлено - 0");
+                    list.add(id + " строка - Товар был загружен - Предупреждение: должно быть число [ 0 .. 9999999.99 ] столбец " + nameColumn + " выставлено - 0" + " " + ConstantsErrorWarning.NOT_COST_PRICE);
                 }
-            } else {
-                d = 0.0;
             }
-            good.setCostPrice(d);
-            return good;
+            return d;
         });
-        mapFunc.put("цена", (cell, field, list, good) -> {
+        mapFunc.put("цена", (cell, list, id, nameColumn) -> {
             Double d = null;
-            if (field.isRequired) {
-                if (cell.toString() == null || cell.toString().isEmpty()) {
-                    list.add(good.getId() + " " + cell.toString() + " цена обязателен к заполнению [ 0 .. 9999999.999 ] столбец " + field.name);
-                } else if (!cell.toString().trim().isEmpty()) {
-                    try {
-                        d = Double.valueOf(cell.toString().replace(",", "."));
-                    } catch (NumberFormatException e) {
-                        list.add(good.getId() + " " + cell.toString() + " цена должно быть число [ 0 .. 9999999.999 ] столбец " + field.name);
-                    }
-                } else {
-                    list.add(good.getId() + " " + cell.toString() + " цена обязателен к заполнению [ 0 .. 9999999.999 ] столбец " + field.name);
-                }
-            }
-            good.setPrice(d);
-            return good;
-        });
-        mapFunc.put("описание", (cell, field, list, good) -> {
-            if (field.isRequired) {
-                if (!cell.toString().trim().isEmpty()) {
-                    good.setDescription(cell.toString());
-                } else {
-                    good.setDescription("");
-                }
-            }
-            return good;
-        });
-        mapFunc.put("группа", (cell, field, list, good) -> {
-            if (field.isRequired) {
-                if (!cell.toString().trim().isEmpty()) {
-                    if (cell.toString().trim().equals("1.0") || cell.toString().trim().equals("0.0") || cell.toString().trim().equals("1") || cell.toString().trim().equals("0")) {
-                        good.setGroup(cell.toString().equals("1.0") || cell.toString().equals("1"));
-                    } else {
-                        list.add(good.getId() + " " + cell.toString() + " Товар был загружен - Предупреждение: 0 если товар не является группой и 1 если является " + field.name + " выставлено - 0");
-                        good.setGroup(false);
-                    }
-                } else {
-                    good.setGroup(false);
-                }
-            }
-            return good;
-        });
-
-        mapFunc.put("название меры", (cell, field, list, good) -> {
-            if (field.isRequired) {
-                if (!cell.toString().trim().isEmpty()) {
-                    if (Arrays.asList(field.value).contains(cell.toString().trim())) {
-                        good.setMeasureName(cell.toString().trim());
-                    } else {
-                        list.add(good.getId() + " " + cell.toString() + " Товар был загружен - Предупреждение: система подсчета остатков товара должна содержать одно из " + Arrays.asList(field.value) + " выставлено - шт.");
-                    }
-                } else {
-                    good.setMeasureName("шт");
-                }
-            }
-            return good;
-        });
-
-        mapFunc.put("имя", (cell, field, list, good) -> {
-            if (field.isRequired) {
-                if (cell.toString() == null || cell.toString().isEmpty()) {
-                    list.add(good.getId() + " Поле имя не может быть пустым");
-                } else if (!cell.toString().trim().isEmpty()) {
-                    good.setName(cell.toString().trim());
-                } else if (good.getName().trim().toLowerCase().equals("-")) {
-                    good.setName("-");
-                } else {
-                    list.add(good.getId() + " Поле имя не может быть пустым");
-                }
-            }
-            return good;
-        });
-
-        mapFunc.put("код группы", (cell, field, list, good) -> {
-            if (!cell.toString().trim().isEmpty()) {
-                good.setParentUuid(cell.toString().trim());
-            }
-            return good;
-        });
-
-        mapFunc.put("количество", (cell, field, list, good) -> {
-            Double d = null;
-            if (cell.toString() == null || cell.toString().isEmpty()) {
-               d = 0d;
+            if (cell.toString().isEmpty()) {
+                list.add(id + " строка - Товар был загружен - Предупреждение: должно быть число [ 0 .. 9999999.99 ] столбец " + nameColumn + " выставлено - 0" + " " + ConstantsErrorWarning.NOT_PRICE);
             } else if (!cell.toString().trim().isEmpty()) {
                 try {
                     d = Double.valueOf(cell.toString().replace(",", "."));
                 } catch (NumberFormatException e) {
-                    list.add(good.getId() + " Товар был загружен - Предупреждение: должно быть число [ 0 .. 9999999.999 ] столбец " + field.name + " выставлено - 0.0");
+                    list.add(id + " строка - Товар был загружен - Предупреждение: должно быть число [ 0 .. 9999999.999 ] столбец " + nameColumn + " выставлено - 0" + " " + ConstantsErrorWarning.NOT_PRICE);
                 }
             } else {
-                if (field.isRequired) {
-                    list.add(good.getId() + " Товар был загружен - Предупреждение: должно быть число [ 0 .. 9999999.999 ] столбец " + field.name + " выставлено - 0.0");
+                list.add(id + " строка - Товар был загружен - Предупреждение: должно быть число [ 0 .. 9999999.99 ] столбец " + nameColumn + " выставлено - 0" + " " + ConstantsErrorWarning.NOT_PRICE);
+            }
+            return d;
+        });
+        mapFunc.put("описание", (cell, list, id, nameColumn) -> {
+            if (!cell.toString().isEmpty()) {
+                return cell.toString().trim();
+            }
+            return null;
+        });
+        mapFunc.put("группа", (cell, list, id, nameColumn) -> {
+            if (!cell.toString().isEmpty()) {
+                if (cell.toString().trim().equals("1.0") || cell.toString().trim().equals("0.0") || cell.toString().trim().equals("1") || cell.toString().trim().equals("0")) {
+                    return cell.toString().equals("1.0") || cell.toString().equals("1");
+                } else {
+                    list.add(id + " строка - Товар был загружен - Предупреждение: 0 если товар не является группой и 1 если является " + nameColumn + " выставлено - 0" + " " + ConstantsErrorWarning.NOT_GROUP);
                 }
             }
-            good.setQuantity(d);
-            return good;
+            return null;
         });
 
-        mapFunc.put("объем тары", (cell, field, list, good) -> {
-            Double d = null;
-            if (!cell.toString().trim().isEmpty()) {
+        mapFunc.put("название меры", (cell, list, id, nameColumn) -> {
+            if (!cell.toString().isEmpty()) {
+                if (Arrays.asList(EnumFields.MEASURE_NAME.value).contains(cell.toString().trim())) {
+                    return cell.toString().trim();
+                } else {
+                    list.add(id + " строка - Товар был загружен - Предупреждение: система подсчета остатков товара должна содержать одно из " + Arrays.asList(EnumFields.MEASURE_NAME.value) + " выставлено - шт." + " " + ConstantsErrorWarning.NOT_MEASURE_NAME);
+                }
+            }
+            return null;
+        });
+
+        mapFunc.put("имя", (cell, list, id, nameColumn) -> {
+            if (cell.toString().isEmpty()) {
+                list.add(id + " строка - Поле имя не может быть пустым " + ConstantsErrorWarning.NOT_NAME);
+            } else {
+                return cell.toString().trim();
+            }
+            return null;
+        });
+
+        mapFunc.put("код группы", (cell, list, id, nameColumn) -> {
+            if (!cell.toString().isEmpty()) {
+                return cell.toString().trim();
+            }
+            return null;
+        });
+
+        mapFunc.put("количество", (cell, list, id, nameColumn) -> {
+            if (cell.toString().isEmpty()) {
+                return null;
+            } else if (!cell.toString().isEmpty()) {
                 try {
-                    d = Double.valueOf(cell.toString());
+                    return Double.valueOf(cell.toString().trim().replace(",", "."));
                 } catch (NumberFormatException e) {
-                    d = 0d;
-                }
-            } else {
-                if (field.isRequired) {
-                    list.add(good.getId() + " " + "Поле объем тары не может быть пустым");
+                    list.add(id + " строка -  Товар был загружен - Предупреждение: должно быть число [ 0 .. 9999999.999 ] столбец " + nameColumn + " выставлено - 0.0 " + ConstantsErrorWarning.NOT_QUANTITY);
                 }
             }
-            good.setTareVolume(d);
-            return good;
+            return null;
         });
 
-        mapFunc.put("налог", (cell, field, list, good) -> {
-            if (field.isRequired) {
-                if (!cell.toString().trim().isEmpty()) {
-                    if (Arrays.asList(field.value).contains(cell.toString().trim())) {
-                        good.setTax(cell.toString().trim());
-                    } else {
-                        list.add(good.getId() + " " + cell.toString() + " Товар был загружен - Предупреждение: должен иметь значения " + Arrays.toString(field.value) + " выставлено - NO_VAT");
-                        good.setTax("NO_VAT");
-                    }
-                } else {
-                    good.setTax("NO_VAT");
+        mapFunc.put("объем тары", (cell, list, id, nameColumn) -> {
+            if (!cell.toString().isEmpty()) {
+                try {
+                    return Double.valueOf(cell.toString().trim());
+                } catch (NumberFormatException e) {
+                    return null;
                 }
             }
-            return good;
+            return null;
         });
 
-        mapFunc.put("тип", (cell, field, list, good) -> {
-            if (field.isRequired) {
-                if (!cell.toString().trim().isEmpty()) {
-                    if (Arrays.asList(field.value).contains(cell.toString().toLowerCase().trim())) {
-                        good.setType(cell.toString().trim());
-                    } else {
-                        list.add(good.getId() + " " + cell.toString() + " Товар был загружен - Предупреждение: должен иметь значения " + Arrays.toString(field.value) + " выставлено - NORMAL");
-                        good.setType("NORMAL");
-                    }
-                } else {
-                    good.setType("NORMAL");
-                }
-            }
-            return good;
-        });
-
-        mapFunc.put("разрешено к продаже", (cell, field, list, good) -> {
-
+        mapFunc.put("налог", (cell, list, id, nameColumn) -> {
             if (!cell.toString().trim().isEmpty()) {
+                if (Arrays.asList(EnumFields.TAX.value).contains(cell.toString().trim())) {
+                    return cell.toString().trim();
+                } else {
+                    list.add(id + " строка - Товар был загружен - Предупреждение: должен иметь значения " + Arrays.toString(EnumFields.TAX.value) + " выставлено - NO_VAT " + ConstantsErrorWarning.NOT_TAX);
+                }
+            }
+            return null;
+        });
+
+        mapFunc.put("тип", (cell, list, id, nameColumn) ->
+
+        {
+            if (!cell.toString().isEmpty()) {
+                if (Arrays.asList(EnumFields.TYPE.value).contains(cell.toString().toLowerCase().trim())) {
+                    return cell.toString().trim();
+                } else {
+                    list.add(id + " строка - Товар был загружен - Предупреждение: должен иметь значения " + Arrays.toString(EnumFields.TYPE.value) + " выставлено - NORMAL " + ConstantsErrorWarning.NOT_TYPE);
+                }
+            }
+            return null;
+        });
+
+        mapFunc.put("разрешено к продаже", (cell, list, id, nameColumn) -> {
+            if (!cell.toString().isEmpty()) {
                 if (cell.toString().trim().equals("1.0") || cell.toString().trim().equals("1")) {
-                    good.setAllowToSell(true);
+                    return true;
                 } else if (cell.toString().trim().equals("0") || cell.toString().trim().equals("0.0")) {
-                    good.setAllowToSell(false);
+                    return false;
+                }
+            }
+            return null;
+        });
+
+        mapFunc.put("uuid", (cell, list, id, nameColumn) -> {
+            if (!cell.toString().isEmpty()) {
+                if (cell.toString().trim().matches("[0-9A-f]{8}-[0-9A-f]{4}-[0-9A-f]{4}-[0-9A-f]{4}-[0-9A-f]{12}")) {
+                    return cell.toString().trim();
                 } else {
-                    good.setAllowToSell(true);
+                    list.add(id + " строка - Товар был загружен - Предупреждение: программма генерирует автоматически, оставляйте пустым при первой загрузке товара" + nameColumn + " " + ConstantsErrorWarning.NOT_UUID);
                 }
-            } else {
-                good.setAllowToSell(true);
             }
-            return good;
+            return null;
         });
 
-        mapFunc.put("uuid", (cell, field, list, good) -> {
-            if (!cell.toString().trim().isEmpty()) {
-                if (field.isRequired) {
-                    if (cell.toString().trim().matches("[0-9A-f]{8}-[0-9A-f]{4}-[0-9A-f]{4}-[0-9A-f]{4}-[0-9A-f]{12}")) {
-                        good.setUuid(cell.toString().trim());
-                    } else {
-                        list.add(good.getId() + " " + cell.toString() + " Товар был загружен - Предупреждение: программма генерирует автоматически, оставляйте пустым при первой загрузке товара" + field.name);
-                        good.setUuid(Generators.timeBasedGenerator().generate().toString());
-                    }
-                }
-            } else {
-                good.setUuid(Generators.timeBasedGenerator().generate().toString());
+        mapFunc.put("алко-коды", (cell, list, id, nameColumn) -> {
+            if (!cell.toString().isEmpty()) {
+                return Arrays.asList(cell.toString().trim().split(" "));
             }
-            return good;
-        });
-
-        mapFunc.put("алко-коды", (cell, field, list, good) -> {
-            if (!cell.toString().trim().isEmpty()) {
-                good.setAlcoCodes(Arrays.asList(cell.toString().split(" ")));
-            }
-            return good;
+            return null;
         });
 
     }
 
-    public final HashMap<String, ThirdFunction<Cell, EnumFields, List<String>, Good, Good>> mapFunc = new HashMap<>();
+    public final HashMap<String, ThirdFunction<Cell, List<String>, Object>> mapFunc = new HashMap<>();
 }
