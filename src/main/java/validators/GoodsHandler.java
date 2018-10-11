@@ -41,7 +41,6 @@ public class GoodsHandler {
     }
 
     public void handleList() {
-        setDefaultAddInRemove();
         List<Good> fromEvotorGoods = null;
         try {
             fromEvotorGoods = getGoods.get(storeUuid, token);
@@ -56,8 +55,10 @@ public class GoodsHandler {
                 e.printStackTrace();
             }
         }
-        replaceCodeAndParentUuidOrRemoveThisSequenceGroup();
+
+        setDefaultAddInRemove(fromEvotorGoods);
         unionGoods(fromEvotorGoods);
+        replaceCodeAndParentUuidOrRemoveThisSequenceGroup();
         checkUniqueCodeUuidAndWriteThemIfIsNotPresent(fromEvotorGoods);
     }
 
@@ -85,7 +86,7 @@ public class GoodsHandler {
                         continue;
                     }
                 }
-                if (out.getCode().equals(in.getCode())) {
+                if (!out.equals(in) && out.getCode().equals(in.getCode())) {
                     if (out.getGroup()) {
                         in.setCode((maxCode++).toString());
                     } else {
@@ -111,8 +112,12 @@ public class GoodsHandler {
         return file;
     }
 
-    private void setDefaultAddInRemove() {
-        maxCode = goods
+    private void setDefaultAddInRemove(List<Good> fromEvotorGoods) {
+        if (fromEvotorGoods == null && fromEvotorGoods.isEmpty()) {
+            return;
+        }
+        fromEvotorGoods.addAll(goods);
+        maxCode = fromEvotorGoods
                 .stream()
                 .filter(g -> g.getCode() != null && g.getCode()
                         .matches("[0-9.]+"))

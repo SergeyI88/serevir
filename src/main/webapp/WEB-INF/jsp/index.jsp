@@ -1,5 +1,5 @@
-<%@ page import="java.util.List" %>
-<%@ page import="db.entity.Shop" %><%--
+<%@ page import="db.entity.Shop" %>
+<%@ page import="java.util.List" %><%--
   Created by IntelliJ IDEA.
   User: admin
   Date: 23.06.2018
@@ -39,7 +39,7 @@
 
     </script>
     <%
-        if (request.getAttribute("alert") != null && (boolean)request.getAttribute("alert")) {%>
+        if (request.getAttribute("alert") != null && (boolean) request.getAttribute("alert")) {%>
     <script>alert("Здравствуйте. Вам продлена подписка на месяц (до 12 ноября 2018 года), приложение на этапе фильнального тестирования. " +
         "Мы будем благодарны, если вы сообщите нам на почту onl.ont@mail.ru " +
         "что вас не устраивает в приложении, какие есть ошибки и пожелания по функционалу");</script>
@@ -52,8 +52,13 @@
 <div class="form-container">
     <% if (request.getAttribute("list") != null) {
         List<String> list = (List<String>) request.getAttribute("list");
-        for (String s : list) { %>
-    <h3>Ошибки:</h3>
+    %><% if (list.contains("Все товары загружены") || list.contains("Все товары удалены")) {
+    } else {
+        %><h3>Ошибки:</h3> <%
+    }
+    for (String s : list) {
+%>
+
     <div class="form-error"><%=s%>
     </div>
     <%

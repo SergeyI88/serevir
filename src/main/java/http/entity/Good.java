@@ -255,7 +255,7 @@ public class Good {
 
         Good good = (Good) o;
 
-        return uuid.equals(good.uuid) && name.equals(good.name);
+        return uuid.equals(good.uuid) && name.equals(good.name) || name.equals(good.name) && price.equals(good.price);
     }
 
     @Override

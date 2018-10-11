@@ -56,6 +56,11 @@ public class FileHandler2 {
             if (IsGood(good)) {
                 capacityRow = i + 50;
                 listGood.add(good);
+            } else if (good.getGroup() != null && good.getName() != null) {
+                Good finalGood = good;
+                listGood.add(good);
+                capacityRow = i + 50;
+                listErrors.removeIf(s -> s.startsWith(finalGood.getId() + "") && finalGood.getGroup() != null);
             } else {
                 Good finalGood = good;
                 listErrors.removeIf(s -> s.startsWith(finalGood.getId() + "") && s.contains("Предупреждение"));
@@ -80,11 +85,11 @@ public class FileHandler2 {
                     resultErrors.add("Не указано \"имя\" в строках: " + e.getValue().stream().collect(Collectors.joining(",", "", "")));
                     break;
                 case 3:
-                    resultErrors.add("Оставьте поле UUID пустым, в строках одинаковый UUID (Уже существующей группы в облаке или файлк): " + e.getValue().stream().collect(Collectors.joining(",", "", "")));
+                    resultErrors.add("Оставьте поле UUID пустым, в строках одинаковый UUID (Уже существующей группы в облаке или файле): " + e.getValue().stream().distinct().collect(Collectors.joining(",", "", "")));
                     break;
                 case 12:
-                    resultWarning.add("У алкогольных товаров не заполнена колонка \"алко-коды\" в строках: " + e.getValue().stream().collect(Collectors.joining(",", "", "")) + " совет заполняйте алкогольную продукцию через терминал");
-                    break;
+                    resultErrors.add("У алкогольных товаров не заполнена колонка \"алко-коды\" в строках: " + e.getValue().stream().collect(Collectors.joining(",", "", "")) + " совет заполняйте алкогольную продукцию через терминал");
+                break;
                 case 4:
                     resultWarning.add("Некорректное поле \"цена\" в строках: " + e.getValue().stream().collect(Collectors.joining(",", "", "")) + " выставлено 0");
                     break;
@@ -125,12 +130,6 @@ public class FileHandler2 {
         });
         System.out.println(mapErrorAndWarning);
 
-
-//        List<String> errors = mapErrorAndWarning.entrySet()
-//                .stream()
-//                .filter(e -> e.getKey() == 1 || e.getKey() == 2 || e.getKey() == 3)
-//                .flatMap(e -> e.getValue().stream())
-//                .collect(Collectors.toList());
         HashMap<String, List> hashMap = new HashMap<>();
         hashMap.put("goods", goodsHandler.getGoods());
         hashMap.put("errors", resultErrors);
@@ -223,6 +222,6 @@ public class FileHandler2 {
     }
 
     private boolean IsGood(Good g) {
-        return g.getName() != null;
+        return g.getName() != null && g.getGroup() == null;
     }
 }
