@@ -71,7 +71,13 @@ public class GoodsHandler {
         List<String> alreadyExists = new ArrayList<>();
         for (int i = 0; i < fromEvotorGoods.size(); i++) {
             Good out = fromEvotorGoods.get(i);
+            if (out == null) {
+                continue;
+            }
             for (Good in : goods) {
+                if (in == null) {
+                    continue;
+                }
                 // если товар не один и тот же объект и равен uuid
                 if (!out.equals(in) && out.getUuid().equals(in.getUuid()) && !alreadyExists.contains("" + in.getId() + out.getId())) {
                     if (out.getGroup() && !in.getGroup()) {
