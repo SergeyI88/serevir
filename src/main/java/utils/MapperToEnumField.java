@@ -72,6 +72,10 @@ public class MapperToEnumField {
 
         mapFunc.put("артикул", (cell, list, id, nameColumn) -> {
             if (!cell.toString().trim().isEmpty()) {
+                // позвонили попросили выгружать артикул без .0
+                if (cell.toString().trim().endsWith(".0")) {
+                    return cell.toString().trim().substring(0, cell.toString().length() - 2);
+                }
                 return cell.toString().trim();
             }
             return null;
