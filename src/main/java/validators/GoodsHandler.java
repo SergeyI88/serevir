@@ -119,7 +119,7 @@ public class GoodsHandler {
     }
 
     private void setDefaultAddInRemove(List<Good> fromEvotorGoods) {
-        if (fromEvotorGoods == null && fromEvotorGoods.isEmpty()) {
+        if (fromEvotorGoods == null || fromEvotorGoods.isEmpty()) {
             return;
         }
         fromEvotorGoods.addAll(goods);
