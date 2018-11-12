@@ -29,8 +29,13 @@ public class SubscriptionFilter implements Filter {
         Client client = clientService.getClientByTokenAndUpdateWasAlert(httpServletRequest.getParameter("token"));
         if (httpServletRequest.getSession().getAttribute("sub") != null
                 && (Boolean) httpServletRequest.getSession().getAttribute("sub")) {
-            isAlert(client, httpServletRequest);
+//            isAlert(client, httpServletRequest);
             chain.doFilter(request, response);
+        } else if (client.isEnabled() == null) {
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            httpServletRequest.getSession().setAttribute("sub", Boolean.FALSE);
+            response.getWriter().write("Некорректный токеy Эвотор, попробуйте переустановить программу!");
         } else if (!client.isEnabled()) {
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");

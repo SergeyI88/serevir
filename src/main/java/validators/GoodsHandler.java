@@ -199,7 +199,7 @@ public class GoodsHandler {
 
     private void replaceCodeAndParentUuidOrRemoveThisSequenceGroup() {
         Map<String, Good> mapCodeAndHimGood = goods.stream()
-                .filter(Good::getGroup)
+                .filter(g -> g.getGroup() && g.getCode() != null)
                 .collect(Collectors.toMap(Good::getCode, g -> g, (good, good2) -> good));
         for (Good g : goods) {
             if (mapCodeAndHimGood.containsKey(g.getParentUuid())) {

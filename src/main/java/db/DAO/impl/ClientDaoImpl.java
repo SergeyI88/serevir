@@ -70,6 +70,8 @@ public class ClientDaoImpl implements ClientDao {
                 client.setToken(set.getString("token"));
                 client.setCompanyName(set.getString("company_name"));
                 client.setUuid(set.getString("uuid"));
+            } else {
+                client.setEnabled(null);
             }
             if (!client.isWasAlert()) {
                 PreparedStatement statement2 = connection.prepareStatement("update client SET was_alert = TRUE WHERE token = ?");

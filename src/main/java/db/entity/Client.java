@@ -5,7 +5,7 @@ public class Client {
     String token;
     String companyName;
     String uuid;
-    boolean isEnabled;
+    Boolean isEnabled;
     boolean wasAlert;
 
     public long getClient_id() {
@@ -16,11 +16,11 @@ public class Client {
         this.client_id = client_id;
     }
 
-    public boolean isEnabled() {
+    public Boolean isEnabled() {
         return isEnabled;
     }
 
-    public void setEnabled(boolean enabled) {
+    public void setEnabled(Boolean enabled) {
         isEnabled = enabled;
     }
 

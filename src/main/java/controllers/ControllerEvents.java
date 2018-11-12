@@ -44,7 +44,7 @@ public class ControllerEvents {
                 || event.getType().equals("SubscriptionRenewed")) {
             clientService.setSubscription(event.getUserId(), true);
         } else if (event.getType().equals("SubscriptionTerminated ")) {
-//            clientService.setSubscription(event.getUserId(), false);
+            clientService.setSubscription(event.getUserId(), false);
         }
         return "{success:true}";
     }
