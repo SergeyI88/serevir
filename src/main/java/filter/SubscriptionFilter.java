@@ -29,7 +29,7 @@ public class SubscriptionFilter implements Filter {
         Client client = clientService.getClientByTokenAndUpdateWasAlert(httpServletRequest.getParameter("token"));
         if (httpServletRequest.getSession().getAttribute("sub") != null
                 && (Boolean) httpServletRequest.getSession().getAttribute("sub")) {
-//            isAlert(client, httpServletRequest);
+            isAlert(client, httpServletRequest);
             chain.doFilter(request, response);
         } else if (client.isEnabled() == null) {
             response.setContentType("application/json");
