@@ -62,11 +62,19 @@ public class Good {
 
     private Boolean group;
 
+    public Double getAlcoholProductKindCode() {
+        return alcoholProductKindCode;
+    }
+
+    public void setAlcoholProductKindCode(Double alcoholProductKindCode) {
+        this.alcoholProductKindCode = alcoholProductKindCode;
+    }
+
     private String type;
 
     private Double alcoholByVolume;
 
-    private Integer alcoholProductKindCode;
+    private Double alcoholProductKindCode;
 
     private Double tareVolume;
 
@@ -206,13 +214,6 @@ public class Good {
         this.alcoholByVolume = alcoholByVolume;
     }
 
-    public Integer getAlcoholProductKindCode() {
-        return alcoholProductKindCode;
-    }
-
-    public void setAlcoholProductKindCode(Double alcoholProductKindCode) {
-        this.alcoholProductKindCode = alcoholProductKindCode != null ? alcoholProductKindCode.intValue() : null;
-    }
 
     public Double getTareVolume() {
         return tareVolume;
